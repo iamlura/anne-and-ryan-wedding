@@ -114,10 +114,14 @@ python3 mock_apps_script.py & python3 test_backend_flow.py
 
 Compare the screenshots against the Figma frames at the same widths. The flow test seeds 9 letters, writes one, drags 5 flowers (checks the max of 4), drags the letter onto the arch, sends, opens the inbox with a wrong and then the right password, opens a letter and downloads a PDF.
 
-## 7. Deploy
+## 7. Deploy (how it is set up now)
 
-- **GitHub Pages:** repo Settings → Pages → Deploy from branch → `main` / root. URL: https://iamlura.github.io/anne-and-ryan-wedding/
-- **Google Sheets** (not connected yet, the site is in demo mode): see README §2. Create the Sheet → Apps Script → paste `Code.gs` → run `setup` → Deploy as web app (Me / Anyone) → paste the `/exec` URL into `assets/js/config.js` → commit.
+- The repo keeps the site inside a subfolder: `anne-and-ryan-wedding/` (that's how the folder was dragged into GitHub's web uploader).
+- Pages deploys with GitHub Actions, not "deploy from branch": `.github/workflows/pages.yml` uploads the `anne-and-ryan-wedding/` folder on every push to `main`. Settings → Pages → Source = **GitHub Actions**.
+- So any commit to `main` redeploys the site in about 30 seconds. Check progress in the Actions tab.
+- Live URL: https://iamlura.github.io/anne-and-ryan-wedding/
+- To edit: change the files under `anne-and-ryan-wedding/` on GitHub (pencil icon) or locally, then commit to `main`.
+- **Google Sheets** (not connected yet, the site is in demo mode): see README §2. Create the Sheet → Apps Script → paste `Code.gs` → run `setup` → Deploy as web app (Me / Anyone) → paste the `/exec` URL into `anne-and-ryan-wedding/assets/js/config.js` → commit.
 
 ## 8. Open items
 
