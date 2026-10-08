@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RSVP · Anne &amp; Ryan</title>
+  <link rel="icon" href="assets/img/monogram-letters.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Afacad&family=Carattere&family=Playfair+Display&family=Playfair+Display+SC&display=swap">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header class="nav nav--light" data-nav>
+    <a class="brand" href="index.html">Anne &amp; Ryan</a>
+    <a href="story.html">Our Story</a>
+    <a href="details.html">Event Details</a>
+    <a href="rsvp.html" aria-current="page">RSVP</a>
+    <a href="message.html">Leave a Message</a>
+    <button class="burger" aria-label="Open menu" data-burger><span></span><span></span></button>
+  </header>
+
+  <main class="rsvp" id="rsvp">
+    <img class="rsvp__bg" src="assets/img/rsvp-bg.jpg" alt="">
+    <div class="rsvp__shade"></div>
+
+    <div class="rsvp__inner" data-fade>
+      <div class="rsvp__head">
+        <h1>RSVP</h1>
+        <p>We can’t wait to celebrate with you and your presence means the world to us! Please let us know if you will be able to join in the festivities by the end of Dec 1, 2026.</p>
+      </div>
+
+      <form class="form" id="rsvpForm" novalidate>
+        <div class="field">
+          <label for="name">First and Last Name</label>
+          <input class="input" id="name" name="name" autocomplete="name" placeholder="Jane Doe" maxlength="80" required>
+        </div>
+        <div class="field">
+          <label for="email">Email Address</label>
+          <input class="input" id="email" name="email" type="email" autocomplete="email" placeholder="jane.doe@gmail.com" maxlength="120" required>
+        </div>
+        <fieldset class="field" style="border:0;padding:0;margin:0">
+          <legend class="lab lab--solid" style="padding:0;margin-bottom:calc(20 * var(--u))">Will you be attending?</legend>
+          <div class="radios">
+            <label class="radio"><input type="radio" name="attending" value="Yes" required><span class="dot"></span>Yes</label>
+            <label class="radio"><input type="radio" name="attending" value="No"><span class="dot"></span>No</label>
+          </div>
+        </fieldset>
+        <div class="field" id="foodField">
+          <label for="food">Food Restrictions</label>
+          <input class="input" id="food" name="food" placeholder="Allergies, or “none”" maxlength="200">
+        </div>
+        <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+      </form>
+
+      <p class="form-msg" id="rsvpMsg" role="status" aria-live="polite"></p>
+      <button class="btn btn--outline btn--wide" id="rsvpSubmit" type="submit" form="rsvpForm" disabled>submit</button>
+
+      <div class="rsvp-done" id="rsvpDone">
+        <h2>Thank you!</h2>
+        <p id="rsvpDoneText">Your RSVP has been received.</p>
+        <a class="chip" href="message.html" style="color:#000">Leave Anne &amp; Ryan a message</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p class="t1">Thank you,</p>
+    <p class="t2">We look forward to celebrating with you</p>
+  </footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/filter.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/rsvp.js"></script>
+</body>
+</html>

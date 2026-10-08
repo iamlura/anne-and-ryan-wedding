@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Leave a Message · Anne &amp; Ryan</title>
+  <link rel="icon" href="assets/img/monogram-letters.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Afacad&family=Carattere&family=Playfair+Display&family=Playfair+Display+SC&display=swap">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="preload" as="image" href="assets/img/arch.webp">
+</head>
+<body class="page-message">
+  <header class="nav" data-nav>
+    <a class="brand" href="index.html">Anne &amp; Ryan</a>
+    <a href="story.html">Our Story</a>
+    <a href="details.html">Event Details</a>
+    <a href="rsvp.html">RSVP</a>
+    <a href="message.html" aria-current="page" data-secret-tap>Leave a Message</a>
+    <button class="burger" aria-label="Open menu" data-burger><span></span><span></span></button>
+  </header>
+
+  <main class="lam">
+
+    <!-- 1. Arch with everyone's letters -->
+    <section class="step is-active" data-step="home" aria-label="Leave a message">
+      <div class="stage-wrap">
+        <div class="stage" id="stageHome">
+          <img class="arch" src="assets/img/arch.webp" alt="" draggable="false">
+        </div>
+        <div class="stage-copy">
+          <div class="hd">
+            <h1 data-secret-tap>Leave a Message</h1>
+            <p>Write a heartfelt message to the couple, sharing your congratulations and warmest wishes for their life together.</p>
+          </div>
+          <button class="btn" data-go="write">Write a Message</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Write -->
+    <section class="step" data-step="write" aria-label="Write a message">
+      <div class="page-pad">
+        <div class="d-head">
+          <h2>Write a message</h2>
+          <p>Write a heartfelt message to the couple, sharing your congratulations and warmest wishes for their life together.</p>
+        </div>
+        <div class="wform">
+          <div class="field">
+            <label for="from">From:</label>
+            <input class="winput" id="from" maxlength="40" autocomplete="name" placeholder="Your name">
+          </div>
+          <div class="field">
+            <div class="toolbar" role="toolbar" aria-label="Text style">
+              <select id="fontSel" aria-label="Font">
+                <option value="serif">Classic</option>
+                <option value="sans">Modern</option>
+                <option value="script">Script</option>
+              </select>
+              <button type="button" data-size="s" aria-pressed="false" aria-label="Small text">A−</button>
+              <button type="button" data-size="m" aria-pressed="true" aria-label="Medium text">A</button>
+              <button type="button" data-size="l" aria-pressed="false" aria-label="Large text">A+</button>
+              <button type="button" id="emojiBtn" aria-expanded="false" aria-label="Add emoji">☺︎ Emoji</button>
+            </div>
+            <div class="emoji-pop" id="emojiPop"></div>
+            <textarea class="wtext" id="body" aria-label="Your message" placeholder="Dear Anne and Ryan,"></textarea>
+            <p class="count" id="count"></p>
+          </div>
+          <p class="err" id="writeErr" role="alert"></p>
+          <button class="btn btn--wide" id="writeNext" disabled>next</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Arrange flowers -->
+    <section class="step" data-step="arrange" aria-label="Make your arrangement">
+      <div class="page-pad">
+        <div class="d-head">
+          <h2>Make your arrangement</h2>
+          <p>Drag and drop these flowers to make your arrangement for your note.</p>
+        </div>
+        <div class="palette" id="palette">
+          <button class="slot" data-flower="1" aria-label="Add lilac flower"><img src="assets/img/flower-1.png" alt=""></button>
+          <button class="slot" data-flower="2" aria-label="Add violet flower"><img src="assets/img/flower-2.png" alt=""></button>
+          <button class="slot" data-flower="3" aria-label="Add wildflower spray"><img src="assets/img/flower-3.png" alt=""></button>
+        </div>
+        <p class="arrange-hint" id="arrangeHint">Up to 4 flowers. Drag one off the envelope to remove it.</p>
+        <div class="bouquet" id="bouquet"></div>
+        <button class="btn btn--wide arrange-next" data-go="place">next</button>
+      </div>
+    </section>
+
+    <!-- 4. Place on the arch -->
+    <section class="step" data-step="place" aria-label="Place your letter">
+      <div class="stage-wrap">
+        <div class="stage" id="stagePlace">
+          <img class="arch" src="assets/img/arch.webp" alt="" draggable="false">
+        </div>
+        <div class="stage-copy">
+          <div class="hd">
+            <h2>Place your letter</h2>
+            <p>Place your letter in the flower arch and leave it for Anne and Ryan to read soon!</p>
+          </div>
+          <button class="btn" id="sendBtn">Send Message</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p class="t1">Thank you,</p>
+    <p class="t2">We look forward to celebrating with you</p>
+  </footer>
+
+  <!-- secret: password -->
+  <div class="modal" id="pwModal" role="dialog" aria-modal="true" aria-labelledby="pwTitle">
+    <form class="modal__box" id="pwForm">
+      <h2 id="pwTitle">For Anne &amp; Ryan</h2>
+      <input id="pw" type="password" inputmode="numeric" autocomplete="off" aria-label="Password" placeholder="••••••">
+      <p class="err" id="pwErr"></p>
+      <div class="row">
+        <button type="button" class="btn btn--gray" id="pwCancel">Cancel</button>
+        <button type="submit" class="btn">Open</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- secret: inbox -->
+  <div class="inbox" id="inbox" role="dialog" aria-modal="true" aria-label="Your letters">
+    <div class="inbox__blur"></div>
+    <button class="arrow arrow--prev" id="inPrev" aria-label="Previous letter"><img src="assets/img/chevron.svg" alt=""></button>
+    <button class="arrow arrow--next" id="inNext" aria-label="Next letter"><img src="assets/img/chevron.svg" alt=""></button>
+    <div class="inbox__inner">
+      <div class="viewer" id="viewer"></div>
+      <p class="counter" id="counter">0/0</p>
+      <div class="inbox__btns">
+        <button class="btn btn--gray" id="inClose">Close</button>
+        <button class="btn" id="inNextMsg">Next Message</button>
+      </div>
+      <div class="inbox__links">
+        <button id="dlAll">download all notes</button>
+        <button id="dlOne">download only this note</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/filter.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/notes.js"></script>
+  <script src="assets/js/message.js"></script>
+</body>
+</html>
