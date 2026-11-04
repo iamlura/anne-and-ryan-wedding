@@ -27,7 +27,7 @@
   --fs-item:  calc(40 * var(--u));  /* list items (landing timeline) */
   --fs-body:  calc(32 * var(--u));  /* body, intro copy, Event Details sub-headings */
   --fs-label: calc(32 * var(--u));  /* small labels (Location, Time...) */
-  --fs-btn:   calc(48 * var(--u));  /* buttons */
+  --fs-btn:   calc(32 * var(--u));  /* buttons ("Write a Message" style: hug the text, 20/60 padding) */
   --btn-track: .2em;                /* button letter-spacing (20%) */
   --fs-nav:   calc(24 * var(--u));
 }
@@ -87,26 +87,31 @@ button { font: inherit; color: inherit; cursor: pointer; }
   font-family: var(--sans);
   font-size: var(--fs-btn);
   letter-spacing: var(--btn-track);
-  padding: calc(10 * var(--u)) calc(60 * var(--u));
+  padding: calc(20 * var(--u)) calc(60 * var(--u));
   transition: opacity .2s, transform .2s;
 }
 .btn:hover { transform: translateY(-1px); }
 .btn--outline { border-color: var(--white); }
 .btn[disabled], .btn.is-disabled { opacity: .5; cursor: not-allowed; transform: none; }
-.btn--gray { background: #8a8a8a; }
-.btn--wide { width: calc(1000 * var(--u)); max-width: 100%; }
+.btn--gray { background: #898989; }
+.btn--wide { align-self: center; } /* buttons hug their text; kept for markup compatibility */
 
 /* ---------- footer ---------- */
 .footer {
   background: var(--black); color: var(--white);
-  height: calc(291 * var(--u));
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: calc(77 * var(--u)) 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(40 * var(--u));
   font-family: var(--script); text-align: center;
 }
+/* footer nav: same links as the top nav, white */
+.footer__nav { display: flex; justify-content: center; gap: calc(161 * var(--u)); font-family: var(--sans); font-size: var(--fs-nav); }
+.footer__nav a { opacity: .6; transition: opacity .2s; white-space: nowrap; }
+.footer__nav a:hover, .footer__nav a[aria-current="page"] { opacity: 1; }
+.footer__nav .brand { font-family: var(--serif-sc); }
 .footer .t1 { font-size: calc(80 * var(--u)); }
 .footer .t2 { font-size: calc(40 * var(--u)); }
 /* landing footer has an RSVP button */
-.footer--rsvp { height: auto; padding: calc(120 * var(--u)) 0; gap: calc(40 * var(--u)); }
+.footer--rsvp { padding: calc(120 * var(--u)) 0; }
 
 /* ---------- fade-in ---------- */
 [data-fade] { opacity: 0; transform: translateY(24px); transition: opacity .9s ease, transform .9s ease; }
@@ -224,9 +229,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .story-card img { width: 100%; aspect-ratio: 533 / 800; object-fit: cover; }
 .story-card p { font-size: var(--fs-body); }
-/* smaller card (first card in the Nov design: 440 wide, 400x600 photo, height hugs) */
-.story-card--s { width: calc(440 * var(--u)); min-height: 0; }
-.story-card--s img { aspect-ratio: 400 / 600; }
 .arrow {
   position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
   width: calc(106 * var(--u)); height: calc(106 * var(--u)); min-width: 40px; min-height: 40px;
@@ -311,8 +313,6 @@ html.snap-y { scroll-snap-type: y proximity; }
 .radio input:focus-visible + .dot { outline: 2px solid #fff; outline-offset: 6px; }
 .form-msg:empty { display: none; }
 .form-msg { min-height: 1.3em; text-align: center; font-family: var(--serif); font-size: var(--fs-body); }
-.rsvp .btn--wide { padding: calc(20 * var(--u)) calc(60 * var(--u)); }
-.rsvp #rsvpSubmit { font-size: calc(70 * var(--u)); letter-spacing: .1em; height: calc(135 * var(--u)); } /* as drawn in the Nov RSVP frame */
 .rsvp-done { text-align: center; display: none; flex-direction: column; gap: calc(30 * var(--u)); align-items: center; padding: calc(120 * var(--u)) 0 calc(200 * var(--u)); }
 .rsvp-done h2 { font-family: var(--script); font-size: calc(80 * var(--u)); }
 .rsvp-done p { font-family: var(--serif); font-size: calc(40 * var(--u)); }
@@ -337,8 +337,6 @@ html.snap-y { scroll-snap-type: y proximity; }
 .stage-copy .hd { display: flex; flex-direction: column; gap: calc(12 * var(--u)); align-items: center; }
 .stage-copy h1, .stage-copy h2 { font-size: var(--fs-title); user-select: none; }
 .stage-copy p { font-family: var(--serif); font-size: var(--fs-body); width: calc(603 * var(--u)); }
-/* arch-page buttons hug their text (Nov "Leave a Message 7" frame) */
-.stage-copy .btn { font-size: var(--fs-body); padding: calc(20 * var(--u)) calc(60 * var(--u)); }
 
 /* note (envelope + bouquet). Box is 1000 x 900 design units; everything inside is % based */
 .note { position: absolute; width: var(--w, 300px); aspect-ratio: 1000 / 900; pointer-events: none; }
@@ -369,6 +367,7 @@ html.snap-y { scroll-snap-type: y proximity; }
 .page-pad { padding: calc(260 * var(--u)) calc(200 * var(--u)) calc(500 * var(--u)); display: flex; flex-direction: column; align-items: center; }
 .page-pad .d-head { margin-bottom: calc(60 * var(--u)); }
 #writeNext { margin-top: calc(14 * var(--u)); } /* 160 from the message box, as in Figma */
+.wform .btn { align-self: center; }
 .page-pad .d-head p { width: calc(1000 * var(--u)); max-width: 100%; }
 .wform { width: calc(1000 * var(--u)); max-width: 100%; display: flex; flex-direction: column; gap: calc(55 * var(--u)); }
 .wform .field label, .wform .field .lab { opacity: .5; color: #000; }
@@ -434,10 +433,7 @@ html.snap-y { scroll-snap-type: y proximity; }
 .viewer.is-open .letter { opacity: 1; filter: none; pointer-events: auto; }
 .letter .sig { margin-top: 1.2em; }
 .counter { font-size: min(var(--fs-title), 8vh); line-height: 1; }
-.inbox__btns { display: flex; gap: calc(43 * var(--u)); width: calc(1520 * var(--u)); max-width: 100%; }
-.inbox__btns .btn--gray { width: calc(384 * var(--u)); }
-.inbox__btns .btn:last-child { flex: 1; }
-.inbox__btns .btn { height: min(calc(135 * var(--u)), 10vh); }
+.inbox__btns { display: flex; justify-content: center; gap: calc(43 * var(--u)); max-width: 100%; }
 .inbox__links { display: flex; gap: calc(86 * var(--u)); font-size: min(var(--fs-btn), 5vh); }
 .inbox__links button { background: none; border: 0; text-decoration: underline; text-underline-offset: 6px; padding: 0; }
 .inbox .arrow--prev { left: calc(58 * var(--u)); position: fixed; }
@@ -450,8 +446,18 @@ html.snap-y { scroll-snap-type: y proximity; }
 .modal__box { background: var(--bg); width: min(520px, 100%); padding: 32px; display: flex; flex-direction: column; gap: 16px; text-align: center; }
 .modal__box h2 { font-size: 34px; }
 .modal__box input { background: var(--field); border: 0; font-family: var(--serif); font-size: 28px; padding: 10px 14px; text-align: center; letter-spacing: 6px; outline: 0; }
-.modal__box .row { display: flex; gap: 10px; }
-.modal__box .btn { font-size: 22px; letter-spacing: 2px; padding: 10px; flex: 1; }
+.modal__box .row { display: flex; justify-content: center; gap: 10px; }
+.modal__text { font-family: var(--serif); font-size: 18px; line-height: 1.4; }
+
+/* delete button on letters sent from this browser (not in Figma) */
+.pin.is-own { z-index: 4; }
+.pin .del {
+  position: absolute; top: 26%; right: 20%; z-index: 7; width: 26px; height: 26px; padding: 0; border: 1px solid #fff; border-radius: 50%;
+  background: #000; color: #fff; font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity .2s; pointer-events: auto; cursor: pointer;
+}
+.pin.is-own:hover .del, .pin .del:focus-visible { opacity: 1; }
+@media (hover: none) { .pin.is-own .del { opacity: 1; } }
 .shake { animation: shake .35s; }
 @keyframes shake { 25% { translate: -8px 0; } 75% { translate: 8px 0; } }
 
@@ -471,7 +477,7 @@ html.snap-y { scroll-snap-type: y proximity; }
   :root {
     --u: 0.5px;
     --fs-title: 40px; --fs-head: 32px; --fs-val: 32px; --fs-item: 28px;
-    --fs-body: 24px; --fs-label: 18px; --fs-btn: 28px; --fs-nav: 26px; --fs-input: 32px;
+    --fs-body: 24px; --fs-label: 18px; --fs-btn: 24px; --fs-nav: 26px; --fs-input: 32px;
   }
 
   .nav { justify-content: flex-end; padding: 0 16px; height: 64px; }
@@ -479,12 +485,12 @@ html.snap-y { scroll-snap-type: y proximity; }
   .burger { display: flex; flex-direction: column; justify-content: space-between; width: 36px; height: 12px; background: none; border: 0; padding: 0; }
   .burger span { display: block; height: 1.5px; background: currentColor; }
 
-  .btn { padding: 10px 20px; }
-  .footer { height: 142px; align-items: flex-start; text-align: left; padding: 0 52px; }
+  .btn { padding: 16px 40px; }
+  .footer { align-items: flex-start; text-align: left; padding: 37px 52px; gap: 30px; }
+  .footer__nav { flex-direction: column; gap: 8px; font-size: 18px; }
   .footer .t1 { font-size: 36px; }
   .footer .t2 { font-size: 24px; }
-  .footer--rsvp { height: auto; padding: 37px 52px; gap: 30px; }
-  .footer--rsvp .btn, .hero .btn { padding: 10px 60px; }
+  .footer--rsvp { padding: 37px 52px; }
 
   .hero { height: 100svh; min-height: 640px; max-height: 896px; }
   .hero__inner { gap: 62px; width: 100%; padding: 0 24px; margin-top: 0; }
@@ -564,15 +570,13 @@ html.snap-y { scroll-snap-type: y proximity; }
   .rsvp { padding: 110px 16px 80px; min-height: 0; }
   .rsvp__head p { width: auto; text-align: left; }
   .br-d { display: none; }
-  .rsvp__inner, .rsvp__head, .form, .rsvp .btn--wide { width: 100%; }
+  .rsvp__inner, .rsvp__head, .form { width: 100%; }
   .form { gap: 26px; padding-bottom: 30px; }
   .field { gap: 8px; }
   .field .lab--solid { font-size: 24px; }
   .input { padding: 8px 12px; }
   .radio { gap: 14px; padding: 4px 8px; }
-  .rsvp #rsvpSubmit { font-size: var(--fs-btn); letter-spacing: var(--btn-track); height: auto; }
   .radio .dot { width: 18px; height: 18px; }
-  .rsvp .btn--wide { padding: 12px; }
   .rsvp-done h2 { font-size: 56px; }
   .rsvp-done p { font-size: 24px; }
 
@@ -580,14 +584,13 @@ html.snap-y { scroll-snap-type: y proximity; }
   .stage-wrap { height: auto; display: flex; flex-direction: column; padding-top: 110px; }
   .stage-copy { position: relative; top: 0; padding: 0 8px; gap: 40px; order: 0; }
   .stage-copy p { width: auto; }
-  .stage-copy .btn { width: 100%; height: 64px; font-size: var(--fs-btn); }
   .stage { position: relative; top: 0; margin-top: 44px; order: 1; }
 
   .page-pad { padding: 110px 8px 60px; }
   .page-pad .d-head { gap: 12px; }
   .page-pad .d-head p { text-align: center; }
   .page-pad .d-head p { width: auto; padding: 0 8px; }
-  .page-pad .d-head, .wform, .page-pad .btn--wide { width: 100%; }
+  .page-pad .d-head, .wform { width: 100%; }
   .wform { gap: 24px; }
   .winput, .wtext { padding: 8px 12px; }
   .wtext { height: 420px; }
@@ -600,8 +603,7 @@ html.snap-y { scroll-snap-type: y proximity; }
   .letter { inset: 0; padding: 18px; font-size: 24px; }
   .counter { font-size: 40px; }
   .inbox__btns { gap: 4px; }
-  .inbox__btns .btn { height: 52px; font-size: 20px; letter-spacing: .1em; padding: 0 10px; }
-  .inbox__btns .btn--gray { width: 32%; }
+  .inbox__btns .btn { font-size: 18px; padding: 14px 20px; }
   .inbox__links { font-size: 18px; gap: 22px; flex-wrap: wrap; justify-content: center; }
   .inbox .arrow { position: absolute; top: 462px; translate: 0 -50%; transform: none; }
 }
