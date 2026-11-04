@@ -31,8 +31,8 @@
       </div>
       <div class="d-info">
         <div class="d-loc"><p class="lab">Location</p><p class="val" data-c="venue">San Sebastian Cathedral</p></div>
-        <div class="d-date"><p class="lab">Date</p><p class="val" data-c="date">December 26, 2026</p></div>
         <div class="d-time"><p class="lab">Time</p><p class="val" data-c="time">3:00 PM</p></div>
+        <div class="d-date"><p class="lab">Date</p><p class="val" data-c="date">December 26, 2026</p></div>
       </div>
       <div class="d-itin">
         <h2>Itinerary</h2>
@@ -48,29 +48,30 @@
     <section class="d-dress" data-fade>
       <div class="d-head">
         <h2>Dress Code</h2>
-        <p>We encourage bright colors. Please avoid black dresses/tuxedos.</p>
+        <p>We encourage bright colors. Please avoid fully black outfits.</p>
       </div>
-      <div class="dress-group">
-        <p class="lab">Women</p>
-        <h3>Long formal evening gowns</h3>
-        <div class="dress-row">
-          <img src="assets/img/dress-w1.jpg" alt="Navy blue long gown" loading="lazy">
-          <img src="assets/img/dress-w2.jpg" alt="Mauve long gown" loading="lazy">
-          <img src="assets/img/dress-w3.jpg" alt="Burgundy long gown" loading="lazy">
-          <img src="assets/img/dress-w4.jpg" alt="Olive green long gown" loading="lazy">
+      <div class="dress-cols">
+        <div class="dress-group">
+          <p class="lab">Women</p>
+          <h3>Long formal evening gowns</h3>
+          <!-- m-only / d-only: the mobile and desktop Figma frames show different photos -->
+          <div class="dress-row">
+            <img class="m-only" src="assets/img/dress-w1.jpg" alt="Navy blue long gown" loading="lazy">
+            <img src="assets/img/dress-w2.jpg" alt="Mauve long gown" loading="lazy">
+            <img class="d-only" src="assets/img/dress-w4.jpg" alt="Olive green long gown" loading="lazy">
+            <img class="d-only" src="assets/img/dress-w3.jpg" alt="Burgundy long gown" loading="lazy">
+          </div>
+          <p class="dress-note">Please avoid white dresses and bring a shawl or shoulder coverings to ensure modesty for the church.</p>
         </div>
-        <p class="dress-note">Please avoid white dresses and bring a shawl or shoulder coverings to ensure modesty for the church.</p>
-      </div>
-      <div class="dress-group">
-        <p class="lab">Men</p>
-        <h3>Barong Tagalog or Tuxedo</h3>
-        <div class="dress-row">
-          <img src="assets/img/dress-m1.jpg" alt="White embroidered barong" loading="lazy">
-          <img src="assets/img/dress-m2.jpg" alt="Cream embroidered barong" loading="lazy">
-          <img src="assets/img/dress-m3.jpg" alt="Navy tuxedo" loading="lazy">
-          <img src="assets/img/dress-m4.jpg" alt="Dark green tuxedo" loading="lazy">
+        <div class="dress-group">
+          <p class="lab">Men</p>
+          <h3>Barong Tagalog or Tuxedo</h3>
+          <div class="dress-row">
+            <img src="assets/img/dress-m1.jpg" alt="White embroidered barong" loading="lazy">
+            <img src="assets/img/dress-m4.jpg" alt="Dark green tuxedo" loading="lazy">
+          </div>
+          <p class="dress-note">Please wear a sando under your barong to ensure modesty for the church.</p>
         </div>
-        <p class="dress-note">Please wear a sando under your barong to ensure modesty for the church.</p>
       </div>
     </section>
   </main>

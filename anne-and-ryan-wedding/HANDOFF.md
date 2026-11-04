@@ -13,7 +13,7 @@ This file explains how the site was made, step by step, so you can rebuild it th
 | Site | Live on GitHub Pages since Oct 8, 2026. All 5 pages and the full message flow work. |
 | Data | **Demo mode.** Google Sheets is not connected yet, so RSVPs and letters only save in each visitor's own browser. Connect it before sharing the link with guests (section 7). |
 | Waiting on the designer | New content and some design changes are coming (the site is set up for this, see "Changing content" below). |
-| Code changes since launch | **Nov 4:** new type scale on every page, landing updates, Event Details redesign, shared content file. Details in section 9. |
+| Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. Details in section 9. |
 
 ---
 
@@ -25,7 +25,7 @@ The designer shared the Figma link and asked for it to be built as a website, wi
 |---|---|
 | Build as | GitHub (static site on GitHub Pages, plain HTML/CSS/JS, no framework, no build step) |
 | Backend for RSVPs + letters | Google Sheets via Apps Script (the Figma annotation suggested this) |
-| Wedding date (Figma conflict: landing says Dec 26, Event Details says Dec 25) | **Dec 26, 2026** (matches the 261226 password). The Nov redesign of Event Details still says Dec 25 in Figma; the site keeps Dec 26. |
+| Wedding date | **Dec 26, 2026** (matches the 261226 password). Every Figma frame was changed to Dec 26 on Nov 4 at the designer's request. |
 | Scope | Everything, including the full message flow, secret inbox and PDF download |
 | Repo name | anne-and-ryan-wedding |
 
@@ -51,8 +51,8 @@ Desktop frames are 1920 wide, mobile frames are 402 wide. Node IDs:
 | Our Story | 87:64558 | 87:112730 | 94:2 / 95:2 |
 | Event Details (also named "Our Story" in Figma) | 87:64649 | 87:112817 | 94:94 / 95:89 |
 | RSVP | 87:64724 | 87:112888 | 94:172 / 95:160 |
-| Leave a Message (arch, empty) | 87:64796 ("Leave a Message 4") | 87:112929 | 94:246 / 95:201 |
-| Write a message | 87:64767 ("Leave a Message 1") | 87:159001 | 94:216 / 95:46273 |
+| Leave a Message (arch, empty) | **98:21 ("Leave a Message 7")**, replaced 87:64796 | 87:112929 | 94:246 / 95:201 (superseded) |
+| Write a message | **98:7401 ("Leave a Message 8")**, replaced 87:64767 | 87:159001 | 94:216 / 95:46273 (superseded) |
 | Make your arrangement | 87:111834 ("Leave a Message 2") | 87:159025 | 94:47296 / 95:46297 |
 | Place your letter | 87:103999 ("Leave a Message 5") | 87:151171 | 94:39460 / 95:38443 |
 | Arch with new letter | 87:72163 ("Leave a Message 6") | 87:120291 | 94:7614 / 95:7563 |
@@ -60,7 +60,7 @@ Desktop frames are 1920 wide, mobile frames are 402 wide. Node IDs:
 | Secret inbox: envelope | 87:87833 | 87:135951 | 94:23286 / 95:23223 |
 | Secret inbox: open letter | 87:96149 | 87:143794 | 94:31606 / 95:31066 |
 
-The Nov copies sit 7000px below their originals on the same page, each desktop copy has a yellow star above it. **The copies are the current reference for sizes**; the originals are kept untouched.
+The Nov copies sit 7000px below their originals. **After that, the designer did her own pass on the originals** (landing, Our Story, Event Details, RSVP, Leave a Message 7 and 8, mobile Event Details) and starred them: **those starred frames are the reference.** The copies only remain the reference for frames she hasn't touched (arrange, place, arch with letter, inbox); only those copies still have stars.
 
 Key asset nodes: arch = Group 817 (87:64805), flowers = 87:111843 / 87:111937 / 87:112031, envelope = Frame 789 (87:96118).
 
@@ -106,17 +106,18 @@ Key asset nodes: arch = Group 817 (87:64805), flowers = 87:111843 / 87:111937 / 
 | Variable | Used for | Desktop | Mobile |
 |---|---|---|---|
 | `--fs-title` | page titles, hero name | 60 | 40 |
-| `--fs-head` | section headings (Itinerary, A message from the couple, dress groups) | 48 | 32 |
-| `--fs-val` | values (location/date/time), form inputs, RSVP radios | 48 | 32 |
-| `--fs-item` | list items (itinerary, "in a glance") | 40 | 28 |
-| `--fs-body` | body + intro copy, story captions, letter | 32 | 24 |
+| `--fs-head` | landing section headings (Prenuptial Photos, A message from the couple) | 48 | 32 |
+| `--fs-val` | Event Details values (location/time/date) | 40 | 32 |
+| `--fs-input` | form inputs, RSVP radios, message box | 32 | 32 |
+| `--fs-item` | landing timeline items, "in a glance" | 40 | 28 |
+| `--fs-body` | body + intro copy, Event Details sub-headings (Itinerary, Dress Code, gown/barong), story captions, letter | 32 | 24 |
 | `--fs-label` | small labels, dress notes | 32 | 18 |
-| `--fs-btn` / `--btn-track` | buttons | 48 / 20% | 28 / 20% |
+| `--fs-btn` / `--btn-track` | buttons (arch-page buttons use `--fs-body`, RSVP submit is 70 / 10% as drawn) | 48 / 20% | 28 / 20% |
 | `--fs-nav` | nav | 24 | 26 (menu) |
 
-  Landing exceptions (from the designer's frames): "The Wedding Day" uses `--fs-title` on desktop but 32 on mobile; mobile venue name is Playfair 32 (desktop is Afacad 60). Footer stays Carattere 80/40 (mobile 36/24); mobile footer text is left-aligned.
-- **Other sizes (desktop):** nav 161 gap, 80 tall; footer 291 tall (landing footer 416 with an RSVP button); page padding 260 top, 200 sides.
-- **Overlays:** landing hero photo opacity .4 on black; venue cathedral .3; Event Details cathedral .1 with `mix-blend-mode: exclusion`; RSVP photo blur 2px + 50% black.
+  One-offs from the designer's frames: itinerary items on Event Details are Playfair 38; "The Wedding Day" uses `--fs-title` on desktop but 32 on mobile; mobile venue name is Playfair 32 (desktop is Afacad 60); mobile Dress Code title is Afacad 40, centred. Footer stays Carattere 80/40 (mobile 36/24); mobile footer text is left-aligned.
+- **Other sizes (desktop):** nav 161 gap, 80 tall; footer 291 tall (landing footer 504 with an RSVP button); page padding 260 top, 200 sides.
+- **Overlays:** landing hero photo opacity .4 on black; venue cathedral .3; Event Details cathedral .1 with `mix-blend-mode: exclusion`; RSVP photo blur 20px CSS (Figma layer blur 40) + 50% black.
 
 ## 5. Code map
 
@@ -208,13 +209,15 @@ jobs:
 
 1. **Connect Google Sheets** (section 7) and test with the real URL. So far it's only been tested against `tools/mock_apps_script.py`. Do this before guests get the link, or their RSVPs won't reach Anne.
 2. **Prenup photos.** The Nov landing design replaced the "See Prenuptial Photos" button with a "Prenuptial Photos" heading, so the button was removed from the site. If a full album is wanted later, it needs a design (shared album link or a `gallery.html` with resized copies: long edge ≤1800px, JPEG q78).
-3. **Event Details date in Figma** still says Dec 25 (landing says Dec 26). The site uses Dec 26; confirm with the designer.
+3. **RSVP submit button** is drawn at Afacad 70 / 10% tracking while every other button is 48 / 20%. Built as drawn; confirm it's intended.
 4. **Confirm these interpretations with the designer:**
    - The mobile hamburger menu has no Figma design (built as a black overlay).
    - Note tilt on the arch is automatic.
    - Food restrictions are optional when not attending.
    - Itinerary lines are continuous between dots (the mobile Figma shows short segments).
    - The mobile landing's 4th prenup thumbnail reuses photo 1 (as in Figma).
+   - Dress code photos differ between frames (desktop: mauve, olive, burgundy / barong, green tux; mobile: navy, mauve / barong, green tux). Built per frame with `m-only` / `d-only` classes.
+   - The mobile Dress Code frame still has the old intro ("avoid black dresses/tuxedos"); the site uses the desktop's newer "avoid fully black outfits" on both.
 5. **Sharper flowers (optional):** re-export the flowers from Figma with the background hidden instead of keying it out.
 
 ## 9. Change log
@@ -227,3 +230,11 @@ jobs:
   - Event Details redesign: Location / Date / Time in one row between two lines, Itinerary stacked under it (mobile: Location, Time, Date stacked; Itinerary heading centred).
   - RSVP: radio options use the value size (they were picking up the label size).
   - New `assets/js/content.js` for shared facts.
+- **Nov 4, 2026 (2nd round):** rebuilt to the designer's own updated frames.
+  - Figma: every remaining "December 25" changed to 26 (final pages originals + Page 1). Removed my stars from the copies her frames replaced.
+  - Event Details: Location / Time / Date row, smaller headings (Playfair 32), values 40, itinerary 38, Dress Code with Women and Men side by side (3 + 2 photos), new intro copy.
+  - Our Story: hero photo 1571×1408, first card smaller (440 wide), small white round arrows, tighter section padding.
+  - RSVP: inputs and radios at 32, white radio fill, stronger blur, two-line intro on desktop.
+  - Leave a Message: arch page 1606 tall with a small "Write a Message" button; write step inputs at 32, 545-tall message box.
+  - Landing: prenup photos 400×600 with 120 padding; footer 504 tall.
+  - Message box and inbox letter sizes now follow the type-scale variables (set in `message.js`).
