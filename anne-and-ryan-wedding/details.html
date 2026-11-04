@@ -23,30 +23,28 @@
   <main class="details">
     <img class="details__bg" src="assets/img/cathedral.png" alt="">
 
-    <!-- s1: fade in -->
+    <!-- s1: fade in (heading, info row, itinerary) -->
     <section class="d-s1" data-fade>
       <div class="d-head">
         <h1>Event Details</h1>
         <p>Please come at least 15 minutes before the ceremony to ensure proper seating.</p>
       </div>
       <div class="d-info">
-        <div><p class="lab">Location</p><p class="val">San Sebastian Cathedral</p></div>
-        <div><p class="lab">Time</p><p class="val">3:00 PM</p></div>
-        <div><p class="lab">Date</p><p class="val">December 26, 2026</p></div>
+        <div class="d-loc"><p class="lab">Location</p><p class="val" data-c="venue">San Sebastian Cathedral</p></div>
+        <div class="d-date"><p class="lab">Date</p><p class="val" data-c="date">December 26, 2026</p></div>
+        <div class="d-time"><p class="lab">Time</p><p class="val" data-c="time">3:00 PM</p></div>
+      </div>
+      <div class="d-itin">
+        <h2>Itinerary</h2>
+        <ol class="timeline" data-c="itinerary">
+          <li><div><p class="tt">3:00 PM</p><p class="tl">Wedding Mass at San Sebastian Cathedral</p></div></li>
+          <li><div><p class="tt">4:00 PM</p><p class="tl">Reception at Manila Hotel</p></div></li>
+          <li><div><p class="tt">6:00 PM</p><p class="tl">Dancing and Cocktail Hour</p></div></li>
+        </ol>
       </div>
     </section>
 
-    <!-- s2: snap scroll + fade in -->
-    <section class="d-itin" data-fade>
-      <h2>Itinerary</h2>
-      <ol class="timeline">
-        <li><div><p class="tt">3:00 PM</p><p class="tl">Wedding Mass at San Sebastian Cathedral</p></div></li>
-        <li><div><p class="tt">4:00 PM</p><p class="tl">Reception at Manila Hotel</p></div></li>
-        <li><div><p class="tt">6:00 PM</p><p class="tl">Dancing and Cocktail Hour</p></div></li>
-      </ol>
-    </section>
-
-    <!-- s3: snap scroll + fade in -->
+    <!-- s2: snap scroll + fade in (dress code) -->
     <section class="d-dress" data-fade>
       <div class="d-head">
         <h2>Dress Code</h2>
@@ -82,6 +80,7 @@
     <p class="t2">We look forward to celebrating with you</p>
   </footer>
 
+  <script src="assets/js/content.js"></script>
   <script src="assets/js/common.js"></script>
 </body>
 </html>

@@ -44,12 +44,13 @@
       <img class="venue__img" src="assets/img/cathedral.png" alt="">
       <div class="venue__text" data-fade>
         <div class="vt">
-          <p class="place">San Sebastian Cathedral</p>
-          <p class="time">3:00 PM</p>
+          <p class="place" data-c="venue">San Sebastian Cathedral</p>
+          <p class="time" data-c="time">3:00 PM</p>
         </div>
         <div>
-          <p class="date">December 26, 2026</p>
-          <div class="cal" aria-hidden="true">
+          <p class="weekday" data-c="weekday">Saturday</p>
+          <p class="date" data-c="date">December 26, 2026</p>
+          <div class="cal" aria-hidden="true" data-c="calendar">
             <div class="cal__day"><span class="dn">Sun</span><span class="dd">20</span></div>
             <div class="cal__day"><span class="dn">Mon</span><span class="dd">21</span></div>
             <div class="cal__day"><span class="dn">Tues</span><span class="dd">22</span></div>
@@ -67,7 +68,7 @@
         <h2>The Wedding Day</h2>
         <p>in a glance</p>
       </div>
-      <ol class="timeline" data-fade>
+      <ol class="timeline" data-fade data-c="itinerary">
         <li><div><p class="tt">3:00 PM</p><p class="tl">Wedding Mass at San Sebastian Cathedral</p></div></li>
         <li><div><p class="tt">4:00 PM</p><p class="tl">Reception at Manila Hotel</p></div></li>
         <li><div><p class="tt">6:00 PM</p><p class="tl">Dancing and Cocktail Hour</p></div></li>
@@ -75,12 +76,13 @@
     </section>
 
     <section class="prenup">
+      <h2 data-fade>Prenuptial Photos</h2>
       <div class="prenup__row" data-fade>
         <img src="assets/img/pre1.jpg" alt="Anne and Ryan walking across the lawn" loading="lazy">
         <img src="assets/img/pre2.jpg" alt="Ryan lifting Anne under the palm trees" loading="lazy">
         <img src="assets/img/pre3.jpg" alt="Anne and Ryan embracing on the grass" loading="lazy">
+        <img class="m-only" src="assets/img/pre1.jpg" alt="" loading="lazy">
       </div>
-      <a class="chip" href="story.html#moments">See Prenuptial Photos</a>
     </section>
 
     <section class="couple-msg">
@@ -100,11 +102,15 @@
     </section>
   </main>
 
-  <footer class="footer">
-    <p class="t1">Thank you,</p>
-    <p class="t2">We look forward to celebrating with you</p>
+  <footer class="footer footer--rsvp">
+    <div>
+      <p class="t1">Thank you,</p>
+      <p class="t2">We look forward to celebrating with you</p>
+    </div>
+    <a class="btn btn--outline" href="rsvp.html">RSVP</a>
   </footer>
 
+  <script src="assets/js/content.js"></script>
   <script src="assets/js/common.js"></script>
 </body>
 </html>
