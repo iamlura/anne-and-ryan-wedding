@@ -71,6 +71,15 @@
         pin.title = n.from ? "From " + n.from : "";
         stage.appendChild(pin);
       }
+      // letters sent from this browser get a delete button
+      if (WeddingAPI.mine.has(n.id) && !pin.querySelector(".del")) {
+        pin.classList.add("is-own");
+        const del = document.createElement("button");
+        del.type = "button"; del.className = "del"; del.innerHTML = "&times;";
+        del.setAttribute("aria-label", "Delete your letter"); del.title = "Delete your letter";
+        del.addEventListener("click", (e) => { e.stopPropagation(); openDel(n.id); });
+        pin.appendChild(del);
+      }
       pin.querySelector(".note").style.setProperty("--w", w + "px");
       placePin(pin, pos[i]);
     });
@@ -335,11 +344,36 @@
       clearDraft();
       go("home");
       await loadNotes(res.id);
-      toast("Your letter is on the arch. Thank you!");
+      toast("Your letter is on the arch. Thank you! Tap × on it if you ever want to delete it.", 4500);
     } catch (err) {
       toast(err && /allowed/i.test(err.message) ? err.message : "Couldn't send your letter. Please try again.");
     } finally {
       sendBtn.disabled = false; sendBtn.textContent = "Send Message";
+    }
+  });
+
+  /* ---------------- delete your own letter ---------------- */
+  const delModal = $("#delModal"), delConfirm = $("#delConfirm");
+  let delId = null;
+  function openDel(id) { delId = id; delModal.classList.add("open"); setTimeout(() => delConfirm.focus(), 50); }
+  function closeDel() { delModal.classList.remove("open"); delId = null; }
+  $("#delCancel").addEventListener("click", closeDel);
+  delModal.addEventListener("click", (e) => { if (e.target === delModal) closeDel(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && delModal.classList.contains("open")) closeDel(); });
+  delConfirm.addEventListener("click", async () => {
+    const id = delId; if (!id) return;
+    delConfirm.disabled = true;
+    try {
+      await WeddingAPI.deleteMessage(id);
+      notes = notes.filter((n) => n.id !== id);
+      $$('[data-pin="p-' + id + '"]').forEach((p) => p.remove());
+      closeDel();
+      if (current === "home") drawStage($("#stageHome"), notes, null);
+      toast("Your letter was deleted.");
+    } catch (err) {
+      toast((err && err.message) || "Couldn't delete your letter. Please try again.");
+    } finally {
+      delConfirm.disabled = false;
     }
   });
 
@@ -365,7 +399,7 @@
       openInbox(res.messages || []);
     } catch (err) {
       pwErr.textContent = "That's not it.";
-      const box = $(".modal__box"); box.classList.remove("shake"); void box.offsetWidth; box.classList.add("shake");
+      const box = $("#pwForm"); box.classList.remove("shake"); void box.offsetWidth; box.classList.add("shake");
     }
   });
 
