@@ -14,7 +14,8 @@ async def main():
             pg.on('console', lambda m: errs.append(m.text) if m.type in ('error','warning') else None)
             pg.on('pageerror', lambda e: errs.append('PAGEERROR ' + str(e)))
             await pg.goto(f'http://127.0.0.1:8765/{name}.html', wait_until='networkidle')
-            await pg.evaluate("document.querySelectorAll('[data-fade]').forEach(e=>e.classList.add('in'))")
+            await pg.evaluate("document.querySelectorAll('[data-fade]').forEach(e=>e.classList.add('in')); document.querySelectorAll('img[loading=lazy]').forEach(i=>i.loading='eager')")
+            await pg.wait_for_load_state('networkidle')
             await pg.wait_for_timeout(600)
             path = f'shots/{name}-{w}.png'
             await pg.screenshot(path=path, full_page=full)
