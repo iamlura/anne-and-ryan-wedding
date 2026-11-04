@@ -106,7 +106,7 @@
   function applyStyle() {
     bodyEl.style.fontFamily = FONTS[draft.font];
     const base = draft.font === "script" ? 1.3 : 1;
-    bodyEl.style.fontSize = "max(" + (16 * SIZES[draft.size] * base) + "px, calc(" + (60 * SIZES[draft.size] * base) + " * var(--u)))";
+    bodyEl.style.fontSize = "calc(var(--fs-input) * " + (SIZES[draft.size] * base) + ")"; // follows the type scale in style.css
     $$("[data-size]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.size === draft.size)));
     fontSel.value = draft.font;
   }
@@ -384,7 +384,7 @@
     d.className = "letter";
     d.style.fontFamily = FONTS[m.font] || FONTS.serif;
     const base = m.font === "script" ? 1.3 : 1;
-    d.style.fontSize = "max(" + 15 * (SIZES[m.size] || 1) * base + "px, calc(" + 40 * (SIZES[m.size] || 1) * base + " * var(--u)))";
+    d.style.fontSize = "calc(var(--fs-body) * " + (SIZES[m.size] || 1) * base + ")";
     d.textContent = m.text || "";
     const sig = document.createElement("p"); sig.className = "sig"; sig.textContent = m.from || "";
     d.appendChild(sig);
