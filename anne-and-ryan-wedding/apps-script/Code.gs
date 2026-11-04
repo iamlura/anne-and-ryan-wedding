@@ -12,6 +12,8 @@
  *   POST {action:"rsvp", ...}         → append RSVP row
  *   POST {action:"message", ...}      → append message row
  *   POST {action:"inbox", password}   → all visible messages with text (password checked here, never in the browser)
+ *   POST {action:"delete", id, token} → a guest deletes their own message (token was made in their browser when they sent it;
+ *                                        only its SHA-256 hash is stored, in the delete_key column)
  *
  * Moderation: set the "hidden" column to TRUE on any message row to remove it from the arch and inbox.
  */
@@ -19,7 +21,7 @@
 const RSVP_SHEET = "RSVP";
 const MSG_SHEET = "Messages";
 const RSVP_HEAD = ["timestamp", "name", "email", "attending", "food"];
-const MSG_HEAD = ["id", "timestamp", "from", "text", "font", "size", "flowers", "pos", "hidden"];
+const MSG_HEAD = ["id", "timestamp", "from", "text", "font", "size", "flowers", "pos", "hidden", "delete_key"];
 
 const BAD_WORDS = [
   "fuck", "fuk", "fck", "shit", "bitch", "bastard", "asshole", "dick", "cock", "pussy", "cunt", "slut", "whore",
@@ -73,6 +75,7 @@ function doPost(e) {
       case "rsvp": lock.waitLock(10000); return json_(saveRsvp_(body));
       case "message": lock.waitLock(10000); return json_(saveMessage_(body));
       case "inbox": return json_(inbox_(body));
+      case "delete": lock.waitLock(10000); return json_(deleteMessage_(body));
       default: return json_({ ok: false, error: "Unknown action" });
     }
   } catch (err) {
@@ -111,8 +114,25 @@ function saveMessage_(b) {
   const pos = num_(b.pos, 0, 1);
   const id = "m" + Date.now().toString(36) + Math.floor(Math.random() * 1e4).toString(36);
   const sh = ensureSheet_(SpreadsheetApp.getActiveSpreadsheet(), MSG_SHEET, MSG_HEAD);
-  sh.appendRow([id, new Date(), from, text, font, size, JSON.stringify(flowers), pos, false]);
+  const token = String(b.token || "");
+  const key = /^[a-f0-9]{32}$/.test(token) ? sha256_(token) : "";
+  sh.appendRow([id, new Date(), from, text, font, size, JSON.stringify(flowers), pos, false, key]);
   return { ok: true, id: id, t: Date.now() };
+}
+
+function deleteMessage_(b) {
+  const id = String(b.id || ""), token = String(b.token || "");
+  if (!id || !/^[a-f0-9]{32}$/.test(token)) throw new Error("Couldn't delete this letter.");
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(MSG_SHEET);
+  if (!sh || sh.getLastRow() < 2) return { ok: true };
+  const rows = sh.getRange(2, 1, sh.getLastRow() - 1, MSG_HEAD.length).getValues();
+  for (let i = 0; i < rows.length; i++) {
+    if (String(rows[i][0]) !== id) continue;
+    if (!rows[i][9] || String(rows[i][9]) !== sha256_(token)) throw new Error("Couldn't delete this letter.");
+    sh.deleteRow(i + 2);
+    return { ok: true };
+  }
+  return { ok: true };                                    // already gone
 }
 
 function inbox_(b) {
@@ -141,6 +161,10 @@ function clean_(v, max, multiline) {
   s = multiline ? s.replace(/\r/g, "") : s.replace(/[\r\n\t]+/g, " ");
   s = s.replace(/^[=+\-@]/, "'$&");                       // stop spreadsheet formula injection
   return s.trim().slice(0, max);
+}
+function sha256_(s) {
+  return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, s, Utilities.Charset.UTF_8)
+    .map(function (b) { return ((b + 256) % 256).toString(16).padStart(2, "0"); }).join("");
 }
 function num_(v, lo, hi) { const n = Number(v); return isFinite(n) ? Math.max(lo, Math.min(hi, n)) : lo; }
 
