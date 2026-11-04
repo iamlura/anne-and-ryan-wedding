@@ -13,7 +13,7 @@ This file explains how the site was made, step by step, so you can rebuild it th
 | Site | Live on GitHub Pages since Oct 8, 2026. All 5 pages and the full message flow work. |
 | Data | **Demo mode.** Google Sheets is not connected yet, so RSVPs and letters only save in each visitor's own browser. Connect it before sharing the link with guests (section 7). |
 | Waiting on the designer | New content and some design changes are coming (the site is set up for this, see "Changing content" below). |
-| Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. **Nov 4 (3rd round):** nav links in every footer, carousel cards all the same size, one button style everywhere, guests can delete their own letter. Details in section 9. |
+| Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. **Nov 4 (3rd round):** one button style everywhere, guests can delete their own letter. **Nov 4 (4th round):** every footer = "Thank you" + RSVP button (nav links removed again), all carousel cards 440 wide with 400×600 photos, prenup photos link to the Our Story carousel, new green tuxedo photo. Details in section 9. |
 
 ---
 
@@ -116,7 +116,7 @@ Key asset nodes: arch = Group 817 (87:64805), flowers = 87:111843 / 87:111937 / 
 | `--fs-nav` | nav | 24 | 26 (menu) |
 
   One-offs from the designer's frames: itinerary items on Event Details are Playfair 38; "The Wedding Day" uses `--fs-title` on desktop but 32 on mobile; mobile venue name is Playfair 32 (desktop is Afacad 60); mobile Dress Code title is Afacad 40, centred. Footer stays Carattere 80/40 (mobile 36/24); mobile footer text is left-aligned.
-- **Other sizes (desktop):** nav 161 gap, 80 tall; footer: padding 77 (landing 120), gap 40, "Thank you" block, then the nav links in white (current page 100%, others 60%); mobile footer: padding 37/52, gap 30, left-aligned, links stacked at 18px; page padding 260 top, 200 sides.
+- **Other sizes (desktop):** nav 161 gap, 80 tall; footer (every page, same as the landing footer): padding 120, gap 40, "Thank you" block + RSVP button, ~503 tall; mobile footer: padding 37/52, gap 30, left-aligned; story cards 440 wide (400×600 photo, padding 20, gap 10, height hugs the caption); page padding 260 top, 200 sides.
 - **Overlays:** landing hero photo opacity .4 on black; venue cathedral .3; Event Details cathedral .1 with `mix-blend-mode: exclusion`; RSVP photo blur 20px CSS (Figma layer blur 40) + 50% black.
 
 ## 5. Code map
@@ -248,3 +248,9 @@ jobs:
 - **Nov 4, 2026 (3rd round):** designer asked for fixes directly in the original Figma frames (no copies).
   - Figma + site: every footer (desktop + mobile) now has the nav links under "Thank you"; all buttons use the "Write a Message" style (hug, 32 / 20%, 20/60 padding; mobile 24 and 16/40); first carousel card back to 573×980 and all cards top-aligned (desktop + mobile); remaining old Leave a Message frames got the 60 / 32 type sizes. Stars moved to the originals.
   - Site: guests can delete their own letter (see "Guests deleting their own letter"); new test `tools/test_delete_flow.py`.
+- **Nov 4, 2026 (4th round):** Figma originals + site.
+  - Footers: every footer (desktop + mobile) is now the landing footer: "Thank you" + RSVP button, no nav links.
+  - Our Story carousel: all cards 440 wide with 400×600 photos, height hugs the caption (mobile cards hug too).
+  - Landing: the Prenuptial Photos heading and photos link to `story.html#moments` (in Figma: a click interaction to the Our Story frame).
+  - RSVP thank-you state: "Leave Anne & Ryan a message" is a white outline button.
+  - `dress-m4.jpg` replaced with the designer's new green tuxedo photo (no zoom icon); the mobile Figma frame now uses it too.
