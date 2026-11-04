@@ -109,8 +109,17 @@
   </main>
 
   <footer class="footer">
-    <p class="t1">Thank you,</p>
-    <p class="t2">We look forward to celebrating with you</p>
+    <div>
+      <p class="t1">Thank you,</p>
+      <p class="t2">We look forward to celebrating with you</p>
+    </div>
+    <nav class="footer__nav" aria-label="Footer">
+      <a href="index.html" class="brand">Anne &amp; Ryan</a>
+      <a href="story.html">Our Story</a>
+      <a href="details.html">Event Details</a>
+      <a href="rsvp.html">RSVP</a>
+      <a href="message.html" aria-current="page">Leave a Message</a>
+    </nav>
   </footer>
 
   <!-- secret: password -->
@@ -124,6 +133,18 @@
         <button type="submit" class="btn">Open</button>
       </div>
     </form>
+  </div>
+
+  <!-- delete your own letter (not in Figma) -->
+  <div class="modal" id="delModal" role="dialog" aria-modal="true" aria-labelledby="delTitle">
+    <div class="modal__box">
+      <h2 id="delTitle">Delete your letter?</h2>
+      <p class="modal__text">It will be removed from the arch and Anne &amp; Ryan won't see it. This can't be undone.</p>
+      <div class="row">
+        <button type="button" class="btn btn--gray" id="delCancel">Cancel</button>
+        <button type="button" class="btn" id="delConfirm">Delete</button>
+      </div>
+    </div>
   </div>
 
   <!-- secret: inbox -->

@@ -13,7 +13,7 @@ This file explains how the site was made, step by step, so you can rebuild it th
 | Site | Live on GitHub Pages since Oct 8, 2026. All 5 pages and the full message flow work. |
 | Data | **Demo mode.** Google Sheets is not connected yet, so RSVPs and letters only save in each visitor's own browser. Connect it before sharing the link with guests (section 7). |
 | Waiting on the designer | New content and some design changes are coming (the site is set up for this, see "Changing content" below). |
-| Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. Details in section 9. |
+| Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. **Nov 4 (3rd round):** nav links in every footer, carousel cards all the same size, one button style everywhere, guests can delete their own letter. Details in section 9. |
 
 ---
 
@@ -60,7 +60,7 @@ Desktop frames are 1920 wide, mobile frames are 402 wide. Node IDs:
 | Secret inbox: envelope | 87:87833 | 87:135951 | 94:23286 / 95:23223 |
 | Secret inbox: open letter | 87:96149 | 87:143794 | 94:31606 / 95:31066 |
 
-The Nov copies sit 7000px below their originals. **After that, the designer did her own pass on the originals** (landing, Our Story, Event Details, RSVP, Leave a Message 7 and 8, mobile Event Details) and starred them: **those starred frames are the reference.** The copies only remain the reference for frames she hasn't touched (arrange, place, arch with letter, inbox); only those copies still have stars.
+**The original frames (first column) are the reference, and every one is starred.** From Nov 4 the designer asked for fixes to go straight into the originals, no copies. The "Nov type-scale copies" 7000px below are an older experiment and are out of date; ignore them.
 
 Key asset nodes: arch = Group 817 (87:64805), flowers = 87:111843 / 87:111937 / 87:112031, envelope = Frame 789 (87:96118).
 
@@ -112,11 +112,11 @@ Key asset nodes: arch = Group 817 (87:64805), flowers = 87:111843 / 87:111937 / 
 | `--fs-item` | landing timeline items, "in a glance" | 40 | 28 |
 | `--fs-body` | body + intro copy, Event Details sub-headings (Itinerary, Dress Code, gown/barong), story captions, letter | 32 | 24 |
 | `--fs-label` | small labels, dress notes | 32 | 18 |
-| `--fs-btn` / `--btn-track` | buttons (arch-page buttons use `--fs-body`, RSVP submit is 70 / 10% as drawn) | 48 / 20% | 28 / 20% |
+| `--fs-btn` / `--btn-track` | every button, "Write a Message" style: hugs its text, padding 20/60 (mobile 16/40), white 1px outline, gray #898989 for Close/Cancel | 32 / 20% | 24 / 20% (inbox 18) |
 | `--fs-nav` | nav | 24 | 26 (menu) |
 
   One-offs from the designer's frames: itinerary items on Event Details are Playfair 38; "The Wedding Day" uses `--fs-title` on desktop but 32 on mobile; mobile venue name is Playfair 32 (desktop is Afacad 60); mobile Dress Code title is Afacad 40, centred. Footer stays Carattere 80/40 (mobile 36/24); mobile footer text is left-aligned.
-- **Other sizes (desktop):** nav 161 gap, 80 tall; footer 291 tall (landing footer 504 with an RSVP button); page padding 260 top, 200 sides.
+- **Other sizes (desktop):** nav 161 gap, 80 tall; footer: padding 77 (landing 120), gap 40, "Thank you" block, then the nav links in white (current page 100%, others 60%); mobile footer: padding 37/52, gap 30, left-aligned, links stacked at 18px; page padding 260 top, 200 sides.
 - **Overlays:** landing hero photo opacity .4 on black; venue cathedral .3; Event Details cathedral .1 with `mix-blend-mode: exclusion`; RSVP photo blur 20px CSS (Figma layer blur 40) + 50% black.
 
 ## 5. Code map
@@ -155,6 +155,7 @@ cd tools && python3 screenshots.py index,story,details,rsvp,message 1920
 python3 screenshots.py index,story,details,rsvp,message 402
 python3 test_message_flow.py                        # desktop; W=402 for mobile
 python3 mock_apps_script.py & python3 test_backend_flow.py
+python3 test_delete_flow.py                         # guest deletes their own letter (demo + mock backend)
 ```
 
 Compare the screenshots against the Figma frames at the same widths (use the Nov copies, section 2). `screenshots.py` forces lazy images to load so full-page shots are complete. The flow test seeds 9 letters, writes one, drags 5 flowers (checks the max of 4), drags the letter onto the arch, sends, opens the inbox with a wrong and then the right password, opens a letter and downloads a PDF.
@@ -209,7 +210,7 @@ jobs:
 
 1. **Connect Google Sheets** (section 7) and test with the real URL. So far it's only been tested against `tools/mock_apps_script.py`. Do this before guests get the link, or their RSVPs won't reach Anne.
 2. **Prenup photos.** The Nov landing design replaced the "See Prenuptial Photos" button with a "Prenuptial Photos" heading, so the button was removed from the site. If a full album is wanted later, it needs a design (shared album link or a `gallery.html` with resized copies: long edge ≤1800px, JPEG q78).
-3. **RSVP submit button** is drawn at Afacad 70 / 10% tracking while every other button is 48 / 20%. Built as drawn; confirm it's intended.
+3. **Delete-my-letter UI is not in Figma.** Built as a small round × on the guest's own letter (shows on hover, always on phones) plus a confirm box. Only works in the browser the letter was sent from; anyone else who wants a letter removed can ask Anne (delete the row in the Sheet, or set `hidden` to TRUE).
 4. **Confirm these interpretations with the designer:**
    - The mobile hamburger menu has no Figma design (built as a black overlay).
    - Note tilt on the arch is automatic.
@@ -219,6 +220,12 @@ jobs:
    - Dress code photos differ between frames (desktop: mauve, olive, burgundy / barong, green tux; mobile: navy, mauve / barong, green tux). Built per frame with `m-only` / `d-only` classes.
    - The mobile Dress Code frame still has the old intro ("avoid black dresses/tuxedos"); the site uses the desktop's newer "avoid fully black outfits" on both.
 5. **Sharper flowers (optional):** re-export the flowers from Figma with the background hidden instead of keying it out.
+
+### Guests deleting their own letter
+- On send, `api.js` makes a random 32-character token, sends it with the letter and keeps `{id, token}` in this browser's localStorage (`ar_mine`).
+- Apps Script stores only the SHA-256 of the token (`delete_key`, the 10th column of Messages). `POST {action:"delete", id, token}` deletes the row if the hash matches.
+- `message.js` marks the guest's own letters on the arch (`.pin.is-own`) and adds the × button; the confirm box is `#delModal` in `message.html`.
+- If the Sheet was already set up before this change, add a `delete_key` header in column J of Messages (new rows fill it automatically).
 
 ## 9. Change log
 
@@ -238,3 +245,6 @@ jobs:
   - Leave a Message: arch page 1606 tall with a small "Write a Message" button; write step inputs at 32, 545-tall message box.
   - Landing: prenup photos 400×600 with 120 padding; footer 504 tall.
   - Message box and inbox letter sizes now follow the type-scale variables (set in `message.js`).
+- **Nov 4, 2026 (3rd round):** designer asked for fixes directly in the original Figma frames (no copies).
+  - Figma + site: every footer (desktop + mobile) now has the nav links under "Thank you"; all buttons use the "Write a Message" style (hug, 32 / 20%, 20/60 padding; mobile 24 and 16/40); first carousel card back to 573×980 and all cards top-aligned (desktop + mobile); remaining old Leave a Message frames got the 60 / 32 type sizes. Stars moved to the originals.
+  - Site: guests can delete their own letter (see "Guests deleting their own letter"); new test `tools/test_delete_flow.py`.
