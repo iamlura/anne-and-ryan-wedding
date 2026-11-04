@@ -103,11 +103,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(40 * var(--u));
   font-family: var(--script); text-align: center;
 }
-/* footer nav: same links as the top nav, white */
-.footer__nav { display: flex; justify-content: center; gap: calc(161 * var(--u)); font-family: var(--sans); font-size: var(--fs-nav); }
-.footer__nav a { opacity: .6; transition: opacity .2s; white-space: nowrap; }
-.footer__nav a:hover, .footer__nav a[aria-current="page"] { opacity: 1; }
-.footer__nav .brand { font-family: var(--serif-sc); }
 .footer .t1 { font-size: calc(80 * var(--u)); }
 .footer .t2 { font-size: calc(40 * var(--u)); }
 /* landing footer has an RSVP button */
@@ -189,6 +184,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
   display: flex; flex-direction: column; align-items: center; gap: calc(46 * var(--u));
 }
 .prenup h2 { font-family: var(--serif); font-size: var(--fs-head); text-align: center; }
+.prenup__link { display: flex; flex-direction: column; align-items: center; gap: inherit; cursor: pointer; }
+.prenup__link:hover img { opacity: .92; }
+.prenup__row img { transition: opacity .2s; }
 .prenup__row { display: flex; gap: calc(64 * var(--u)); }
 .prenup__row img { width: calc(400 * var(--u)); height: calc(600 * var(--u)); object-fit: cover; }
 .prenup__row .m-only { display: none; } /* 4th thumbnail only in the mobile design */
@@ -223,11 +221,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .story-card {
   flex: none; scroll-snap-align: start; scroll-margin-left: calc(200 * var(--u));
   background: var(--card); border-radius: 5px; padding: calc(20 * var(--u));
-  width: calc(573 * var(--u)); min-height: calc(980 * var(--u));
+  width: calc(440 * var(--u)); /* all cards: 400x600 photo, height hugs the caption */
   display: flex; flex-direction: column; gap: calc(10 * var(--u));
   box-shadow: calc(15 * var(--u)) calc(49 * var(--u)) calc(37 * var(--u)) rgba(0,0,0,.1);
 }
-.story-card img { width: 100%; aspect-ratio: 533 / 800; object-fit: cover; }
+.story-card img { width: 100%; aspect-ratio: 400 / 600; object-fit: cover; }
 .story-card p { font-size: var(--fs-body); }
 .arrow {
   position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
@@ -487,7 +485,6 @@ html.snap-y { scroll-snap-type: y proximity; }
 
   .btn { padding: 16px 40px; }
   .footer { align-items: flex-start; text-align: left; padding: 37px 52px; gap: 30px; }
-  .footer__nav { flex-direction: column; gap: 8px; font-size: 18px; }
   .footer .t1 { font-size: 36px; }
   .footer .t2 { font-size: 24px; }
   .footer--rsvp { padding: 37px 52px; }
