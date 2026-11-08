@@ -6,13 +6,14 @@ This file explains how the site was made, step by step, so you can rebuild it th
 - **Repo:** https://github.com/iamlura/anne-and-ryan-wedding
 - **Figma:** https://www.figma.com/design/pAVTZMkGiY9VYrzp7IeVJO/Anne-wedding-website?node-id=87-64447 (page "final pages")
 
-## Status (updated Nov 4, 2026)
+## Status (updated Nov 8, 2026)
 
 | | |
 |---|---|
 | Site | Live on GitHub Pages since Oct 8, 2026. All 5 pages and the full message flow work. |
 | Data | **Demo mode.** Google Sheets is not connected yet, so RSVPs and letters only save in each visitor's own browser. Connect it before sharing the link with guests (section 7). |
 | Waiting on the designer | New content and some design changes are coming (the site is set up for this, see "Changing content" below). |
+| Figma vs site | In sync as of Nov 4 (4th round). The starred original frames on "final pages" are the reference. |
 | Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. **Nov 4 (3rd round):** one button style everywhere, guests can delete their own letter. **Nov 4 (4th round):** every footer = "Thank you" + RSVP button (nav links removed again), all carousel cards 440 wide with 400×600 photos, prenup photos link to the Our Story carousel, new green tuxedo photo. Details in section 9. |
 
 ---
@@ -29,7 +30,9 @@ The designer shared the Figma link and asked for it to be built as a website, wi
 | Scope | Everything, including the full message flow, secret inbox and PDF download |
 | Repo name | anne-and-ryan-wedding |
 
-Designer preferences to follow: keep explanations brief; match the Figma exactly; don't add things that aren't in the design without saying so. In Figma: never edit or delete the designer's original frames; make copies, and mark the newest version with a big yellow star.
+Designer preferences to follow: keep explanations brief; match the Figma exactly; don't add things that aren't in the design without saying so.
+
+**Figma rules for this file (current, since Nov 4):** fix the designer's **original frames directly, no copies**. Every change goes into both Figma (desktop + mobile) and the site. When one frame gets a fix, every similar frame gets the same fix. The yellow stars stay on the originals. Never delete the designer's frames. New layers get casual/default names (e.g. "Frame 136", "image 26"), not tidy ones. Use auto-layout padding/gap for spacing, never empty spacer frames.
 
 ### How the work went (so you can work the same way)
 1. **Ask before building.** Read every Figma frame and annotation first, then asked 4 questions at once (build target, backend, the date conflict, scope). Nothing was built before the answers came back.
@@ -63,6 +66,12 @@ Desktop frames are 1920 wide, mobile frames are 402 wide. Node IDs:
 **The original frames (first column) are the reference, and every one is starred.** From Nov 4 the designer asked for fixes to go straight into the originals, no copies. The "Nov type-scale copies" 7000px below are an older experiment and are out of date; ignore them.
 
 Key asset nodes: arch = Group 817 (87:64805), flowers = 87:111843 / 87:111937 / 87:112031, envelope = Frame 789 (87:96118).
+
+Other nodes touched in the Nov rounds:
+- Our Story carousel track (desktop) 87:64564: every card 440 wide, hug height, 400×600 image, 400-wide caption, top-aligned (Frame 136 was the reference card). Mobile cards in 87:112730 hug too.
+- Footers: on every frame the nav (Frame 94) was removed and an RSVP button added (desktop: copy of 90:13, mobile: copy of 90:19). Desktop padding 120 / 338, gap 40; mobile 37 / 52, gap 30.
+- Green tuxedo photo: "image 26" (87:64711) on Event Details; the mobile frame uses the same fill.
+- Prototype: the landing Prenuptial Photos section has a click interaction to the Our Story frame (desktop and mobile).
 
 ### Figma annotations, and how each was built
 | Annotation (text in Figma) | Implementation |
@@ -158,7 +167,7 @@ python3 mock_apps_script.py & python3 test_backend_flow.py
 python3 test_delete_flow.py                         # guest deletes their own letter (demo + mock backend)
 ```
 
-Compare the screenshots against the Figma frames at the same widths (use the Nov copies, section 2). `screenshots.py` forces lazy images to load so full-page shots are complete. The flow test seeds 9 letters, writes one, drags 5 flowers (checks the max of 4), drags the letter onto the arch, sends, opens the inbox with a wrong and then the right password, opens a letter and downloads a PDF.
+Compare the screenshots against the Figma frames at the same widths (the starred originals, section 2). `screenshots.py` forces lazy images to load so full-page shots are complete. The flow test seeds 9 letters, writes one, drags 5 flowers (checks the max of 4), drags the letter onto the arch, sends, opens the inbox with a wrong and then the right password, opens a letter and downloads a PDF.
 
 ## 7. Deploy (current setup)
 
@@ -197,6 +206,8 @@ jobs:
 - **To edit:** change files under `anne-and-ryan-wedding/` on GitHub (pencil icon) or locally and push to `main`. The site redeploys on its own.
 - **Uploading a batch of changed files without git:** on the repo's root page, Add file → Upload files, and drag the whole `anne-and-ryan-wedding` folder. Files land at `anne-and-ryan-wedding/...` and replace the old ones (new files are added, nothing is deleted).
 - **Live URL:** https://iamlura.github.io/anne-and-ryan-wedding/
+- **How the Nov rounds were published (no git):** `git push` from the sandbox was refused (no token), so Claude uploaded through GitHub's web upload page in the browser the designer was signed in to: open `github.com/iamlura/anne-and-ryan-wedding/upload/main/anne-and-ryan-wedding/<folder>`, add the changed files, "Commit directly to main". One upload page per folder (e.g. `assets/css`, `assets/img`, then the root for the .html files). The designer signs in herself; never type her password.
+- **Check a deploy:** about a minute after the commit, compare the live files with your local copies (e.g. `curl -s https://iamlura.github.io/anne-and-ryan-wedding/assets/css/style.css | sha256sum`).
 - **Copies outside GitHub:** the designer's `Downloads\anne-and-ryan-wedding` folder (may be older). GitHub is the source of truth.
 - **Connect Google Sheets** (not done yet, the site is in demo mode):
   1. Create a Google Sheet (e.g. "Anne & Ryan wedding") → Extensions → Apps Script → paste all of `apps-script/Code.gs` → Save.
