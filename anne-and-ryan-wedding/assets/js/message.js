@@ -306,7 +306,7 @@
     note.style.rotate = "-41deg";                               // same tilt as the Figma envelope
     const nh = note.offsetHeight || r.width * 0.1;            // unrotated height
     let y = h.top - r.top - nh * 0.3;                         // envelope sits just above the heading
-    if (h.top < r.top + r.height * 0.3) y = r.height * 0.6;    // heading above the arch (phones)
+    if (h.bottom <= r.top) y = r.height * 0.6;                 // phones: heading sits above the arch, so use the arch centre
     myPin.style.left = "50%";
     myPin.style.top = (y / r.height) * 100 + "%";
   }
