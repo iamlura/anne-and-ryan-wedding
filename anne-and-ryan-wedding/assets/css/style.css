@@ -212,7 +212,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .story-carousel { position: relative; padding: calc(60 * var(--u)) 0 calc(100 * var(--u)); }
 .story-track {
-  display: flex; align-items: flex-start; gap: calc(46 * var(--u));
+  display: flex; align-items: stretch; gap: calc(46 * var(--u)); /* every card as tall as the tallest */
   overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
   padding: 0 calc(200 * var(--u)) calc(60 * var(--u));
   scrollbar-width: none;
@@ -221,7 +221,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .story-card {
   flex: none; scroll-snap-align: start; scroll-margin-left: calc(200 * var(--u));
   background: var(--card); border-radius: 5px; padding: calc(20 * var(--u));
-  width: calc(440 * var(--u)); /* all cards: 400x600 photo, height hugs the caption */
+  width: calc(440 * var(--u)); /* all cards: 400x600 photo, same height (tallest caption) */
   display: flex; flex-direction: column; gap: calc(10 * var(--u));
   box-shadow: calc(15 * var(--u)) calc(49 * var(--u)) calc(37 * var(--u)) rgba(0,0,0,.1);
 }
@@ -291,6 +291,7 @@ html.snap-y { scroll-snap-type: y proximity; }
 .field { display: flex; flex-direction: column; gap: calc(20 * var(--u)); }
 .field label, .field .lab { font-size: var(--fs-label); opacity: .5; }
 .field .lab--solid { opacity: 1; }
+.rsvp .field > label, .rsvp .field > .lab { font-family: var(--serif); font-size: var(--fs-body); } /* RSVP sub-headings: Playfair, same as the Dress Code heading */
 .input {
   width: 100%; border: 0; outline: 0; border-radius: 0;
   background: rgba(255,255,255,.2); color: #fff;
@@ -535,7 +536,7 @@ html.snap-y { scroll-snap-type: y proximity; }
   .story-carousel { padding: 40px 0 80px; }
   .story-track { padding: 0 52px 30px; gap: 16px; }
   .story-card { width: calc(100vw - 104px); min-height: 0; padding: 8px; scroll-snap-align: center; }
-  .story-card p { padding: 4px 2px 8px; }
+  .story-card p { padding: 4px 2px 8px; font-size: 18px; } /* same size as the hero intro */
   .story-carousel .arrow--prev { left: 6px; }
   .story-carousel .arrow--next { right: 6px; }
 
