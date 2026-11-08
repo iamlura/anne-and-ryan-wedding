@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/img/monogram-letters.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Afacad&family=Carattere&family=Playfair+Display&family=Playfair+Display+SC&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Cormorant+SC&family=Pinyon+Script&display=swap">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -30,48 +30,57 @@
         <p>Please come at least 15 minutes before the ceremony to ensure proper seating.</p>
       </div>
       <div class="d-info">
-        <div class="d-loc"><p class="lab">Location</p><p class="val" data-c="venue">San Sebastian Cathedral</p></div>
-        <div class="d-time"><p class="lab">Time</p><p class="val" data-c="time">3:00 PM</p></div>
+        <div class="d-loc"><p class="lab">Location</p><p class="val" data-c="venue">Minor Basilica of San Sebastian</p></div>
+        <div class="d-time"><p class="lab">Time</p><p class="val" data-c="time">2:30 PM</p></div>
         <div class="d-date"><p class="lab">Date</p><p class="val" data-c="date">December 26, 2026</p></div>
       </div>
       <div class="d-itin">
         <h2>Itinerary</h2>
         <ol class="timeline" data-c="itinerary">
-          <li><div><p class="tt">3:00 PM</p><p class="tl">Wedding Mass at San Sebastian Cathedral</p></div></li>
-          <li><div><p class="tt">4:00 PM</p><p class="tl">Reception at Manila Hotel</p></div></li>
-          <li><div><p class="tt">6:00 PM</p><p class="tl">Dancing and Cocktail Hour</p></div></li>
+          <li><div><p class="tt">2:30 PM</p><p class="tl">Ceremony at Minor Basilica of San Sebastian</p></div></li>
+          <li><div><p class="tt">To follow</p><p class="tl">Cocktail hour and dinner at Champagne Room, The Manila Hotel</p></div></li>
         </ol>
       </div>
     </section>
 
-    <!-- s2: snap scroll + fade in (dress code) -->
+    <!-- s2: snap scroll + fade in (dress code, from the printed invitation) -->
     <section class="d-dress" data-fade>
       <div class="d-head">
         <h2>Dress Code</h2>
-        <p>We encourage bright colors. Please avoid fully black outfits.</p>
+        <p>Formal attire<br>Gentlemen: suit and tie (no barong). Ladies: floor-length dress.<br>Ladies are invited to wear muted earth or autumn tones, such as dusty blue, sage, brown, olive, or burgundy. We kindly ask that all guests avoid white, cream, and beige, as these are reserved for the bride.</p>
       </div>
-      <div class="dress-cols">
-        <div class="dress-group">
-          <p class="lab">Women</p>
-          <h3>Long formal evening gowns</h3>
-          <!-- m-only / d-only: the mobile and desktop Figma frames show different photos -->
-          <div class="dress-row">
-            <img class="m-only" src="assets/img/dress-w1.jpg" alt="Navy blue long gown" loading="lazy">
-            <img src="assets/img/dress-w2.jpg" alt="Mauve long gown" loading="lazy">
-            <img class="d-only" src="assets/img/dress-w4.jpg" alt="Olive green long gown" loading="lazy">
-            <img class="d-only" src="assets/img/dress-w3.jpg" alt="Burgundy long gown" loading="lazy">
-          </div>
-          <p class="dress-note">Please avoid white dresses and bring a shawl or shoulder coverings to ensure modesty for the church.</p>
-        </div>
-        <div class="dress-group">
-          <p class="lab">Men</p>
-          <h3>Barong Tagalog or Tuxedo</h3>
-          <div class="dress-row">
-            <img src="assets/img/dress-m1.jpg" alt="White embroidered barong" loading="lazy">
-            <img src="assets/img/dress-m4.jpg" alt="Dark green tuxedo" loading="lazy">
-          </div>
-          <p class="dress-note">Please wear a sando under your barong to ensure modesty for the church.</p>
-        </div>
+      <!-- color swatches from the invitation; 4 are prints (images), 6 are flat colors -->
+      <div class="swatches" role="img" aria-label="Suggested colors: dusty blue, dusty pink, sand, terracotta, brown, sage, olive, rose, burgundy and plum">
+        <span style="background-image:url(assets/img/swatch-1.webp)"></span>
+        <span style="background-image:url(assets/img/swatch-2.webp)"></span>
+        <span style="background:#ceae7e"></span>
+        <span style="background:#bc8269"></span>
+        <span style="background:#846555"></span>
+        <span style="background-image:url(assets/img/swatch-6.webp)"></span>
+        <span style="background-image:url(assets/img/swatch-7.webp)"></span>
+        <span style="background:#9a5657"></span>
+        <span style="background:#610e08"></span>
+        <span style="background:#3f1521"></span>
+      </div>
+    </section>
+
+    <!-- s3: finer details from the invitation (reception, parking, note, gifts) -->
+    <section class="d-more" data-fade>
+      <div class="d-block">
+        <h2>Reception</h2>
+        <p>Immediately following the ceremony, please join us for cocktail hour and dinner at Champagne Room, The Manila Hotel.</p>
+      </div>
+      <div class="d-block">
+        <h2>Parking</h2>
+        <p>Church: Parking at San Sebastian Church is limited. Guests are kindly advised to arrive early and, if possible, travel together.<br>Reception: Parking at The Manila Hotel is mainly by valet, as self-parking is very limited. Please expect to use valet service upon arrival.</p>
+      </div>
+      <div class="d-block">
+        <h2>Kindly Note</h2>
+        <p>Due to limited space, we are only able to accommodate those guests named on the invitation. Thank you for understanding.</p>
+      </div>
+      <div class="d-block">
+        <h2>Gifts</h2>
+        <p>Your presence is all we need. Should you wish to give a gift, a monetary contribution toward our future together would be warmly appreciated.</p>
       </div>
     </section>
   </main>
