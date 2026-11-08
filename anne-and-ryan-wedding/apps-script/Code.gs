@@ -3,9 +3,13 @@
  *
  * Setup (5 min) is in README.md → "Connect Google Sheets". Short version:
  *   1. Create a Google Sheet → Extensions → Apps Script → paste this file.
- *   2. Run `setup` once (creates the RSVP + Messages tabs and stores the inbox password).
+ *   2. Run `setup` once (creates the Messages tab, stores the inbox password and makes the RSVP Google Form;
+ *      the execution log prints the form links + entry IDs for assets/js/config.js → RSVP_FORM).
  *   3. Deploy → New deployment → Web app → Execute as: Me, Who has access: Anyone → copy the URL.
  *   4. Paste the URL into assets/js/config.js (SHEETS_URL).
+ *
+ * RSVPs go to a Google Form (made by setup, answers land in this spreadsheet's "Form Responses 1" tab).
+ * The site's own RSVP page posts straight into that form, so it keeps the Figma design.
  *
  * Endpoints
  *   GET  ?action=notes                → public arch data (no message text)
@@ -33,11 +37,50 @@ const BAD_WORDS = [
 /* ---------- one-time setup: run from the editor ---------- */
 function setup() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  ensureSheet_(ss, RSVP_SHEET, RSVP_HEAD);
   ensureSheet_(ss, MSG_SHEET, MSG_HEAD);
   const props = PropertiesService.getScriptProperties();
   if (!props.getProperty("INBOX_PASSWORD")) props.setProperty("INBOX_PASSWORD", "261226");
+  setupRsvpForm_(ss, props);
   Logger.log("Ready. Inbox password: " + props.getProperty("INBOX_PASSWORD"));
+}
+
+/* Makes the RSVP Google Form once (same questions as the site), linked to this spreadsheet.
+   Running setup again reuses it and just prints the links again. */
+function setupRsvpForm_(ss, props) {
+  let form = null;
+  const id = props.getProperty("RSVP_FORM_ID");
+  if (id) { try { form = FormApp.openById(id); } catch (x) { form = null; } }
+  if (!form) {
+    form = FormApp.create("Anne & Ryan · RSVP");
+    form.setDescription("Saturday, December 26, 2026 · 2:30 PM · Minor Basilica of San Sebastian, Manila\nKindly reply by December 5, 2026.");
+    form.setConfirmationMessage("Thank you! Your RSVP has been received.");
+    form.setCollectEmail(false);
+    form.setAllowResponseEdits(false);
+    form.setLimitOneResponsePerUser(false);
+    try { form.setRequireLogin(false); } catch (x) {}   // only exists on Workspace accounts
+    form.addTextItem().setTitle("First and Last Name").setRequired(true);
+    form.addTextItem().setTitle("Email Address").setRequired(true)
+      .setValidation(FormApp.createTextValidation().requireTextIsEmail().build());
+    form.addMultipleChoiceItem().setTitle("Will you be attending?")
+      .setChoiceValues(["Joyfully accepts", "Respectfully declines"]).setRequired(true);
+    form.addTextItem().setTitle("Special dietary requirements");
+    form.setDestination(FormApp.DestinationType.SPREADSHEET, ss.getId());
+    props.setProperty("RSVP_FORM_ID", form.getId());
+  }
+  // entry IDs for the site (config.js → RSVP_FORM), read from a pre-filled link
+  const items = form.getItems();
+  let resp = form.createResponse();
+  resp = resp.withItemResponse(items[0].asTextItem().createResponse("name"));
+  resp = resp.withItemResponse(items[1].asTextItem().createResponse("email@x.com"));
+  resp = resp.withItemResponse(items[2].asMultipleChoiceItem().createResponse("Joyfully accepts"));
+  resp = resp.withItemResponse(items[3].asTextItem().createResponse("food"));
+  const ids = (resp.toPrefilledUrl().match(/entry\.\d+/g) || []);
+  const view = form.getPublishedUrl();
+  Logger.log("RSVP form (share / edit): " + form.getEditUrl());
+  Logger.log("RSVP_FORM = " + JSON.stringify({
+    action: view.replace(/\/viewform.*$/, "/formResponse"),
+    name: ids[0], email: ids[1], attending: ids[2], food: ids[3]
+  }));
 }
 
 /* Change the inbox password: edit and run this. */
