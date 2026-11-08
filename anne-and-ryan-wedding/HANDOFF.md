@@ -285,4 +285,5 @@ jobs:
 - **Nov 8, 2026 (9th round):** "Place your letter" step.
   - The letter now waits in the middle instead of on the left of the arch: desktop just above the "Place your letter" heading, mobile in the centre of the arch, tilted 41° like the Figma envelope (`placeHome` in `message.js`). It resets there each time a guest comes from the flowers step. Dropping it anywhere snaps it to the nearest spot on the arch; arrow keys start at the top of the arch.
   - Send Message stays at 50% (disabled) until the letter is on the arch.
+  - Fix (same day): on tall/wide desktop windows the letter was wrongly put in the arch centre (phone placement); now phone placement only applies when the heading sits above the arch.
   - Figma: moved the envelope ("Frame 107") on Leave a Message 5 (desktop 87:111355, above the heading) and its mobile frame (87:158526, centre of the arch).
