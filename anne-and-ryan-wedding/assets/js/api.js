@@ -5,6 +5,9 @@
   const cfg = window.WEDDING_CONFIG || {};
   const URL_ = (cfg.SHEETS_URL || "").trim();
   const DEMO = !URL_;
+  const FORM = cfg.RSVP_FORM || {};
+  const FORM_ON = !!(FORM.action || "").trim();
+  const ATTEND_LABEL = { Yes: "Joyfully accepts", No: "Respectfully declines" }; // the Google Form's choices
   const LS_RSVP = "ar_rsvps", LS_MSG = "ar_messages";
   const LS_MINE = "ar_mine"; // [{id, token}] letters sent from this browser (lets the guest delete them)
   // Demo mode only. With Sheets connected the password lives in Apps Script and is checked server-side.
@@ -49,9 +52,21 @@
 
   window.WeddingAPI = {
     demo: DEMO,
+    rsvpToForm: FORM_ON,
     mine,
 
     async submitRSVP(r) {
+      if (FORM_ON) {
+        if (r.website) return { ok: true };            // honeypot: bots fill hidden fields
+        const body = new URLSearchParams();
+        body.append(FORM.name, r.name || "");
+        body.append(FORM.email, r.email || "");
+        body.append(FORM.attending, ATTEND_LABEL[r.attending] || "");
+        body.append(FORM.food, r.attending === "Yes" ? (r.food || "") : "");
+        // Google Forms doesn't allow reading the reply (no-cors), so a network error is the only failure we can see.
+        await fetch(FORM.action, { method: "POST", mode: "no-cors", body });
+        return { ok: true };
+      }
       if (DEMO) { await sleep(500); const all = lsGet(LS_RSVP); all.push({ ...r, t: Date.now() }); lsSet(LS_RSVP, all); return { ok: true }; }
       return post({ action: "rsvp", ...r });
     },
