@@ -13,10 +13,14 @@
   --muted: #7d7d7d;
   --lav: #c7b8d4;
   --lav-dark: #9a80b0;
-  --serif: "Playfair Display", Georgia, serif;
-  --serif-sc: "Playfair Display SC", Georgia, serif;
-  --sans: "Afacad", "Futura", "Century Gothic", sans-serif;
-  --script: "Carattere", "Brush Script MT", cursive;
+  /* Fonts follow the printed invitation (Nov 8): Cormorant Garamond everywhere,
+     Pinyon Script as the free Google stand-in for the invite's Citadel Script.
+     --letter-sans is only the "Modern" choice in the guest letter font picker. */
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --serif-sc: "Cormorant SC", "Cormorant Garamond", Georgia, serif;
+  --sans: "Cormorant Garamond", Georgia, serif;
+  --script: "Pinyon Script", "Brush Script MT", cursive;
+  --letter-sans: "Afacad", "Futura", "Century Gothic", sans-serif;
 
   /* Type scale (set by the designer on the landing page, Nov 2026).
      Change a size here and every page follows. Mobile values are in the ≤760px block. */
@@ -265,19 +269,18 @@ html.snap-y { scroll-snap-type: y proximity; }
 .d-itin .timeline { width: auto; }
 .d-itin .timeline .tt { font-family: var(--sans); font-size: var(--fs-label); margin-bottom: calc(4 * var(--u)); }
 .d-itin .timeline .tl { font-family: var(--serif); font-size: calc(38 * var(--u)); }
-/* dress code: heading left, Women and Men side by side */
+/* dress code: heading + invitation text left, color swatches below */
 .d-dress { display: flex; flex-direction: column; gap: calc(43 * var(--u)); }
 .d-dress .d-head { text-align: left; gap: calc(4 * var(--u)); }
 .d-dress .d-head h2 { font-family: var(--serif); font-size: var(--fs-body); }
 .d-dress .d-head p { font-family: var(--sans); }
-.dress-cols { display: flex; gap: calc(120 * var(--u)); align-items: flex-start; }
-.dress-group { display: flex; flex-direction: column; gap: calc(16 * var(--u)); }
-.dress-group .lab { font-size: var(--fs-label); }
-.dress-group h3 { font-family: var(--serif); font-size: var(--fs-body); }
-.dress-row { display: flex; gap: calc(40 * var(--u)); }
-.dress-row img { width: calc(253 * var(--u)); height: calc(400 * var(--u)); object-fit: cover; }
-.dress-row .m-only { display: none; } /* photo only in the mobile design */
-.dress-group .dress-note { font-size: var(--fs-label); opacity: .6; width: 0; min-width: 100%; } /* wraps to the photo row width */
+.swatches { display: grid; grid-template-columns: repeat(5, calc(120 * var(--u))); gap: calc(24 * var(--u)); }
+.swatches span { aspect-ratio: 1; border-radius: 50%; border: calc(8 * var(--u)) solid #fff; background-size: cover !important; background-position: center !important; }
+/* finer details (reception, parking, kindly note, gifts): same styles as the dress code heading + text */
+.d-more { display: flex; flex-direction: column; gap: calc(43 * var(--u)); margin-top: calc(60 * var(--u)); }
+.d-block { display: flex; flex-direction: column; gap: calc(4 * var(--u)); }
+.d-block h2 { font-family: var(--serif); font-size: var(--fs-body); }
+.d-block p { font-family: var(--sans); font-size: var(--fs-body); }
 
 /* =========================================================
    RSVP
@@ -486,7 +489,7 @@ html.snap-y { scroll-snap-type: y proximity; }
   .btn { padding: 16px 40px; }
   .footer { align-items: flex-start; text-align: left; padding: 37px 52px; gap: 30px; }
   .footer .t1 { font-size: 36px; }
-  .footer .t2 { font-size: 24px; }
+  .footer .t2 { font-size: 24px; white-space: nowrap; } /* one line, as in Figma (Pinyon Script runs wider) */
   .footer--rsvp { padding: 37px 52px; }
 
   .hero { height: 100svh; min-height: 640px; max-height: 896px; }
@@ -556,13 +559,11 @@ html.snap-y { scroll-snap-type: y proximity; }
   .d-dress .d-head { gap: 12px; }
   .d-dress .d-head h2 { font-family: var(--sans); font-size: var(--fs-title); text-align: center; }
   .d-dress .d-head p { font-family: var(--serif); }
-  .dress-cols { flex-direction: column; gap: 42px; }
-  .dress-group { gap: 20px; }
-  .dress-group h3 { margin-top: -30px; font-size: var(--fs-head); }
-  .dress-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .dress-row img { width: 100%; height: auto; aspect-ratio: 174 / 275; }
-  .dress-row .m-only { display: block; }
-  .dress-row .d-only { display: none; }
+  .swatches { grid-template-columns: repeat(5, 56px); gap: 12px; justify-content: center; }
+  .swatches span { border-width: 4px; }
+  .d-more { gap: 42px; margin-top: 42px; }
+  .d-block { gap: 12px; }
+  .d-block h2 { font-size: var(--fs-head); text-align: center; }
 
   .rsvp { padding: 110px 16px 80px; min-height: 0; }
   .rsvp__head p { width: auto; text-align: left; }
@@ -572,6 +573,7 @@ html.snap-y { scroll-snap-type: y proximity; }
   .field { gap: 8px; }
   .field .lab--solid { font-size: 24px; }
   .input { padding: 8px 12px; }
+  .radios { flex-direction: column; gap: 16px; } /* longer invitation labels stack on phones */
   .radio { gap: 14px; padding: 4px 8px; }
   .radio .dot { width: 18px; height: 18px; }
   .rsvp-done h2 { font-size: 56px; }
