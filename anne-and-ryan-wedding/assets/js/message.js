@@ -34,7 +34,7 @@
     if (step === "place") initPlace();
   }
   $$("[data-go]").forEach((b) => b.addEventListener("click", () => {
-    if (b.dataset.go === "place") { saveDraft(); }
+    if (b.dataset.go === "place") { draft.s = null; saveDraft(); } // letter starts in the middle, not on the arch
     go(b.dataset.go);
   }));
 
@@ -264,7 +264,7 @@
   });
 
   /* ---------------- place on the arch ---------------- */
-  const stageP = $("#stagePlace");
+  const stageP = $("#stagePlace"), sendBtn = $("#sendBtn");
   let myPin = null;
 
   function initPlace() {
@@ -273,27 +273,42 @@
     myPin.className = "pin is-mine";
     myPin.tabIndex = 0;
     myPin.setAttribute("role", "slider");
-    myPin.setAttribute("aria-label", "Your letter. Drag it, or use arrow keys to move it along the arch.");
+    myPin.setAttribute("aria-label", "Your letter. Drag it onto the arch, or use arrow keys to move it along the arch.");
     const n = renderNote({ from: draft.from, flowers: draft.flowers });
     myPin.appendChild(n);
     stageP.appendChild(myPin);
-    if (draft.s == null) draft.s = arch.L * 0.1;
     relayoutPlace(false);
     myPin.addEventListener("pointerdown", pinDown);
     myPin.addEventListener("keydown", (e) => {
       const d = { ArrowLeft: -60, ArrowDown: -60, ArrowRight: 60, ArrowUp: 60 }[e.key];
       if (!d) return;
       e.preventDefault();
-      draft.s = Math.max(0, Math.min(arch.L, draft.s + d)); relayoutPlace(false); saveDraft();
+      const from = draft.s == null ? arch.L / 2 - d : draft.s;   // first key press puts it at the top of the arch
+      draft.s = Math.max(0, Math.min(arch.L, from + d)); relayoutPlace(false); saveDraft();
     });
   }
 
   function relayoutPlace(dragging, liveS) {
     const s = liveS != null ? liveS : draft.s;
-    const resolved = drawStage(stageP, notes, { s });
     myPin.querySelector(".note").style.setProperty("--w", noteWidthPx(stageP) + "px");
+    sendBtn.disabled = s == null && !dragging;          // 50% until the letter is on the arch
+    if (s == null) { drawStage(stageP, notes, null); placeHome(); return null; }
+    const resolved = drawStage(stageP, notes, { s });
     if (!dragging) { draft.s = resolved; placePin(myPin, resolved); }
     return resolved;
+  }
+
+  /* Before it's placed, the letter waits in the middle: just above "Place your letter" on desktop,
+     in the centre of the arch on phones (where the heading sits above the arch). */
+  function placeHome() {
+    const r = stageP.getBoundingClientRect(), h = $(".stage-copy h2", stageP.parentNode).getBoundingClientRect();
+    const note = myPin.querySelector(".note");
+    note.style.rotate = "-41deg";                               // same tilt as the Figma envelope
+    const nh = note.offsetHeight || r.width * 0.1;            // unrotated height
+    let y = h.top - r.top - nh * 0.3;                         // envelope sits just above the heading
+    if (h.top < r.top + r.height * 0.3) y = r.height * 0.6;    // heading above the arch (phones)
+    myPin.style.left = "50%";
+    myPin.style.top = (y / r.height) * 100 + "%";
   }
 
   function stagePoint(e) {
@@ -322,9 +337,9 @@
     myPin.addEventListener("pointercancel", up, { once: true });
   }
 
-  const sendBtn = $("#sendBtn");
   sendBtn.addEventListener("click", async () => {
     if (!draft.from || !draft.text) { go("write"); return; }
+    if (draft.s == null) return;
     sendBtn.disabled = true; sendBtn.textContent = "Sending…";
     try {
       const res = await WeddingAPI.sendMessage({
@@ -338,7 +353,7 @@
     } catch (err) {
       toast(err && /allowed/i.test(err.message) ? err.message : "Couldn't send your letter. Please try again.");
     } finally {
-      sendBtn.disabled = false; sendBtn.textContent = "Send Message";
+      sendBtn.disabled = draft.s == null; sendBtn.textContent = "Send Message";
     }
   });
 
