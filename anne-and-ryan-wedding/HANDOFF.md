@@ -6,15 +6,15 @@ This file explains how the site was made, step by step, so you can rebuild it th
 - **Repo:** https://github.com/iamlura/anne-and-ryan-wedding
 - **Figma:** https://www.figma.com/design/pAVTZMkGiY9VYrzp7IeVJO/Anne-wedding-website?node-id=87-64447 (page "final pages")
 
-## Status (updated Nov 8, 2026, 5th round)
+## Status (updated Nov 8, 2026, 6th round)
 
 | | |
 |---|---|
 | Site | Live on GitHub Pages since Oct 8, 2026. All 5 pages and the full message flow work. |
 | Data | **Demo mode.** Google Sheets is not connected yet, so RSVPs and letters only save in each visitor's own browser. Connect it before sharing the link with guests (section 7). |
 | Waiting on the designer | New content and some design changes are coming (the site is set up for this, see "Changing content" below). |
-| Figma vs site | In sync as of Nov 8 (5th round). The starred original frames on "final pages" are the reference. |
-| Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. **Nov 4 (3rd round):** one button style everywhere, guests can delete their own letter. **Nov 4 (4th round):** every footer = "Thank you" + RSVP button (nav links removed again), all carousel cards 440 wide with 400×600 photos, prenup photos link to the Our Story carousel, new green tuxedo photo. **Nov 8 (5th round):** all info matched to the printed invitation (2:30 PM, Minor Basilica of San Sebastian, reception at Champagne Room, RSVP by Dec 5), new dress code with color swatches, new Reception / Parking / Kindly Note / Gifts section, invitation fonts everywhere. Details in section 9. |
+| Figma vs site | In sync as of Nov 8 (6th round). The starred original frames on "final pages" are the reference. |
+| Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. **Nov 4 (3rd round):** one button style everywhere, guests can delete their own letter. **Nov 4 (4th round):** every footer = "Thank you" + RSVP button (nav links removed again), all carousel cards 440 wide with 400×600 photos, prenup photos link to the Our Story carousel, new green tuxedo photo. **Nov 8 (5th round):** all info matched to the printed invitation (2:30 PM, Minor Basilica of San Sebastian, reception at Champagne Room, RSVP by Dec 5), new dress code with color swatches, new Reception / Parking / Kindly Note / Gifts section. **Nov 8 (6th round):** invitation fonts undone (back to Afacad / Playfair / Carattere), Event Details background image removed. Details in section 9. |
 
 ---
 
@@ -71,7 +71,7 @@ Other nodes touched in the Nov rounds:
 - Our Story carousel track (desktop) 87:64564: every card 440 wide, hug height, 400×600 image, 400-wide caption, top-aligned (Frame 136 was the reference card). Mobile cards in 87:112730 hug too.
 - Footers: on every frame the nav (Frame 94) was removed and an RSVP button added (desktop: copy of 90:13, mobile: copy of 90:19). Desktop padding 120 / 338, gap 40; mobile 37 / 52, gap 30.
 - Green tuxedo photo: "image 26" (87:64711) on Event Details; the mobile frame uses the same fill.
-- Nov 8: Dress code swatches = "Frame 825" (desktop 135:2, mobile 135:28); Reception / Parking / Kindly Note / Gifts = "Frame 166" (desktop 135:15 in Frame 90, mobile 135:41 in Frame 89). Mobile footer texts set to auto width so "We look forward to celebrating with you" stays on one line in Pinyon Script.
+- Nov 8: Dress code swatches = "Frame 825" (desktop 135:2, mobile 135:28); Reception / Parking / Kindly Note / Gifts = "Frame 166" (desktop 135:15 in Frame 90, mobile 135:41 in Frame 89). Event Details background ("image 12", 87:64652 / 87:112880) is hidden since the 6th round.
 - Prototype: the landing Prenuptial Photos section has a click interaction to the Our Story frame (desktop and mobile).
 
 ### Figma annotations, and how each was built
@@ -101,14 +101,14 @@ Other nodes touched in the Nov rounds:
 3. **Download assets** from the `get_design_context` asset URLs into `assets/img/`. Many "png" assets are really JPEGs: rename to `.jpg`. Then compress with Pillow: long edge ≤1800px (story cards ≤1100, dress photos ≤1000), JPEG q78, progressive. Dress m2/m3 have transparency: composite them on `#a19f92` / `#bcb7b4` (their Figma backing fills) before converting to JPEG.
 4. **Arch:** `download_assets` on 87:64805 as SVG (1.5MB). Delete the two background `<rect>`s, then `tools/arch_rasterize.py` → `arch.webp` (1920×1652, transparent).
 5. **Flowers:** `download_assets` on the 3 flower groups, PNG at scale 3. They export with an opaque #EFEFEF background and black slot borders, so run `tools/flower_keyout.py` to make them transparent. Then set the aspect ratios in `notes.js → FLOWERS`.
-6. **Envelope:** its body and flap SVGs come from `get_design_context` on 87:96118 (`env-body.svg`, `env-flap.svg`). The "From X" text is live in the script font (Pinyon Script since Nov 8).
+6. **Envelope:** its body and flap SVGs come from `get_design_context` on 87:96118 (`env-body.svg`, `env-flap.svg`). The "From X" text is live in Carattere.
 7. **Build the pages:** desktop first, using Figma px × `--u`, then mobile overrides at ≤760px from the 402 frames.
 8. **Backend:** `api.js` (falls back to localStorage demo mode when `SHEETS_URL` is empty) + `Code.gs`.
 9. **Verify** (section 6), then deploy (section 7).
 
 ## 4. Design tokens
 
-- **Fonts (Google Fonts, since Nov 8, matching the printed invitation):** Cormorant Garamond for all text (replaces Afacad and Playfair Display), Cormorant SC for the brand + calendar numbers (replaces Playfair Display SC), Pinyon Script for script text: footer, signature, envelope (replaces Carattere). The invitation itself uses Citadel Script Pro, a paid font, so Pinyon Script is the free lookalike. The only Afacad left is the "Modern" option in the guest letter font picker (`--letter-sans`), so that choice still looks different from "Classic". In Figma every text layer in the original frames was switched the same way.
+- **Fonts (Google Fonts):** Afacad (UI / sans), Playfair Display (serif), Playfair Display SC (brand + calendar numbers), Carattere (script: footer, signature, envelope). A switch to the invitation fonts (Cormorant Garamond + Pinyon Script) was tried on Nov 8 and undone the same day at the designer's request.
 - **Colors:** page bg `#efefef`; story bg `#e0e0e0`; story card `#e7e7e7`; input/field `#e1e1e1`; black `#000`; envelope body `#c7b8d4`, flap `#9a80b0`, stroke `#898989`; RSVP radio on `#b4fff9`, off ring `#8f8f8f`; carousel arrow bg `#d1d1d1`, chevron `#393939`; inbox Close button `#8a8a8a`.
 - **Scaling:** `--u: clamp(0.5px, 0.0520833vw, 1px)`, so 1 Figma px = 1px at 1920 wide. Every size is `calc(N * var(--u))` with N copied from Figma. Mobile (≤760px) uses explicit px from the 402 frames.
 - **Type scale (Nov 2026, set by the designer on the landing page).** CSS variables at the top of `style.css`, mobile values in the ≤760px block. Change one and every page follows:
@@ -125,9 +125,9 @@ Other nodes touched in the Nov rounds:
 | `--fs-btn` / `--btn-track` | every button, "Write a Message" style: hugs its text, padding 20/60 (mobile 16/40), white 1px outline, gray #898989 for Close/Cancel | 32 / 20% | 24 / 20% (inbox 18) |
 | `--fs-nav` | nav | 24 | 26 (menu) |
 
-  One-offs from the designer's frames (all Cormorant Garamond since Nov 8): itinerary items on Event Details are 38; "The Wedding Day" uses `--fs-title` on desktop but 32 on mobile; mobile venue name is 32 (desktop 60); mobile Dress Code title is 40, centred; Reception / Parking / Kindly Note / Gifts headings use `--fs-body` on desktop and `--fs-head` centred on mobile. Footer script (Pinyon Script) 80/40 (mobile 36/24, one line); mobile footer text is left-aligned.
+  One-offs from the designer's frames: itinerary items on Event Details are Playfair 38; "The Wedding Day" uses `--fs-title` on desktop but 32 on mobile; mobile venue name is Playfair 32 (desktop is Afacad 60); mobile Dress Code title is Afacad 40, centred; Reception / Parking / Kindly Note / Gifts headings are Playfair (`--fs-body` on desktop, `--fs-head` centred on mobile), their text is Afacad on desktop and Playfair on mobile (same as the dress code text). Footer stays Carattere 80/40 (mobile 36/24); mobile footer text is left-aligned.
 - **Other sizes (desktop):** nav 161 gap, 80 tall; footer (every page, same as the landing footer): padding 120, gap 40, "Thank you" block + RSVP button, ~503 tall; mobile footer: padding 37/52, gap 30, left-aligned; story cards 440 wide (400×600 photo, padding 20, gap 10, height hugs the caption); page padding 260 top, 200 sides.
-- **Overlays:** landing hero photo opacity .4 on black; venue cathedral .3; Event Details cathedral .1 with `mix-blend-mode: exclusion`; RSVP photo blur 20px CSS (Figma layer blur 40) + 50% black.
+- **Overlays:** landing hero photo opacity .4 on black; venue cathedral .3; Event Details has no background image (removed Nov 8, too busy); RSVP photo blur 20px CSS (Figma layer blur 40) + 50% black.
 
 ## 5. Code map
 
@@ -277,3 +277,6 @@ jobs:
   - Event Details: Dress Code rebuilt with the invitation text (formal attire, suit and tie, no barong, floor-length dress, muted earth/autumn tones, avoid white/cream/beige) and the 10 color swatches; dress photos removed. New section after it: Reception, Parking, Kindly Note, Gifts.
   - RSVP: radios read "Joyfully accepts / Respectfully declines" (values stay Yes/No for the Sheet), "Food Restrictions" → "Special dietary requirements" (mobile Figma label was "Allergies"), radios stacked on mobile.
   - `tools/test_backend_flow.py` clicks the new radio label.
+- **Nov 8, 2026 (6th round):** designer didn't like the invitation fonts. Figma originals + site.
+  - Fonts back to Afacad / Playfair Display / Playfair Display SC / Carattere (site CSS variables, font links, letter picker). In Figma each text layer got its previous font back; the new Reception / Parking / Kindly Note / Gifts text follows the dress code styles. Mobile footer texts back to 299 wide.
+  - Event Details background image removed (site: `details__bg` img + CSS; Figma: "image 12" hidden on desktop + mobile).
