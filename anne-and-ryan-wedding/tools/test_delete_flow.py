@@ -10,11 +10,12 @@ async def run(p, backend):
     pg = await ctx.new_page()
     errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)))
-    if backend:
-        async def cfg(route):
-            await route.fulfill(body="window.WEDDING_CONFIG={SHEETS_URL:'http://127.0.0.1:8766/exec',MAX_FLOWERS:4,MAX_MESSAGE:1500};",
-                                content_type='application/javascript')
-        await pg.route('**/config.js', cfg)
+    # never touch the live Sheet from tests: demo mode or the local mock only
+    url = 'http://127.0.0.1:8766/exec' if backend else ''
+    async def cfg(route):
+        await route.fulfill(body="window.WEDDING_CONFIG={SHEETS_URL:'" + url + "',MAX_FLOWERS:4,MAX_MESSAGE:1500};",
+                            content_type='application/javascript')
+    await pg.route('**/config.js', cfg)
     await pg.goto('http://127.0.0.1:8765/message.html')
     await pg.wait_for_timeout(500)
     await pg.click('[data-go="write"]')

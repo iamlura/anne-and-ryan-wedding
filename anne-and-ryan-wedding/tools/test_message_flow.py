@@ -9,6 +9,10 @@ async def main():
         errs=[]
         pg.on('pageerror', lambda e: errs.append(str(e)))
         pg.on('console', lambda m: errs.append(m.text) if m.type=='error' else None)
+        # demo mode: never write test letters to the live Sheet
+        async def cfg(route):
+            await route.fulfill(content_type='application/javascript', body='window.WEDDING_CONFIG={SHEETS_URL:"",MAX_FLOWERS:4,MAX_MESSAGE:1500};')
+        await ctx.route('**/assets/js/config.js', cfg)
         await pg.goto('http://127.0.0.1:8765/message.html')
         # seed 9 notes
         seed=[]
