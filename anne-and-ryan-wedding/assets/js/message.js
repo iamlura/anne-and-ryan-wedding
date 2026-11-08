@@ -45,6 +45,8 @@
     const p = arch.pointAt(s);
     pin.style.left = (p.x / arch.W) * 100 + "%";
     pin.style.top = (p.y / arch.H) * 100 + "%";
+    const note = pin.querySelector(".note");
+    if (note) note.style.rotate = tiltFor(pin.dataset.pin || "mine", s) + "deg"; // mirrored on the right half
   }
 
   /* notes: [{id,from,flowers,pos(0..1),t}], mine: {s} or null */
@@ -65,20 +67,9 @@
         pin = document.createElement("div");
         pin.className = "pin" + (opts.newId === n.id ? " is-new" : "");
         pin.dataset.pin = id;
-        const note = renderNote(n);
-        note.style.rotate = tiltFor(n.id) + "deg";
-        pin.appendChild(note);
+        pin.appendChild(renderNote(n));
         pin.title = n.from ? "From " + n.from : "";
         stage.appendChild(pin);
-      }
-      // letters sent from this browser get a delete button
-      if (WeddingAPI.mine.has(n.id) && !pin.querySelector(".del")) {
-        pin.classList.add("is-own");
-        const del = document.createElement("button");
-        del.type = "button"; del.className = "del"; del.innerHTML = "&times;";
-        del.setAttribute("aria-label", "Delete your letter"); del.title = "Delete your letter";
-        del.addEventListener("click", (e) => { e.stopPropagation(); openDel(n.id); });
-        pin.appendChild(del);
       }
       pin.querySelector(".note").style.setProperty("--w", w + "px");
       placePin(pin, pos[i]);
@@ -284,7 +275,6 @@
     myPin.setAttribute("role", "slider");
     myPin.setAttribute("aria-label", "Your letter. Drag it, or use arrow keys to move it along the arch.");
     const n = renderNote({ from: draft.from, flowers: draft.flowers });
-    n.style.rotate = "-30deg";
     myPin.appendChild(n);
     stageP.appendChild(myPin);
     if (draft.s == null) draft.s = arch.L * 0.1;
@@ -344,36 +334,11 @@
       clearDraft();
       go("home");
       await loadNotes(res.id);
-      toast("Your letter is on the arch. Thank you! Tap × on it if you ever want to delete it.", 4500);
+      toast("Your letter is on the arch. Thank you!", 4500);
     } catch (err) {
       toast(err && /allowed/i.test(err.message) ? err.message : "Couldn't send your letter. Please try again.");
     } finally {
       sendBtn.disabled = false; sendBtn.textContent = "Send Message";
-    }
-  });
-
-  /* ---------------- delete your own letter ---------------- */
-  const delModal = $("#delModal"), delConfirm = $("#delConfirm");
-  let delId = null;
-  function openDel(id) { delId = id; delModal.classList.add("open"); setTimeout(() => delConfirm.focus(), 50); }
-  function closeDel() { delModal.classList.remove("open"); delId = null; }
-  $("#delCancel").addEventListener("click", closeDel);
-  delModal.addEventListener("click", (e) => { if (e.target === delModal) closeDel(); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && delModal.classList.contains("open")) closeDel(); });
-  delConfirm.addEventListener("click", async () => {
-    const id = delId; if (!id) return;
-    delConfirm.disabled = true;
-    try {
-      await WeddingAPI.deleteMessage(id);
-      notes = notes.filter((n) => n.id !== id);
-      $$('[data-pin="p-' + id + '"]').forEach((p) => p.remove());
-      closeDel();
-      if (current === "home") drawStage($("#stageHome"), notes, null);
-      toast("Your letter was deleted.");
-    } catch (err) {
-      toast((err && err.message) || "Couldn't delete your letter. Please try again.");
-    } finally {
-      delConfirm.disabled = false;
     }
   });
 

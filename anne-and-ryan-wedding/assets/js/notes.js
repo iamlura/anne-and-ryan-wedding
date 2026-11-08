@@ -91,10 +91,13 @@
     return out;
   }
 
-  function tiltFor(id) {
-    let h = 0; const s = String(id || "x");
-    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-    return ((Math.abs(h) % 61) - 30); // -30..30 deg
+  /* Envelope tilt: left half of the arch leans one way, right half the mirror (as in the Figma:
+     left envelope 41° counter-clockwise, right one about 32° clockwise). Amount varies a little per letter. */
+  function tiltFor(id, s) {
+    let h = 0; const str = String(id || "x");
+    for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0;
+    const mag = 30 + (Math.abs(h) % 12);              // 30..41 deg
+    return s < L / 2 ? -mag : mag;                     // CSS: negative = counter-clockwise
   }
 
   window.Notes = { renderNote, renderFlower, FLOWERS, arch: { ...A, L, pointAt, nearestS, layout }, tiltFor };
