@@ -6,15 +6,15 @@ This file explains how the site was made, step by step, so you can rebuild it th
 - **Repo:** https://github.com/iamlura/anne-and-ryan-wedding
 - **Figma:** https://www.figma.com/design/pAVTZMkGiY9VYrzp7IeVJO/Anne-wedding-website?node-id=87-64447 (page "final pages")
 
-## Status (updated Nov 8, 2026, 7th round)
+## Status (updated Nov 8, 2026, 8th round)
 
 | | |
 |---|---|
 | Site | Live on GitHub Pages since Oct 8, 2026. All 5 pages and the full message flow work. |
 | Data | **Live since Nov 8.** RSVPs go to the Google Form "Anne & Ryan · RSVP"; letters go to the Google Sheet "Anne & Ryan wedding" through Apps Script. Both are in the designer's Google account (jaeyoung.laura@gmail.com); she shares them with Anne. Links in section 7. |
 | Waiting on the designer | New content and some design changes are coming (the site is set up for this, see "Changing content" below). |
-| Figma vs site | In sync as of Nov 8 (7th round). The starred original frames on "final pages" are the reference. |
-| Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. **Nov 4 (3rd round):** one button style everywhere, guests can delete their own letter. **Nov 4 (4th round):** every footer = "Thank you" + RSVP button (nav links removed again), all carousel cards 440 wide with 400×600 photos, prenup photos link to the Our Story carousel, new green tuxedo photo. **Nov 8 (5th round):** all info matched to the printed invitation (2:30 PM, Minor Basilica of San Sebastian, reception at Champagne Room, RSVP by Dec 5), new dress code with color swatches, new Reception / Parking / Kindly Note / Gifts section. **Nov 8 (6th round):** invitation fonts undone (back to Afacad / Playfair / Carattere), Event Details background image removed. **Nov 8 (7th round):** story cards all the same height, RSVP sub-headings in Playfair, Google Form for RSVPs + Sheets connected for letters. Details in section 9. |
+| Figma vs site | In sync as of Nov 8 (8th round). The starred original frames on "final pages" are the reference. |
+| Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. **Nov 4 (3rd round):** one button style everywhere, guests can delete their own letter. **Nov 4 (4th round):** every footer = "Thank you" + RSVP button (nav links removed again), all carousel cards 440 wide with 400×600 photos, prenup photos link to the Our Story carousel, new green tuxedo photo. **Nov 8 (5th round):** all info matched to the printed invitation (2:30 PM, Minor Basilica of San Sebastian, reception at Champagne Room, RSVP by Dec 5), new dress code with color swatches, new Reception / Parking / Kindly Note / Gifts section. **Nov 8 (6th round):** invitation fonts undone (back to Afacad / Playfair / Carattere), Event Details background image removed. **Nov 8 (7th round):** story cards all the same height, RSVP sub-headings in Playfair, Google Form for RSVPs + Sheets connected for letters. **Nov 8 (8th round):** envelopes on the right half of the arch tilt the mirror way, guest delete removed. Details in section 9. |
 
 ---
 
@@ -169,7 +169,6 @@ cd tools && python3 screenshots.py index,story,details,rsvp,message 1920
 python3 screenshots.py index,story,details,rsvp,message 402
 python3 test_message_flow.py                        # desktop; W=402 for mobile
 python3 mock_apps_script.py & python3 test_backend_flow.py
-python3 test_delete_flow.py                         # guest deletes their own letter (demo + mock backend)
 python3 test_rsvp_form.py                           # RSVP page posts the right fields to the Google Form (intercepted, nothing sent)
 ```
 
@@ -218,20 +217,20 @@ jobs:
 - **Google Sheets + Form (connected Nov 8, designer's account jaeyoung.laura@gmail.com):**
   - Sheet "Anne & Ryan wedding": https://docs.google.com/spreadsheets/d/1oapFYPqkLcdA2HVhomGbhMsxTLJFqUznyo01xG-Pj1E/edit (tabs: `Form Responses 1` = RSVPs, `Messages` = letters, empty `Sheet1`).
   - RSVP Google Form "Anne & Ryan · RSVP" (edit): https://docs.google.com/forms/d/1_ThJxf8_-yC91_bBPNux_fBBG6INbunYO0SL8dQRLIk/edit . Same 4 questions as the site. The site's RSVP page keeps the Figma design and posts into the form in the background (`RSVP_FORM` in `config.js`, `submitRSVP` in `api.js`). Google doesn't let the page read the reply, so only network errors show; check the Responses tab.
-  - Apps Script project "Anne & Ryan wedding backend" (Extensions → Apps Script from the Sheet). Web app URL (`SHEETS_URL`): https://script.google.com/macros/s/AKfycbwQhSGcBC5b9NM1cZOeUO0G36JdCyobdRdrUZ8NVYFaJoL0n42SrGXRBiJHPDmX3vpBWg/exec (Execute as Me, access Anyone). Handles letters, the arch, the 261226 inbox and guest deletes.
-  - Tested Nov 8: a letter went through save → arch → inbox → delete, and an RSVP landed in the form + Sheet. Both test entries were deleted.
+  - Apps Script project "Anne & Ryan wedding backend" (Extensions → Apps Script from the Sheet). Web app URL (`SHEETS_URL`): https://script.google.com/macros/s/AKfycbwQhSGcBC5b9NM1cZOeUO0G36JdCyobdRdrUZ8NVYFaJoL0n42SrGXRBiJHPDmX3vpBWg/exec (Execute as Me, access Anyone). Handles letters, the arch and the 261226 inbox. (Its `delete` endpoint is left over from the removed guest-delete feature; nothing calls it and new letters have no delete key, so it can't remove anything.)
+  - Tested Nov 8: a letter went through save → arch → inbox, and an RSVP landed in the form + Sheet. Both test entries were deleted.
   - How it was set up (to redo it): new Sheet → Extensions → Apps Script → paste `apps-script/Code.gs` → run `setup` (approve Google's prompt: Advanced → Go to project → Allow). `setup` makes the `Messages` tab, the inbox password and the RSVP form, and logs `RSVP_FORM` values for `config.js`. Then Deploy → New deployment → Web app → Me / Anyone (approve again) → paste the `/exec` URL into `SHEETS_URL`.
   - If `Code.gs` changes later: paste it again, then Deploy → Manage deployments → edit → New version (the URL stays the same).
-  - Tests never write to the live Sheet: `test_message_flow.py` and `test_delete_flow.py` force demo mode or the local mock.
+  - Tests never write to the live Sheet: `test_message_flow.py` forces demo mode, `test_backend_flow.py` uses the local mock.
 
 ## 8. Open items
 
 1. **Share with Anne:** the Sheet and the RSVP form are in the designer's Google account. Share both with Anne (Share → her email, Editor) so she sees RSVPs and letters.
 2. **Prenup photos.** The Nov landing design replaced the "See Prenuptial Photos" button with a "Prenuptial Photos" heading, so the button was removed from the site. If a full album is wanted later, it needs a design (shared album link or a `gallery.html` with resized copies: long edge ≤1800px, JPEG q78).
-3. **Delete-my-letter UI is not in Figma.** Built as a small round × on the guest's own letter (shows on hover, always on phones) plus a confirm box. Only works in the browser the letter was sent from; anyone else who wants a letter removed can ask Anne (delete the row in the Sheet, or set `hidden` to TRUE).
+3. **Removing a letter:** guests can't delete letters (removed Nov 8 at the designer's request). Anne removes one by deleting its row in the Messages tab, or hides it by setting `hidden` to TRUE.
 4. **Confirm these interpretations with the designer:**
    - The mobile hamburger menu has no Figma design (built as a black overlay).
-   - Note tilt on the arch is automatic.
+   - Note tilt on the arch: left half leans counter-clockwise, right half the mirror (clockwise), 30–41° per letter (designer, Nov 8; her example is on Page 1: right envelope −31.6°, the final-pages left envelope +41°).
    - Food restrictions are optional when not attending.
    - Itinerary lines are continuous between dots (the mobile Figma shows short segments).
    - The mobile landing's 4th prenup thumbnail reuses photo 1 (as in Figma).
@@ -239,12 +238,6 @@ jobs:
    - Mobile RSVP radios are stacked (the invitation wording "Joyfully accepts / Respectfully declines" doesn't fit side by side at 402).
    - Figma: the old dress photo columns and the 3rd itinerary row were hidden, not deleted (Frame 824 98:4, mobile 87:112860 / 87:112870, itinerary rows 87:64685 / 87:112851 / 87:64527 / 87:112705).
 5. **Sharper flowers (optional):** re-export the flowers from Figma with the background hidden instead of keying it out.
-
-### Guests deleting their own letter
-- On send, `api.js` makes a random 32-character token, sends it with the letter and keeps `{id, token}` in this browser's localStorage (`ar_mine`).
-- Apps Script stores only the SHA-256 of the token (`delete_key`, the 10th column of Messages). `POST {action:"delete", id, token}` deletes the row if the hash matches.
-- `message.js` marks the guest's own letters on the arch (`.pin.is-own`) and adds the × button; the confirm box is `#delModal` in `message.html`.
-- If the Sheet was already set up before this change, add a `delete_key` header in column J of Messages (new rows fill it automatically).
 
 ## 9. Change log
 
@@ -266,7 +259,7 @@ jobs:
   - Message box and inbox letter sizes now follow the type-scale variables (set in `message.js`).
 - **Nov 4, 2026 (3rd round):** designer asked for fixes directly in the original Figma frames (no copies).
   - Figma + site: every footer (desktop + mobile) now has the nav links under "Thank you"; all buttons use the "Write a Message" style (hug, 32 / 20%, 20/60 padding; mobile 24 and 16/40); first carousel card back to 573×980 and all cards top-aligned (desktop + mobile); remaining old Leave a Message frames got the 60 / 32 type sizes. Stars moved to the originals.
-  - Site: guests can delete their own letter (see "Guests deleting their own letter"); new test `tools/test_delete_flow.py`.
+  - Site: guests could delete their own letter; test `tools/test_delete_flow.py`. (Both removed Nov 8, 8th round.)
 - **Nov 4, 2026 (4th round):** Figma originals + site.
   - Footers: every footer (desktop + mobile) is now the landing footer: "Thank you" + RSVP button, no nav links.
   - Our Story carousel: all cards 440 wide with 400×600 photos, height hugs the caption (mobile cards hug too).
@@ -286,3 +279,6 @@ jobs:
   - Our Story carousel: every card the same height (site: `align-items: stretch`; Figma: all cards fixed to the tallest, desktop 822, mobile 530). Mobile captions 18, same as the hero intro (Figma was 16.3, site was 24). Desktop captions were already 32 = hero intro; the bigger, different-looking captions the designer saw were the fallback fonts showing for a minute between two deploy commits.
   - RSVP sub-headings (First and Last Name, Email Address, Will you be attending?, Special dietary requirements) in Playfair Display at `--fs-body` (32 desktop, 24 mobile), same as the Dress Code heading.
   - Google: created the Sheet, the RSVP Google Form and the Apps Script web app in the designer's account; `config.js` now has `SHEETS_URL` + `RSVP_FORM`, so the site is out of demo mode. New test `tools/test_rsvp_form.py`.
+- **Nov 8, 2026 (8th round):** Leave a Message.
+  - Envelope tilt follows the side of the arch: left half counter-clockwise, right half clockwise (mirror), 30–41° depending on the letter (`tiltFor(id, s)` in `notes.js`, applied in `placePin` so the letter being placed flips as it crosses the top).
+  - Guest delete removed: no × on letters, no confirm box, no delete token (`message.js`, `message.html`, `api.js`, CSS); `tools/test_delete_flow.py` removed. Figma never had it, so no Figma change.
