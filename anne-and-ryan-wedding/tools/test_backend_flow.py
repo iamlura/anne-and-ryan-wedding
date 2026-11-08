@@ -11,7 +11,7 @@ async def main():
         pg.on('pageerror', lambda e: errs.append(str(e))); pg.on('console', lambda m: errs.append(m.text) if m.type=='error' else None)
         await pg.goto('http://127.0.0.1:8765/rsvp.html')
         print('submit disabled initially', await pg.is_disabled('#rsvpSubmit'))
-        await pg.fill('#name','Jane Doe'); await pg.fill('#email','jane@x.com'); await pg.click('label.radio:has-text("Yes")')
+        await pg.fill('#name','Jane Doe'); await pg.fill('#email','jane@x.com'); await pg.click('label.radio:has-text("Joyfully accepts")')
         print('disabled w/o food', await pg.is_disabled('#rsvpSubmit'))
         await pg.fill('#food','None'); print('disabled w/ food', await pg.is_disabled('#rsvpSubmit'))
         await pg.click('#rsvpSubmit'); await pg.wait_for_timeout(800)
