@@ -5,21 +5,20 @@
    Used by elements with data-c="...":
      date       "December 26, 2026"   (landing venue block, Event Details)
      weekday    "Saturday"            (landing, mobile)
-     time       "3:00 PM"
-     venue      "San Sebastian Cathedral"
-     rsvpBy     "Dec 1, 2026"         (RSVP intro)
+     time       "2:30 PM"
+     venue      "Minor Basilica of San Sebastian"
+     rsvpBy     "Dec 5, 2026"         (RSVP intro)
      itinerary  the <ol class="timeline"> lists (landing + Event Details)
      calendar   the Sun–Sat strip on the landing page (built from date)
 */
 window.WEDDING = {
   date: "2026-12-26", // YYYY-MM-DD
-  time: "3:00 PM",
-  venue: "San Sebastian Cathedral",
-  rsvpBy: "Dec 1, 2026",
+  time: "2:30 PM",
+  venue: "Minor Basilica of San Sebastian", // Quiapo, Manila (from the printed invitation)
+  rsvpBy: "Dec 5, 2026",
   itinerary: [
-    { time: "3:00 PM", what: "Wedding Mass at San Sebastian Cathedral" },
-    { time: "4:00 PM", what: "Reception at Manila Hotel" },
-    { time: "6:00 PM", what: "Dancing and Cocktail Hour" },
+    { time: "2:30 PM", what: "Ceremony at Minor Basilica of San Sebastian" },
+    { time: "To follow", what: "Cocktail hour and dinner at Champagne Room, The Manila Hotel" },
   ],
 };
 

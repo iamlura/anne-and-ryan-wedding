@@ -17,7 +17,7 @@
     };
   }
 
-  // Submit stays at 50% until every field is done. Food restrictions only apply when attending.
+  // Submit stays at 50% until every field is done. Dietary requirements only apply when attending.
   function complete(v) {
     if (!v.name || !emailOk(v.email) || !v.attending) return false;
     if (v.attending === "Yes" && !v.food) return false;
@@ -39,7 +39,7 @@
     const v = values();
     if (!complete(v)) return;
     if (window.ContentFilter && (ContentFilter.hasBadWords(v.name) || ContentFilter.hasBadWords(v.food))) {
-      msg.textContent = "Please keep it friendly — check your name and food restrictions.";
+      msg.textContent = "Please keep it friendly — check your name and dietary requirements.";
       return;
     }
     btn.disabled = true; btn.textContent = "sending…"; msg.textContent = "";
