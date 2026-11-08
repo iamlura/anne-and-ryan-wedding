@@ -447,14 +447,6 @@ html.snap-y { scroll-snap-type: y proximity; }
 .modal__text { font-family: var(--serif); font-size: 18px; line-height: 1.4; }
 
 /* delete button on letters sent from this browser (not in Figma) */
-.pin.is-own { z-index: 4; }
-.pin .del {
-  position: absolute; top: 26%; right: 20%; z-index: 7; width: 26px; height: 26px; padding: 0; border: 1px solid #fff; border-radius: 50%;
-  background: #000; color: #fff; font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center;
-  opacity: 0; transition: opacity .2s; pointer-events: auto; cursor: pointer;
-}
-.pin.is-own:hover .del, .pin .del:focus-visible { opacity: 1; }
-@media (hover: none) { .pin.is-own .del { opacity: 1; } }
 .shake { animation: shake .35s; }
 @keyframes shake { 25% { translate: -8px 0; } 75% { translate: 8px 0; } }
 
