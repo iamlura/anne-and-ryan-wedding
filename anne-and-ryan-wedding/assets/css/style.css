@@ -13,14 +13,10 @@
   --muted: #7d7d7d;
   --lav: #c7b8d4;
   --lav-dark: #9a80b0;
-  /* Fonts follow the printed invitation (Nov 8): Cormorant Garamond everywhere,
-     Pinyon Script as the free Google stand-in for the invite's Citadel Script.
-     --letter-sans is only the "Modern" choice in the guest letter font picker. */
-  --serif: "Cormorant Garamond", Georgia, serif;
-  --serif-sc: "Cormorant SC", "Cormorant Garamond", Georgia, serif;
-  --sans: "Cormorant Garamond", Georgia, serif;
-  --script: "Pinyon Script", "Brush Script MT", cursive;
-  --letter-sans: "Afacad", "Futura", "Century Gothic", sans-serif;
+  --serif: "Playfair Display", Georgia, serif;
+  --serif-sc: "Playfair Display SC", Georgia, serif;
+  --sans: "Afacad", "Futura", "Century Gothic", sans-serif;
+  --script: "Carattere", "Brush Script MT", cursive;
 
   /* Type scale (set by the designer on the landing page, Nov 2026).
      Change a size here and every page follows. Mobile values are in the ≤760px block. */
@@ -253,7 +249,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
    ========================================================= */
 html.snap-y { scroll-snap-type: y proximity; }
 .details { position: relative; overflow: hidden; padding: calc(260 * var(--u)) calc(200 * var(--u)) calc(300 * var(--u)); }
-.details__bg { position: absolute; left: 0; top: 0; width: 100%; height: calc(2767 * var(--u)); object-fit: cover; object-position: top; opacity: .1; mix-blend-mode: exclusion; pointer-events: none; }
 .details section { position: relative; scroll-snap-align: start; scroll-margin-top: calc(120 * var(--u)); }
 .d-s1 { display: flex; flex-direction: column; gap: calc(60 * var(--u)); padding-bottom: calc(200 * var(--u)); }
 .d-head { text-align: center; display: flex; flex-direction: column; gap: calc(12 * var(--u)); }
@@ -489,7 +484,7 @@ html.snap-y { scroll-snap-type: y proximity; }
   .btn { padding: 16px 40px; }
   .footer { align-items: flex-start; text-align: left; padding: 37px 52px; gap: 30px; }
   .footer .t1 { font-size: 36px; }
-  .footer .t2 { font-size: 24px; white-space: nowrap; } /* one line, as in Figma (Pinyon Script runs wider) */
+  .footer .t2 { font-size: 24px; }
   .footer--rsvp { padding: 37px 52px; }
 
   .hero { height: 100svh; min-height: 640px; max-height: 896px; }
@@ -545,7 +540,6 @@ html.snap-y { scroll-snap-type: y proximity; }
   .story-carousel .arrow--next { right: 6px; }
 
   .details { padding: 100px 20px 60px; }
-  .details__bg { height: 1400px; }
   .d-s1 { gap: 42px; padding-bottom: 210px; }
   .d-head { gap: 40px; }
   .d-head p { text-align: left; }
@@ -564,6 +558,7 @@ html.snap-y { scroll-snap-type: y proximity; }
   .d-more { gap: 42px; margin-top: 42px; }
   .d-block { gap: 12px; }
   .d-block h2 { font-size: var(--fs-head); text-align: center; }
+  .d-block p { font-family: var(--serif); } /* mobile body copy is Playfair in Figma, same as the dress code text */
 
   .rsvp { padding: 110px 16px 80px; min-height: 0; }
   .rsvp__head p { width: auto; text-align: left; }
