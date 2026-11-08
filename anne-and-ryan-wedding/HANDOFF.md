@@ -6,15 +6,15 @@ This file explains how the site was made, step by step, so you can rebuild it th
 - **Repo:** https://github.com/iamlura/anne-and-ryan-wedding
 - **Figma:** https://www.figma.com/design/pAVTZMkGiY9VYrzp7IeVJO/Anne-wedding-website?node-id=87-64447 (page "final pages")
 
-## Status (updated Nov 8, 2026, 6th round)
+## Status (updated Nov 8, 2026, 7th round)
 
 | | |
 |---|---|
 | Site | Live on GitHub Pages since Oct 8, 2026. All 5 pages and the full message flow work. |
-| Data | **Demo mode.** Google Sheets is not connected yet, so RSVPs and letters only save in each visitor's own browser. Connect it before sharing the link with guests (section 7). |
+| Data | **Live since Nov 8.** RSVPs go to the Google Form "Anne & Ryan · RSVP"; letters go to the Google Sheet "Anne & Ryan wedding" through Apps Script. Both are in the designer's Google account (jaeyoung.laura@gmail.com); she shares them with Anne. Links in section 7. |
 | Waiting on the designer | New content and some design changes are coming (the site is set up for this, see "Changing content" below). |
-| Figma vs site | In sync as of Nov 8 (6th round). The starred original frames on "final pages" are the reference. |
-| Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. **Nov 4 (3rd round):** one button style everywhere, guests can delete their own letter. **Nov 4 (4th round):** every footer = "Thank you" + RSVP button (nav links removed again), all carousel cards 440 wide with 400×600 photos, prenup photos link to the Our Story carousel, new green tuxedo photo. **Nov 8 (5th round):** all info matched to the printed invitation (2:30 PM, Minor Basilica of San Sebastian, reception at Champagne Room, RSVP by Dec 5), new dress code with color swatches, new Reception / Parking / Kindly Note / Gifts section. **Nov 8 (6th round):** invitation fonts undone (back to Afacad / Playfair / Carattere), Event Details background image removed. Details in section 9. |
+| Figma vs site | In sync as of Nov 8 (7th round). The starred original frames on "final pages" are the reference. |
+| Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. **Nov 4 (3rd round):** one button style everywhere, guests can delete their own letter. **Nov 4 (4th round):** every footer = "Thank you" + RSVP button (nav links removed again), all carousel cards 440 wide with 400×600 photos, prenup photos link to the Our Story carousel, new green tuxedo photo. **Nov 8 (5th round):** all info matched to the printed invitation (2:30 PM, Minor Basilica of San Sebastian, reception at Champagne Room, RSVP by Dec 5), new dress code with color swatches, new Reception / Parking / Kindly Note / Gifts section. **Nov 8 (6th round):** invitation fonts undone (back to Afacad / Playfair / Carattere), Event Details background image removed. **Nov 8 (7th round):** story cards all the same height, RSVP sub-headings in Playfair, Google Form for RSVPs + Sheets connected for letters. Details in section 9. |
 
 ---
 
@@ -170,6 +170,7 @@ python3 screenshots.py index,story,details,rsvp,message 402
 python3 test_message_flow.py                        # desktop; W=402 for mobile
 python3 mock_apps_script.py & python3 test_backend_flow.py
 python3 test_delete_flow.py                         # guest deletes their own letter (demo + mock backend)
+python3 test_rsvp_form.py                           # RSVP page posts the right fields to the Google Form (intercepted, nothing sent)
 ```
 
 Compare the screenshots against the Figma frames at the same widths (the starred originals, section 2). `screenshots.py` forces lazy images to load so full-page shots are complete. The flow test seeds 9 letters, writes one, drags 5 flowers (checks the max of 4), drags the letter onto the arch, sends, opens the inbox with a wrong and then the right password, opens a letter and downloads a PDF.
@@ -214,17 +215,18 @@ jobs:
 - **How the Nov rounds were published (no git):** `git push` from the sandbox was refused (no token), so Claude uploaded through GitHub's web upload page in the browser the designer was signed in to: open `github.com/iamlura/anne-and-ryan-wedding/upload/main/anne-and-ryan-wedding/<folder>`, add the changed files, "Commit directly to main". One upload page per folder (e.g. `assets/css`, `assets/img`, then the root for the .html files). The designer signs in herself; never type her password.
 - **Check a deploy:** about a minute after the commit, compare the live files with your local copies (e.g. `curl -s https://iamlura.github.io/anne-and-ryan-wedding/assets/css/style.css | sha256sum`).
 - **Copies outside GitHub:** the designer's `Downloads\anne-and-ryan-wedding` folder (may be older). GitHub is the source of truth.
-- **Connect Google Sheets** (not done yet, the site is in demo mode):
-  1. Create a Google Sheet (e.g. "Anne & Ryan wedding") → Extensions → Apps Script → paste all of `apps-script/Code.gs` → Save.
-  2. Run `setup` once and approve. This creates the `RSVP` and `Messages` tabs and sets the inbox password `261226`.
-  3. Deploy → New deployment → Web app → Execute as **Me**, access **Anyone** → copy the `/exec` URL.
-  4. Paste it into `anne-and-ryan-wedding/assets/js/config.js` as `SHEETS_URL` and commit. The yellow "Demo mode" badge disappears once it's live.
-  5. Test once: send an RSVP and a letter, check both rows in the Sheet, then open the secret inbox.
-  6. If `Code.gs` changes later: Deploy → Manage deployments → edit → New version (the URL stays the same).
+- **Google Sheets + Form (connected Nov 8, designer's account jaeyoung.laura@gmail.com):**
+  - Sheet "Anne & Ryan wedding": https://docs.google.com/spreadsheets/d/1oapFYPqkLcdA2HVhomGbhMsxTLJFqUznyo01xG-Pj1E/edit (tabs: `Form Responses 1` = RSVPs, `Messages` = letters, empty `Sheet1`).
+  - RSVP Google Form "Anne & Ryan · RSVP" (edit): https://docs.google.com/forms/d/1_ThJxf8_-yC91_bBPNux_fBBG6INbunYO0SL8dQRLIk/edit . Same 4 questions as the site. The site's RSVP page keeps the Figma design and posts into the form in the background (`RSVP_FORM` in `config.js`, `submitRSVP` in `api.js`). Google doesn't let the page read the reply, so only network errors show; check the Responses tab.
+  - Apps Script project "Anne & Ryan wedding backend" (Extensions → Apps Script from the Sheet). Web app URL (`SHEETS_URL`): https://script.google.com/macros/s/AKfycbwQhSGcBC5b9NM1cZOeUO0G36JdCyobdRdrUZ8NVYFaJoL0n42SrGXRBiJHPDmX3vpBWg/exec (Execute as Me, access Anyone). Handles letters, the arch, the 261226 inbox and guest deletes.
+  - Tested Nov 8: a letter went through save → arch → inbox → delete, and an RSVP landed in the form + Sheet. Both test entries were deleted.
+  - How it was set up (to redo it): new Sheet → Extensions → Apps Script → paste `apps-script/Code.gs` → run `setup` (approve Google's prompt: Advanced → Go to project → Allow). `setup` makes the `Messages` tab, the inbox password and the RSVP form, and logs `RSVP_FORM` values for `config.js`. Then Deploy → New deployment → Web app → Me / Anyone (approve again) → paste the `/exec` URL into `SHEETS_URL`.
+  - If `Code.gs` changes later: paste it again, then Deploy → Manage deployments → edit → New version (the URL stays the same).
+  - Tests never write to the live Sheet: `test_message_flow.py` and `test_delete_flow.py` force demo mode or the local mock.
 
 ## 8. Open items
 
-1. **Connect Google Sheets** (section 7) and test with the real URL. So far it's only been tested against `tools/mock_apps_script.py`. Do this before guests get the link, or their RSVPs won't reach Anne.
+1. **Share with Anne:** the Sheet and the RSVP form are in the designer's Google account. Share both with Anne (Share → her email, Editor) so she sees RSVPs and letters.
 2. **Prenup photos.** The Nov landing design replaced the "See Prenuptial Photos" button with a "Prenuptial Photos" heading, so the button was removed from the site. If a full album is wanted later, it needs a design (shared album link or a `gallery.html` with resized copies: long edge ≤1800px, JPEG q78).
 3. **Delete-my-letter UI is not in Figma.** Built as a small round × on the guest's own letter (shows on hover, always on phones) plus a confirm box. Only works in the browser the letter was sent from; anyone else who wants a letter removed can ask Anne (delete the row in the Sheet, or set `hidden` to TRUE).
 4. **Confirm these interpretations with the designer:**
@@ -280,3 +282,7 @@ jobs:
 - **Nov 8, 2026 (6th round):** designer didn't like the invitation fonts. Figma originals + site.
   - Fonts back to Afacad / Playfair Display / Playfair Display SC / Carattere (site CSS variables, font links, letter picker). In Figma each text layer got its previous font back; the new Reception / Parking / Kindly Note / Gifts text follows the dress code styles. Mobile footer texts back to 299 wide.
   - Event Details background image removed (site: `details__bg` img + CSS; Figma: "image 12" hidden on desktop + mobile).
+- **Nov 8, 2026 (7th round):** Figma originals + site + Google.
+  - Our Story carousel: every card the same height (site: `align-items: stretch`; Figma: all cards fixed to the tallest, desktop 822, mobile 530). Mobile captions 18, same as the hero intro (Figma was 16.3, site was 24). Desktop captions were already 32 = hero intro; the bigger, different-looking captions the designer saw were the fallback fonts showing for a minute between two deploy commits.
+  - RSVP sub-headings (First and Last Name, Email Address, Will you be attending?, Special dietary requirements) in Playfair Display at `--fs-body` (32 desktop, 24 mobile), same as the Dress Code heading.
+  - Google: created the Sheet, the RSVP Google Form and the Apps Script web app in the designer's account; `config.js` now has `SHEETS_URL` + `RSVP_FORM`, so the site is out of demo mode. New test `tools/test_rsvp_form.py`.
