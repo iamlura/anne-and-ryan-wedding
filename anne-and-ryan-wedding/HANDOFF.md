@@ -6,15 +6,15 @@ This file explains how the site was made, step by step, so you can rebuild it th
 - **Repo:** https://github.com/iamlura/anne-and-ryan-wedding
 - **Figma:** https://www.figma.com/design/pAVTZMkGiY9VYrzp7IeVJO/Anne-wedding-website?node-id=87-64447 (page "final pages")
 
-## Status (updated Nov 8, 2026, 8th round)
+## Status (updated Nov 8, 2026, 9th round)
 
 | | |
 |---|---|
 | Site | Live on GitHub Pages since Oct 8, 2026. All 5 pages and the full message flow work. |
 | Data | **Live since Nov 8.** RSVPs go to the Google Form "Anne & Ryan · RSVP"; letters go to the Google Sheet "Anne & Ryan wedding" through Apps Script. Both are in the designer's Google account (jaeyoung.laura@gmail.com); she shares them with Anne. Links in section 7. |
 | Waiting on the designer | New content and some design changes are coming (the site is set up for this, see "Changing content" below). |
-| Figma vs site | In sync as of Nov 8 (8th round). The starred original frames on "final pages" are the reference. |
-| Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. **Nov 4 (3rd round):** one button style everywhere, guests can delete their own letter. **Nov 4 (4th round):** every footer = "Thank you" + RSVP button (nav links removed again), all carousel cards 440 wide with 400×600 photos, prenup photos link to the Our Story carousel, new green tuxedo photo. **Nov 8 (5th round):** all info matched to the printed invitation (2:30 PM, Minor Basilica of San Sebastian, reception at Champagne Room, RSVP by Dec 5), new dress code with color swatches, new Reception / Parking / Kindly Note / Gifts section. **Nov 8 (6th round):** invitation fonts undone (back to Afacad / Playfair / Carattere), Event Details background image removed. **Nov 8 (7th round):** story cards all the same height, RSVP sub-headings in Playfair, Google Form for RSVPs + Sheets connected for letters. **Nov 8 (8th round):** envelopes on the right half of the arch tilt the mirror way, guest delete removed. Details in section 9. |
+| Figma vs site | In sync as of Nov 8 (9th round). The starred original frames on "final pages" are the reference. |
+| Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. **Nov 4 (3rd round):** one button style everywhere, guests can delete their own letter. **Nov 4 (4th round):** every footer = "Thank you" + RSVP button (nav links removed again), all carousel cards 440 wide with 400×600 photos, prenup photos link to the Our Story carousel, new green tuxedo photo. **Nov 8 (5th round):** all info matched to the printed invitation (2:30 PM, Minor Basilica of San Sebastian, reception at Champagne Room, RSVP by Dec 5), new dress code with color swatches, new Reception / Parking / Kindly Note / Gifts section. **Nov 8 (6th round):** invitation fonts undone (back to Afacad / Playfair / Carattere), Event Details background image removed. **Nov 8 (7th round):** story cards all the same height, RSVP sub-headings in Playfair, Google Form for RSVPs + Sheets connected for letters. **Nov 8 (8th round):** envelopes on the right half of the arch tilt the mirror way, guest delete removed. **Nov 8 (9th round):** on "Place your letter" the letter starts in the middle. Details in section 9. |
 
 ---
 
@@ -88,7 +88,7 @@ Other nodes touched in the Nov rounds:
 | 50% opacity if both fields not finished, no inappropriate content | Next disabled until name + message; `filter.js` + server check |
 | drag flowers, max 4, allow delete | pointer-event drag from the palette; drag off the envelope or × to delete |
 | user can go next without flowers | Next is always enabled on the arrange step |
-| drag letter; if dropped outside the arch it snaps to the nearest line; no overlap, other notes move to make space | `notes.js`: `nearestS()` projects onto the arch path; `layout()` (pool-adjacent-violators) spreads notes with minimum movement; neighbours slide live while dragging |
+| drag letter; if dropped outside the arch it snaps to the nearest line; no overlap, other notes move to make space | `notes.js`: `nearestS()` projects onto the arch path; `layout()` (pool-adjacent-violators) spreads notes with minimum movement; neighbours slide live while dragging. Since Nov 8 the letter starts in the middle (desktop: just above "Place your letter"; mobile: centre of the arch) and Send is at 50% until it's on the arch |
 | back to the first page with the new note added | after Send → home step, new pin animates in |
 | secret page: Anne clicks Leave a Message 5 times → password 261226 | 5 taps within 4s on the heading or nav link → modal → password checked by Apps Script |
 | browse all notes / click note to open, dissolve animation / clicking next shows envelope again | inbox overlay, `.viewer.is-open` opacity + blur crossfade, Next resets to the envelope |
@@ -282,3 +282,7 @@ jobs:
 - **Nov 8, 2026 (8th round):** Leave a Message.
   - Envelope tilt follows the side of the arch: left half counter-clockwise, right half clockwise (mirror), 30–41° depending on the letter (`tiltFor(id, s)` in `notes.js`, applied in `placePin` so the letter being placed flips as it crosses the top).
   - Guest delete removed: no × on letters, no confirm box, no delete token (`message.js`, `message.html`, `api.js`, CSS); `tools/test_delete_flow.py` removed. Figma never had it, so no Figma change.
+- **Nov 8, 2026 (9th round):** "Place your letter" step.
+  - The letter now waits in the middle instead of on the left of the arch: desktop just above the "Place your letter" heading, mobile in the centre of the arch, tilted 41° like the Figma envelope (`placeHome` in `message.js`). It resets there each time a guest comes from the flowers step. Dropping it anywhere snaps it to the nearest spot on the arch; arrow keys start at the top of the arch.
+  - Send Message stays at 50% (disabled) until the letter is on the arch.
+  - Figma: moved the envelope ("Frame 107") on Leave a Message 5 (desktop 87:111355, above the heading) and its mobile frame (87:158526, centre of the arch).
