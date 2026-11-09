@@ -465,7 +465,7 @@ html.snap-y { scroll-snap-type: y proximity; }
   :root {
     --u: 0.5px;
     --fs-title: 40px; --fs-head: 32px; --fs-val: 32px; --fs-item: 28px;
-    --fs-body: 24px; --fs-label: 18px; --fs-btn: 24px; --fs-nav: 26px; --fs-input: 32px;
+    --fs-body: 24px; --fs-label: 18px; --fs-btn: 24px; --fs-nav: 26px; --fs-input: 24px;
   }
 
   .nav { justify-content: flex-end; padding: 0 16px; height: 64px; }
