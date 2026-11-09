@@ -83,6 +83,71 @@ function setupRsvpForm_(ss, props) {
   }));
 }
 
+/* ---------- guest list (Nov 9) ----------
+   Run `setupGuests` once from the editor: it adds the "Guests" tab Anne fills in, and a "How to fill" tab.
+   One row per guest. Rows with the same Party are one invitation (one code, one email).
+   Grey columns are filled by the site/script later (invite codes, RSVP answers); Anne doesn't type in them. */
+const GUEST_SHEET = "Guests";
+const GUEST_HEAD = ["Party", "Guest name", "Email", "Seats reserved", "Plus-one allowed", "Child", "Invited to", "Table", "Notes",
+                    "Invite code", "Invite sent", "RSVP", "Dietary requirements", "Replied at"];
+const GUEST_AUTO_FROM = 10;   // column J onwards is automatic
+
+function setupGuests() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName(GUEST_SHEET);
+  if (!sh) sh = ss.insertSheet(GUEST_SHEET, 0);
+  if (sh.getLastRow() === 0) sh.appendRow(GUEST_HEAD);
+  const n = GUEST_HEAD.length;
+  sh.setFrozenRows(1); sh.setFrozenColumns(2);
+  const head = sh.getRange(1, 1, 1, n);
+  head.setFontWeight("bold").setBackground("#511d21").setFontColor("#ffffff").setVerticalAlignment("middle");
+  sh.getRange(1, GUEST_AUTO_FROM, 1, n - GUEST_AUTO_FROM + 1).setBackground("#8a8a8a");
+  sh.getRange(2, GUEST_AUTO_FROM, 999, n - GUEST_AUTO_FROM + 1).setBackground("#f3f3f3");
+  sh.setRowHeight(1, 32);
+  [170, 200, 220, 110, 120, 70, 190, 70, 200, 110, 110, 160, 220, 140].forEach(function (w, i) { sh.setColumnWidth(i + 1, w); });
+  const yesNo = SpreadsheetApp.newDataValidation().requireValueInList(["Yes", "No"], true).setAllowInvalid(false).build();
+  sh.getRange(2, 5, 999, 2).setDataValidation(yesNo);
+  sh.getRange(2, 7, 999, 1).setDataValidation(SpreadsheetApp.newDataValidation()
+    .requireValueInList(["Ceremony & Reception", "Ceremony only", "Reception only"], true).build());
+  sh.getRange(2, 4, 999, 1).setDataValidation(SpreadsheetApp.newDataValidation().requireNumberBetween(1, 20).build());
+  sh.getRange(2, 3, 999, 1).setDataValidation(SpreadsheetApp.newDataValidation().requireTextIsEmail().setAllowInvalid(true).build());
+  const notes = ["Same name on every row of one invitation, e.g. Santos Family", "One person per row, as it should appear on the RSVP",
+    "Where the invite code is sent. Only needed on one row of the party", "Seats for the whole party, on the first row (counts plus-ones)",
+    "Yes = this party may bring someone not named", "Yes if this guest is a child", "Which parts this guest is invited to",
+    "Table number (can be filled in later)", "Anything else, only Anne sees this",
+    "Automatic: made when invites are sent", "Automatic: date the email went out", "Automatic: the guest's answer",
+    "Automatic: from the RSVP form", "Automatic: when they answered"];
+  notes.forEach(function (t, i) { sh.getRange(1, i + 1).setNote(t); });
+  // how-to tab
+  let how = ss.getSheetByName("How to fill");
+  if (!how) how = ss.insertSheet("How to fill", 1);
+  how.clear();
+  const rows = [
+    ["How to fill the Guests tab"],
+    ["1. One row per guest. Guests who share one invitation get the same Party name (e.g. Santos Family)."],
+    ["2. Put the party's email on one of its rows. That's where the invite code goes."],
+    ["3. Seats reserved: the total for the party, on its first row. If it's more than the names listed, the extra seats are plus-ones."],
+    ["4. Plus-one allowed, Child and Invited to: pick from the dropdown."],
+    ["5. Table: fill in whenever the seating is ready. Guests see it on the site after they log in."],
+    ["6. Leave the grey columns alone. The site fills them in (invite code, RSVP answers)."],
+    [""],
+    ["Example"],
+  ];
+  how.getRange(1, 1, rows.length, 1).setValues(rows);
+  how.getRange(1, 1).setFontWeight("bold").setFontSize(14);
+  how.getRange(9, 1).setFontWeight("bold");
+  const ex = [GUEST_HEAD.slice(0, 9),
+    ["Santos Family", "Maria Santos", "maria@example.com", 4, "No", "No", "Ceremony & Reception", 5, ""],
+    ["Santos Family", "Jose Santos", "", "", "No", "No", "Ceremony & Reception", 5, ""],
+    ["Santos Family", "Ana Santos", "", "", "No", "Yes", "Ceremony & Reception", 5, ""],
+    ["Santos Family", "Miguel Santos", "", "", "No", "No", "Ceremony & Reception", 5, ""],
+    ["Paolo Reyes", "Paolo Reyes", "paolo@example.com", 2, "Yes", "No", "Reception only", 8, "Plus-one not named yet"]];
+  how.getRange(10, 1, ex.length, 9).setValues(ex);
+  how.getRange(10, 1, 1, 9).setFontWeight("bold").setBackground("#511d21").setFontColor("#ffffff");
+  how.setColumnWidth(1, 170); how.setColumnWidth(2, 160); how.setColumnWidth(3, 200); how.setColumnWidth(7, 190); how.setColumnWidth(9, 200);
+  ss.setActiveSheet(sh);
+}
+
 /* Change the inbox password: edit and run this. */
 function setPassword() {
   PropertiesService.getScriptProperties().setProperty("INBOX_PASSWORD", "261226");
