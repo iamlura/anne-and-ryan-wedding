@@ -20,6 +20,7 @@ async def main():
         print('demo badge present', await pg.locator('.demo-badge').count())
         await pg.click('[data-go=write]'); await pg.fill('#from','Laura'); await pg.fill('#body','Hello you two!')
         await pg.click('#writeNext'); await pg.click('[data-go=place]'); await pg.wait_for_timeout(300)
+        await pg.focus('.pin.is-mine'); await pg.keyboard.press('ArrowUp'); await pg.wait_for_timeout(300)  # place the letter on the arch (Send is disabled until then, since round 9)
         await pg.click('#sendBtn'); await pg.wait_for_timeout(1000)
         print('pins on arch', await pg.locator('#stageHome .pin').count())
         await pg.click('[data-go=write]'); await pg.fill('#from','Troll'); await pg.fill('#body','you are bobo')
