@@ -7,15 +7,16 @@
   <link rel="icon" href="assets/img/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Afacad&family=Carattere&family=Playfair+Display&family=Playfair+Display+SC&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Afacad&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Cormorant+SC:wght@500&family=Pinyon+Script&display=swap">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="preload" as="image" href="assets/img/arch.webp">
 </head>
 <body class="page-message">
   <header class="nav" data-nav>
-    <a class="brand" href="index.html">Anne &amp; Ryan</a>
     <a href="story.html">Our Story</a>
-    <a href="details.html">Event Details</a>
+    <a href="details.html">The Details</a>
+    <a href="faq.html">FAQ</a>
+    <a class="brand" href="index.html" aria-label="Anne &amp; Ryan, home"><img src="assets/img/monogram-nav.svg" alt=""></a>
     <a href="rsvp.html">RSVP</a>
     <a href="message.html" aria-current="page" data-secret-tap>Leave a Message</a>
     <button class="burger" aria-label="Open menu" data-burger><span></span><span></span></button>
@@ -108,12 +109,13 @@
     </section>
   </main>
 
-  <footer class="footer footer--rsvp">
-    <div>
-      <p class="t1">Thank you,</p>
-      <p class="t2">We look forward to celebrating with you</p>
+  <footer class="footer">
+    <div class="footer__head">
+      <p class="t1">RSVP</p>
+      <p class="t2">Please respond by <span data-c="rsvpByLong">December 5, 2026</span> so we can save you a seat.</p>
     </div>
-    <a class="btn btn--outline" href="rsvp.html">RSVP</a>
+    <a class="btn btn--outline" href="rsvp.html">Complete RSVP Form</a>
+    <div class="footer__bar"><span class="sig">Anne &amp; Ryan</span><span class="sm">December 26, 2026 · Manila</span></div>
   </footer>
 
   <!-- secret: password -->
@@ -152,6 +154,7 @@
   <script src="assets/js/config.js"></script>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/filter.js"></script>
+  <script src="assets/js/content.js"></script>
   <script src="assets/js/common.js"></script>
   <script src="assets/js/notes.js"></script>
   <script src="assets/js/message.js"></script>

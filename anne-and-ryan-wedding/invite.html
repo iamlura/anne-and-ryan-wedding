@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your invitation · Anne &amp; Ryan</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Afacad&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Cormorant+SC:wght@500&family=Pinyon+Script&display=swap">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <!-- invite code gate. The email link is invite.html?code=AR-XXXXXX; after a match the guest goes on to the site (or to ?next=). -->
+  <main class="gate">
+    <img class="gate__bg" src="assets/img/hero-stairs.jpg" alt="">
+    <div class="gate__inner">
+      <div class="gate__top">
+        <div class="monogram" aria-hidden="true"><img src="assets/img/monogram-pill.svg" alt=""></div>
+        <h1>Anne &amp; Ryan</h1>
+      </div>
+
+      <!-- 1. enter code (+ wrong code) -->
+      <div class="step is-active" data-gstep="code">
+        <p class="gate__msg">You’re invited! Please enter the invite code from your email to open the invitation.</p>
+        <form class="gate__form" id="codeForm" novalidate>
+          <input class="gate__field" id="code" name="code" placeholder="Invite code" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" aria-label="Invite code">
+          <p class="gate__err" id="codeErr" role="alert" hidden>That code doesn’t match. Please check your email and try again.</p>
+          <button class="pill-btn" id="codeBtn" type="submit">Open Invitation</button>
+          <button class="link-btn" type="button" data-go="forgot">Forgot your code?</button>
+        </form>
+      </div>
+
+      <!-- 2. forgot -->
+      <div class="step" data-gstep="forgot">
+        <p class="gate__msg">Forgot your code? Enter the email your invitation was sent to and we’ll send it again.</p>
+        <form class="gate__form" id="forgotForm" novalidate>
+          <input class="gate__field" id="femail" type="email" placeholder="Email address" autocomplete="email" maxlength="120" aria-label="Email address" style="letter-spacing:0">
+          <p class="gate__err" id="forgotErr" role="alert" hidden></p>
+          <button class="pill-btn" id="forgotBtn" type="submit">Send My Code</button>
+          <button class="link-btn" type="button" data-go="code">Back</button>
+        </form>
+      </div>
+
+      <!-- 3. sent -->
+      <div class="step" data-gstep="sent">
+        <p class="gate__msg" id="sentMsg">Check your email! We’ve sent your invite code.</p>
+        <div class="gate__form">
+          <button class="pill-btn" type="button" data-go="code">Enter My Code</button>
+          <button class="link-btn" type="button" id="sendAgain">Didn’t get it? Send again</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/invite.js"></script>
+</body>
+</html>

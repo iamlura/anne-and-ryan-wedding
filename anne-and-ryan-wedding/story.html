@@ -7,129 +7,51 @@
   <link rel="icon" href="assets/img/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Afacad&family=Carattere&family=Playfair+Display&family=Playfair+Display+SC&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Afacad&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Cormorant+SC:wght@500&family=Pinyon+Script&display=swap">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body class="page-story">
-  <header class="nav" data-nav data-nav-mobile-light>
-    <a class="brand" href="index.html">Anne &amp; Ryan</a>
+<body>
+  <header class="nav" data-nav>
     <a href="story.html" aria-current="page">Our Story</a>
-    <a href="details.html">Event Details</a>
+    <a href="details.html">The Details</a>
+    <a href="faq.html">FAQ</a>
+    <a class="brand" href="index.html" aria-label="Anne &amp; Ryan, home"><img src="assets/img/monogram-nav.svg" alt=""></a>
     <a href="rsvp.html">RSVP</a>
     <a href="message.html">Leave a Message</a>
     <button class="burger" aria-label="Open menu" data-burger><span></span><span></span></button>
   </header>
 
   <main>
-    <section class="story-hero">
-      <img src="assets/img/story-hero.jpg" alt="Anne and Ryan sitting together on the grass at night" data-fade>
-      <h1 data-fade>Eight Years,<br>One Love</h1>
+    <section class="story-top">
+      <div class="story-top__text" data-fade>
+        <h1>Our Story</h1>
+        <div class="story-text">
+          <p>Ryan and Anne met over eight years ago in senior high school, where he sat behind her in English class. He realized he had a crush on her when she recited with such eloquence that their professor remarked, “Spoken like Shakespeare himself!” It was then that he decided to work up the courage to approach her.</p>
+          <p>They have been best friends ever since, sharing a journey filled with love and laughter. A few years after graduation, they felt it was the right time to start planning the proposal together. Six months later, in September 2025, they returned to their favorite place in the world, Hokkaido, Japan, where he asked for her hand in marriage. Of course, she said yes! Together with their two furry children, Dandi and Pami, they are excited to begin this next chapter of their lives.</p>
+        </div>
+      </div>
+      <figure class="polaroid" style="margin:0" data-fade><img src="assets/img/story-polaroid.jpg" alt="Anne and Ryan sitting together on the grass at night"></figure>
     </section>
 
-    <section class="story-carousel" id="moments" aria-label="Our story in photos">
-      <button class="arrow arrow--prev" data-prev aria-label="Previous photo"><img src="assets/img/chevron.svg" alt=""></button>
-      <div class="story-track" data-track tabindex="0">
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-1.jpg" alt="">
-          <figcaption><p>Eight years ago, we found our first love in each other.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-2.jpg" alt="">
-          <figcaption><p>Since then, we have grown together, shared countless memories, and kept choosing one another, day after day.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-3.jpg" alt="">
-          <figcaption><p>What began as our first love has become a love we want to carry for a lifetime.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-4.jpg" alt="" loading="lazy" style="object-position:73% 13%">
-          <figcaption><p>Now, we are overjoyed to invite you to celebrate the next chapter of our story as we begin our forever together.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-5.jpg" alt="" loading="lazy" style="object-position:45% 22%">
-          <figcaption><p>Your love and support mean so much to us.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-6.jpg" alt="" loading="lazy">
-          <figcaption><p>We cannot wait to share this special day with the people closest to our hearts.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-7.jpg" alt="" loading="lazy">
-          <figcaption><p>As we stand on the threshold of this new adventure, we reflect on the journey that brought us here.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-8.jpg" alt="" loading="lazy">
-          <figcaption><p>Each moment has shaped our bond, from laughter to challenges, making us stronger.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-9.jpg" alt="" loading="lazy">
-          <figcaption><p>We are excited to create new memories surrounded by our loved ones.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-10.jpg" alt="" loading="lazy">
-          <figcaption><p>With every step we take, we embrace the love that has blossomed and flourished.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-11.jpg" alt="" loading="lazy">
-          <figcaption><p>Thank you for being a part of our lives and witnessing our love story.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-12.jpg" alt="" loading="lazy">
-          <figcaption><p>Let us make this day unforgettable, filled with joy, laughter, and love.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-13.jpg" alt="" loading="lazy">
-          <figcaption><p>As we gather together, we invite you to reminisce about the love that has brought us to this moment.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-14.jpg" alt="" loading="lazy">
-          <figcaption><p>Your presence is a cherished gift that will enhance the joy of our celebration.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-15.jpg" alt="" loading="lazy">
-          <figcaption><p>We look forward to sharing heartfelt stories and toasting to the years that lie ahead.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-16.jpg" alt="" loading="lazy">
-          <figcaption><p>Together, we will dance, celebrate, and create a tapestry of memories.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-17.jpg" alt="" loading="lazy">
-          <figcaption><p>As we exchange vows, we promise to nurture the love that has grown between us.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-18.jpg" alt="" loading="lazy">
-          <figcaption><p>With every heartfelt wish from you, we feel our hearts flutter with gratitude.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-19.jpg" alt="" loading="lazy">
-          <figcaption><p>Let’s celebrate not just our union, but the beautiful connections we share.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-20.jpg" alt="" loading="lazy">
-          <figcaption><p>We are incredibly grateful for the love that surrounds us on this special day.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-21.jpg" alt="" loading="lazy">
-          <figcaption><p>Here's to love, laughter, and a lifetime of happiness together.</p></figcaption>
-        </figure>
-        <figure class="story-card" style="margin:0">
-          <img src="assets/img/story-22.jpg" alt="" loading="lazy">
-          <figcaption><p>Join us as we embark on this incredible journey, hand in hand and heart to heart.</p></figcaption>
-        </figure>
-      </div>
-      <button class="arrow arrow--next" data-next aria-label="Next photo"><img src="assets/img/chevron.svg" alt=""></button>
+    <section class="moments" id="moments" aria-label="Our story in photos" data-fade>
+      <img class="m1" src="assets/img/moment-1.jpg" alt="Ryan dipping Anne on the lawn" loading="lazy">
+      <img class="m2" src="assets/img/moment-2.jpg" alt="Anne and Ryan on the stairs" loading="lazy">
+      <img class="m3" src="assets/img/moment-3.jpg" alt="Anne walking hand in hand with Ryan" loading="lazy">
+      <img class="m4" src="assets/img/moment-4.jpg" alt="Anne and Ryan under the trees" loading="lazy">
+      <img class="m5" src="assets/img/moment-5.jpg" alt="Ryan twirling Anne on the lawn" loading="lazy">
     </section>
   </main>
 
-  <footer class="footer footer--rsvp">
-    <div>
-      <p class="t1">Thank you,</p>
-      <p class="t2">We look forward to celebrating with you</p>
+  <footer class="footer">
+    <div class="footer__head">
+      <p class="t1">RSVP</p>
+      <p class="t2">Please respond by <span data-c="rsvpByLong">December 5, 2026</span> so we can save you a seat.</p>
     </div>
-    <a class="btn btn--outline" href="rsvp.html">RSVP</a>
+    <a class="btn btn--outline" href="rsvp.html">Complete RSVP Form</a>
+    <div class="footer__bar"><span class="sig">Anne &amp; Ryan</span><span class="sm">December 26, 2026 · Manila</span></div>
   </footer>
 
+  <script src="assets/js/content.js"></script>
   <script src="assets/js/common.js"></script>
 </body>
 </html>

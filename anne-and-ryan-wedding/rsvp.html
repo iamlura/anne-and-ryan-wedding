@@ -7,69 +7,52 @@
   <link rel="icon" href="assets/img/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Afacad&family=Carattere&family=Playfair+Display&family=Playfair+Display+SC&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Afacad&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Cormorant+SC:wght@500&family=Pinyon+Script&display=swap">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <header class="nav nav--light" data-nav>
-    <a class="brand" href="index.html">Anne &amp; Ryan</a>
+  <header class="nav" data-nav>
     <a href="story.html">Our Story</a>
-    <a href="details.html">Event Details</a>
+    <a href="details.html">The Details</a>
+    <a href="faq.html">FAQ</a>
+    <a class="brand" href="index.html" aria-label="Anne &amp; Ryan, home"><img src="assets/img/monogram-nav.svg" alt=""></a>
     <a href="rsvp.html" aria-current="page">RSVP</a>
     <a href="message.html">Leave a Message</a>
     <button class="burger" aria-label="Open menu" data-burger><span></span><span></span></button>
   </header>
 
   <main class="rsvp" id="rsvp">
-    <img class="rsvp__bg" src="assets/img/rsvp-bg.jpg" alt="">
-    <div class="rsvp__shade"></div>
+    <img class="rsvp__bg" src="assets/img/couple-arch.jpg" alt="">
+    <div class="rsvp__card" data-fade>
+      <h1 id="rsvpTitle">RSVP</h1>
 
-    <div class="rsvp__inner" data-fade>
-      <div class="rsvp__head">
-        <h1>RSVP</h1>
-        <p>We can’t wait to celebrate with you and your presence means the world to us!<br class="br-d"> Please let us know if you will be able to join in the festivities by the end of <span data-c="rsvpBy">Dec 5, 2026</span>.</p>
+      <!-- logged in with an invite code (invite.html). No code yet → rsvp.js sends the guest to invite.html?next=rsvp.html -->
+      <div class="rstep is-active" data-rstep="party">
+        <div class="rfield"><p class="lab">Your invitation</p></div>
+        <p class="party-title" id="partyTitle">Santos Family</p>
+        <p class="rsvp__sub" id="partySub">We have reserved 4 seats for you! Please let us know who will be joining us by Dec 5, 2026, with one answer for each guest.</p>
+        <form class="rform" id="partyForm" novalidate>
+          <div class="rform" id="guestList"></div>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+          <p class="form-msg" id="rsvpMsg" role="status" aria-live="polite"></p>
+          <button class="pill-btn pill-btn--olive" id="rsvpSubmit" type="submit" disabled>Submit</button>
+        </form>
       </div>
 
-      <form class="form" id="rsvpForm" novalidate>
-        <div class="field">
-          <label for="name">First and Last Name</label>
-          <input class="input" id="name" name="name" autocomplete="name" placeholder="Jane Doe" maxlength="80" required>
-        </div>
-        <div class="field">
-          <label for="email">Email Address</label>
-          <input class="input" id="email" name="email" type="email" autocomplete="email" placeholder="jane.doe@gmail.com" maxlength="120" required>
-        </div>
-        <fieldset class="field" style="border:0;padding:0;margin:0">
-          <legend class="lab lab--solid" style="padding:0;margin-bottom:calc(20 * var(--u))">Will you be attending?</legend>
-          <div class="radios">
-            <label class="radio"><input type="radio" name="attending" value="Yes" required><span class="dot"></span>Joyfully accepts</label>
-            <label class="radio"><input type="radio" name="attending" value="No"><span class="dot"></span>Respectfully declines</label>
-          </div>
-        </fieldset>
-        <div class="field" id="foodField">
-          <label for="food">Special dietary requirements</label>
-          <input class="input" id="food" name="food" placeholder="Allergies, or “none”" maxlength="200">
-        </div>
-        <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
-      </form>
-
-      <p class="form-msg" id="rsvpMsg" role="status" aria-live="polite"></p>
-      <button class="btn btn--outline btn--wide" id="rsvpSubmit" type="submit" form="rsvpForm" disabled>submit</button>
-
-      <div class="rsvp-done" id="rsvpDone">
-        <h2>Thank you!</h2>
-        <p id="rsvpDoneText">Your RSVP has been received.</p>
-        <a class="btn btn--outline" href="message.html">Leave Anne &amp; Ryan a message</a>
+      <div class="rstep rsvp-done" data-rstep="done">
+        <p id="rsvpDoneText">We can’t wait to see you!</p>
+        <a class="pill-btn pill-btn--olive" href="message.html">Leave Anne &amp; Ryan a message</a>
       </div>
     </div>
   </main>
 
-  <footer class="footer footer--rsvp">
-    <div>
-      <p class="t1">Thank you,</p>
-      <p class="t2">We look forward to celebrating with you</p>
+  <footer class="footer">
+    <div class="footer__head">
+      <p class="t1">RSVP</p>
+      <p class="t2">Please respond by <span data-c="rsvpByLong">December 5, 2026</span> so we can save you a seat.</p>
     </div>
-    <a class="btn btn--outline" href="rsvp.html">RSVP</a>
+    <a class="btn btn--outline" href="rsvp.html">Complete RSVP Form</a>
+    <div class="footer__bar"><span class="sig">Anne &amp; Ryan</span><span class="sm">December 26, 2026 · Manila</span></div>
   </footer>
 
   <script src="assets/js/config.js"></script>

@@ -1,95 +1,84 @@
 <!doctype html>
-<html lang="en" class="snap-y">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Event Details · Anne &amp; Ryan</title>
+  <title>The Details · Anne &amp; Ryan</title>
   <link rel="icon" href="assets/img/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Afacad&family=Carattere&family=Playfair+Display&family=Playfair+Display+SC&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Afacad&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Cormorant+SC:wght@500&family=Pinyon+Script&display=swap">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
   <header class="nav" data-nav>
-    <a class="brand" href="index.html">Anne &amp; Ryan</a>
     <a href="story.html">Our Story</a>
-    <a href="details.html" aria-current="page">Event Details</a>
+    <a href="details.html" aria-current="page">The Details</a>
+    <a href="faq.html">FAQ</a>
+    <a class="brand" href="index.html" aria-label="Anne &amp; Ryan, home"><img src="assets/img/monogram-nav.svg" alt=""></a>
     <a href="rsvp.html">RSVP</a>
     <a href="message.html">Leave a Message</a>
     <button class="burger" aria-label="Open menu" data-burger><span></span><span></span></button>
   </header>
 
-  <main class="details">
+  <main>
+    <section class="d-head" data-fade>
+      <h1>The Details</h1>
+      <p><span data-c="weekday">Saturday</span>, <span data-c="date">December 26, 2026</span></p>
+    </section>
 
-    <!-- s1: fade in (heading, info row, itinerary) -->
-    <section class="d-s1" data-fade>
-      <div class="d-head">
-        <h1>Event Details</h1>
-        <p>Please come at least 15 minutes before the ceremony to ensure proper seating.</p>
-      </div>
-      <div class="d-info">
-        <div class="d-loc"><p class="lab">Location</p><p class="val" data-c="venue">Minor Basilica of San Sebastian</p></div>
-        <div class="d-time"><p class="lab">Time</p><p class="val" data-c="time">2:30 PM</p></div>
-        <div class="d-date"><p class="lab">Date</p><p class="val" data-c="date">December 26, 2026</p></div>
-      </div>
-      <div class="d-itin">
-        <h2>Itinerary</h2>
-        <ol class="timeline" data-c="itinerary">
-          <li><div><p class="tt">2:30 PM</p><p class="tl">Ceremony at Minor Basilica of San Sebastian</p></div></li>
-          <li><div><p class="tt">To follow</p><p class="tl">Cocktail hour and dinner at Champagne Room, The Manila Hotel</p></div></li>
+    <section class="d-facts" data-fade>
+      <div><p class="lab">Date</p><p class="val" data-c="date">December 26, 2026</p></div>
+      <div class="rule" aria-hidden="true"></div>
+      <div><p class="lab">Ceremony</p><p class="val"><span data-c="time">2:30 PM</span> at <span data-c="venue">Minor Basilica of San Sebastian</span></p></div>
+      <div class="rule" aria-hidden="true"></div>
+      <div><p class="lab">Reception</p><p class="val"><span data-c="receptionTime">4:30 PM</span> at <span data-c="reception">Champagne Room, The Manila Hotel</span></p></div>
+      <div class="rule" aria-hidden="true" hidden></div>
+      <div data-table hidden><p class="lab">Your Table</p><p class="val" data-table-val>Table 5</p></div>
+    </section>
+
+    <section class="d-day">
+      <div class="d-day__card" data-fade>
+        <h2>The Wedding Day</h2>
+        <ol class="schedule" data-c="itinerary">
+          <li><p class="tt">2:30 PM</p><span class="dot"></span><p class="tl">Wedding Ceremony</p></li>
+          <li><p class="tt">4:30 PM</p><span class="dot"></span><p class="tl">Cocktail Hour</p></li>
+          <li><p class="tt">5:30 PM</p><span class="dot"></span><p class="tl">Dinner</p></li>
+          <li><p class="tt">8:30 PM</p><span class="dot"></span><p class="tl">Farewell</p></li>
         </ol>
       </div>
     </section>
 
-    <!-- s2: snap scroll + fade in (dress code, from the printed invitation) -->
-    <section class="d-dress" data-fade>
-      <div class="d-head">
+    <section class="d-dress" id="dress">
+      <div class="d-dress__text" data-fade>
         <h2>Dress Code</h2>
-        <p>Formal attire<br>Gentlemen: suit and tie (no barong). Ladies: floor-length dress.<br>Ladies are invited to wear muted earth or autumn tones, such as dusty blue, sage, brown, olive, or burgundy. We kindly ask that all guests avoid white, cream, and beige, as these are reserved for the bride.</p>
+        <p class="lab-sc">Formal attire</p>
+        <p class="txt">Gentlemen: suit and tie (no barong). Ladies: floor-length dress.<br>Ladies are invited to wear muted earth or autumn tones, such as dusty blue, sage, brown, olive, or burgundy. We kindly ask that all guests avoid white, cream, and beige, as these are reserved for the bride.</p>
+        <!-- color swatches from the invitation; 4 are prints (images), 6 are flat colors -->
+        <div class="swatches" role="img" aria-label="Suggested colors: dusty blue, dusty pink, sand, terracotta, brown, sage, olive, rose, burgundy and plum">
+          <span style="background-image:url(assets/img/swatch-1.webp)"></span>
+          <span style="background-image:url(assets/img/swatch-2.webp)"></span>
+          <span style="background:#ceae7e"></span>
+          <span style="background:#bc8269"></span>
+          <span style="background:#846555"></span>
+          <span style="background-image:url(assets/img/swatch-6.webp)"></span>
+          <span style="background-image:url(assets/img/swatch-7.webp)"></span>
+          <span style="background:#9a5657"></span>
+          <span style="background:#610e08"></span>
+          <span style="background:#3f1521"></span>
+        </div>
       </div>
-      <!-- color swatches from the invitation; 4 are prints (images), 6 are flat colors -->
-      <div class="swatches" role="img" aria-label="Suggested colors: dusty blue, dusty pink, sand, terracotta, brown, sage, olive, rose, burgundy and plum">
-        <span style="background-image:url(assets/img/swatch-1.webp)"></span>
-        <span style="background-image:url(assets/img/swatch-2.webp)"></span>
-        <span style="background:#ceae7e"></span>
-        <span style="background:#bc8269"></span>
-        <span style="background:#846555"></span>
-        <span style="background-image:url(assets/img/swatch-6.webp)"></span>
-        <span style="background-image:url(assets/img/swatch-7.webp)"></span>
-        <span style="background:#9a5657"></span>
-        <span style="background:#610e08"></span>
-        <span style="background:#3f1521"></span>
-      </div>
-    </section>
-
-    <!-- s3: finer details from the invitation (reception, parking, note, gifts) -->
-    <section class="d-more" data-fade>
-      <div class="d-block">
-        <h2>Reception</h2>
-        <p>Immediately following the ceremony, please join us for cocktail hour and dinner at Champagne Room, The Manila Hotel.</p>
-      </div>
-      <div class="d-block">
-        <h2>Parking</h2>
-        <p>Church: Parking at San Sebastian Church is limited. Guests are kindly advised to arrive early and, if possible, travel together.<br>Reception: Parking at The Manila Hotel is mainly by valet, as self-parking is very limited. Please expect to use valet service upon arrival.</p>
-      </div>
-      <div class="d-block">
-        <h2>Kindly Note</h2>
-        <p>Due to limited space, we are only able to accommodate those guests named on the invitation. Thank you for understanding.</p>
-      </div>
-      <div class="d-block">
-        <h2>Gifts</h2>
-        <p>Your presence is all we need. Should you wish to give a gift, a monetary contribution toward our future together would be warmly appreciated.</p>
-      </div>
+      <figure class="polaroid" style="margin:0" data-fade><img src="assets/img/details-polaroid.jpg" alt="Anne and Ryan walking through the garden" loading="lazy"></figure>
     </section>
   </main>
 
-  <footer class="footer footer--rsvp">
-    <div>
-      <p class="t1">Thank you,</p>
-      <p class="t2">We look forward to celebrating with you</p>
+  <footer class="footer">
+    <div class="footer__head">
+      <p class="t1">RSVP</p>
+      <p class="t2">Please respond by <span data-c="rsvpByLong">December 5, 2026</span> so we can save you a seat.</p>
     </div>
-    <a class="btn btn--outline" href="rsvp.html">RSVP</a>
+    <a class="btn btn--outline" href="rsvp.html">Complete RSVP Form</a>
+    <div class="footer__bar"><span class="sig">Anne &amp; Ryan</span><span class="sm">December 26, 2026 · Manila</span></div>
   </footer>
 
   <script src="assets/js/content.js"></script>

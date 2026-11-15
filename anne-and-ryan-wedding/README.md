@@ -7,7 +7,8 @@ Static site built from the Figma file **Anne wedding website → final pages**. 
 | Landing | `index.html` |
 | Our Story (photo carousel) | `story.html` |
 | Event Details + dress code | `details.html` |
-| RSVP | `rsvp.html` |
+| Invite code | `invite.html` (email link: `invite.html?code=AR-XXXXXX`) |
+| RSVP | `rsvp.html` (needs an invite code; guest list = Guests tab in the Sheet, see HANDOFF section 0) |
 | Leave a Message (write → flowers → place on arch, secret inbox) | `message.html` |
 
 Until you connect Google Sheets, the site runs in **demo mode** (yellow badge bottom-left): everything works, but data only saves in your own browser.
