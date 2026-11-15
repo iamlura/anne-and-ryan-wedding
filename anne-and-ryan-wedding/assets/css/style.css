@@ -43,7 +43,8 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; overscroll-behavior: none; } /* no rubber-band overscroll */
+body { overscroll-behavior: none; }
 body {
   margin: 0;
   background: var(--bg);
@@ -260,6 +261,7 @@ html { scroll-behavior: smooth; }
    ========================================================= */
 .photo-head { position: relative; overflow: hidden; height: calc(560 * var(--u)); min-height: 260px; display: flex; align-items: center; justify-content: center; }
 .photo-head img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.photo-head--faq img { object-position: 50% 71.6%; } /* Figma 216:200: image top -255% = the couple walking */
 .photo-head::after { content: ""; position: absolute; inset: 0; background: rgba(32,39,0,.4); }
 .photo-head h1 { position: relative; z-index: 1; color: var(--cream); font-size: calc(130 * var(--u)); text-align: center; line-height: 1.25; padding: 0 20px; }
 .faq { display: flex; align-items: flex-start; gap: calc(120 * var(--u)); padding: calc(80 * var(--u)) calc(200 * var(--u)) calc(180 * var(--u)); }
@@ -269,7 +271,7 @@ html { scroll-behavior: smooth; }
 .faq__item p { font-size: calc(28 * var(--u)); line-height: 1.5; }
 .faq__item a { text-decoration: underline; text-underline-offset: .15em; }
 .faq .rule { height: 1px; border: 0; margin: 0; background: rgba(78,11,18,.2); }
-.faq .polaroid { width: calc(456 * var(--u)); height: calc(678 * var(--u)); margin-top: calc(96 * var(--u)); --pb: 80; }
+.faq .polaroid { width: calc(456 * var(--u)); height: calc(678 * var(--u)); margin: calc(48 * var(--u)) 0 0 calc(12 * var(--u)); --pb: 80; --rot: -2deg; } /* Figma 216:233: position + -2deg tilt matched to the frame */
 
 /* =========================================================
    INVITE CODE (invite.html, Figma "invite code" / wrong / forgot / sent)
@@ -584,7 +586,7 @@ html { scroll-behavior: smooth; }
   .faq__list { width: 100%; gap: 24px; }
   .faq__item h2 { font-size: 32px; }
   .faq__item p { font-size: 18px; }
-  .faq .polaroid { width: 240px; height: 357px; margin-top: 0; }
+  .faq .polaroid { width: 240px; height: 357px; margin: 0; }
 
   .gate h1 { font-size: 64px; }
   .gate__msg { font-size: 19px; }
