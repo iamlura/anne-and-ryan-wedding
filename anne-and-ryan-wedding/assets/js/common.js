@@ -56,6 +56,25 @@
     update();
   }
 
+  // ---- guest session (invite code, Nov 15). Saved in this browser after invite.html ----
+  const KEY = "ar_guest";
+  window.Guest = {
+    get() { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } },
+    set(party) { try { localStorage.setItem(KEY, JSON.stringify(party)); } catch (e) {} },
+    clear() { try { localStorage.removeItem(KEY); } catch (e) {} }
+  };
+  const guest = window.Guest.get();
+  if (guest) {
+    // landing: "Welcome, Santos Family" + Continue (Figma "welcome")
+    document.querySelectorAll("[data-welcome]").forEach((el) => { el.textContent = `Welcome, ${guest.name}`; el.hidden = false; });
+    document.querySelectorAll("[data-continue]").forEach((el) => { el.hidden = false; });
+    // The Details: "Your Table" (Figma "The Details logged in"), only once a table is filled in
+    if (guest.table) document.querySelectorAll("[data-table]").forEach((el) => {
+      el.hidden = false; el.querySelector("[data-table-val]").textContent = /^\d+$/.test(guest.table) ? `Table ${guest.table}` : guest.table;
+      const rule = el.previousElementSibling; if (rule && rule.classList.contains("rule")) rule.hidden = false;
+    });
+  }
+
   // ---- toast ----
   let toastEl, toastT;
   window.toast = function (msg, ms) {

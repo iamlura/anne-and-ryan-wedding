@@ -8,7 +8,7 @@
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
 
-  const FONTS = { serif: "var(--serif)", sans: "var(--sans)", script: "var(--script)" };
+  const FONTS = { serif: "var(--serif)", sans: "var(--letter-sans)", script: "var(--script)" };
   const SIZES = { s: 0.8, m: 1, l: 1.25 };
   const DRAFT_KEY = "ar_draft";
 
