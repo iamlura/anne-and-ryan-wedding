@@ -12,14 +12,15 @@
   const W = window.WEDDING || {};
   const seats = guest.guests.length;
   $("#partyTitle").textContent = guest.name;
-  $("#partySub").textContent = `We have reserved ${seats} ${seats === 1 ? "seat" : "seats"} for you! Please let us know who will be joining us by ${W.rsvpBy || "Dec 5, 2026"}, with one answer for each guest.`;
+  $("#partySub").textContent = `We have reserved ${seats} ${seats === 1 ? "seat" : "seats"} for you.`;
+  const solo = seats === 1;
 
   list.innerHTML = guest.guests.map((g, i) => {
     const plus = !!g.plusOne;
     const ck = (v) => (g.attending === v ? " checked" : "");
     return `${i ? '<hr class="rrule">' : '<hr class="rrule">'}
     <fieldset class="guest" data-i="${i}" style="border:0;padding:0;margin:0">
-      <legend class="guest__name">${i + 1}. ${plus ? "Your plus one" : esc(g.name)}</legend>
+      <legend class="guest__name${solo ? " sr-only" : ""}">${plus ? "Your plus one" : esc(g.name)}</legend>
       ${plus ? `<div class="rfield"><label for="pn${i}">Their first and last name</label>
         <input class="rinput" id="pn${i}" data-k="pname" autocomplete="off" placeholder="Jane Doe" maxlength="80" value="${esc(g.name || "")}"></div>
         <p class="lab-sc">Will they be attending?</p>` : ""}
@@ -52,6 +53,7 @@
     submit.disabled = !complete(answers());
   }
   form.addEventListener("input", refresh); form.addEventListener("change", refresh); refresh();
+  document.querySelector(".rsvp__card").removeAttribute("data-wait");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();

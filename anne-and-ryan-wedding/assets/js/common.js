@@ -64,6 +64,8 @@
     clear() { try { localStorage.removeItem(KEY); } catch (e) {} }
   };
   const guest = window.Guest.get();
+  // RSVP → code → RSVP: without a code, every RSVP link (nav, menu, footer) opens invite.html directly
+  if (!guest) document.querySelectorAll('a[href="rsvp.html"]').forEach((a) => { a.href = "invite.html?next=rsvp.html"; });
   if (guest) {
     // landing: "Welcome, Santos Family" + Continue (Figma "welcome")
     document.querySelectorAll("[data-welcome]").forEach((el) => { el.textContent = `Welcome, ${guest.name}`; el.hidden = false; });
