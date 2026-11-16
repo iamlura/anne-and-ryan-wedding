@@ -18,9 +18,9 @@ I'm continuing work on the Anne & Ryan wedding website.
 - First: clone the repo and read anne-and-ryan-wedding/HANDOFF.md, starting with "Status", "Next steps" and section 0.
   Everything (design, Figma map, Apps Script, guest list steps, open questions) is in there.
 - Figma: https://www.figma.com/design/pAVTZMkGiY9VYrzp7IeVJO/Anne-wedding-website (page "final pages AC", node 224:2)
-- Guest list (Ryan's Google Sheet, tab "Invite codes" has the 54 invite codes):
+- The ONE Google Sheet (guest list + invite codes + Guests + letters + RSVPs, Apps Script bound, "Wedding" menu):
   https://docs.google.com/spreadsheets/d/1HqWuWL7zTKcbcaN-sLxrb0pIZ7qdk8442e-J3aJzkgU/edit
-  The site's backend is a different Sheet ("Anne & Ryan wedding", Apps Script bound): see HANDOFF.md "Next steps".
+  (Ryan's "Guest List for Wedding Website"; the old "Anne & Ryan wedding" Sheet is retired, see HANDOFF.md section 0.)
 - I'm the designer (Laura). Anne is the bride; I relay her feedback.
 
 How I like to work:
@@ -35,30 +35,43 @@ How I like to work:
   (HANDOFF.md section 7). Never send me patches. Then check the live site.
 ```
 
-## Status (updated Nov 16, 2026, 17th round)
+## Status (updated Nov 16, 2026, 18th round)
 
 | | |
 |---|---|
-| Site | 6 pages + invite page + the full message flow. **Nov 15: restyled to design "AC" (Anne's pick); RSVP now uses invite codes.** Rounds 12 + 13 pushed to main on Nov 15. Code login / RSVP still need the new Code.gs pasted and redeployed (Next steps below). |
-| Data | **Live since Nov 8.** RSVPs go to the Google Form "Anne & Ryan · RSVP"; letters go to the Google Sheet "Anne & Ryan wedding" through Apps Script. Both are in the designer's Google account (jaeyoung.laura@gmail.com); she shares them with Anne. Links in section 7. |
+| Site | 6 pages + invite page + the full message flow. **Nov 15: restyled to design "AC" (Anne's pick); RSVP now uses invite codes.** **Nov 16 (18th round): code login / RSVP are live** (backend moved into Ryan's Sheet, see section 0). |
+| Data | **One Sheet since Nov 16:** Ryan's "Guest List for Wedding Website" holds the guest list, "Invite codes", Guests (RSVP answers), Messages (letters) and RSVP log, with the Apps Script bound to it (deployed by the designer's account, jaeyoung.laura@gmail.com). The old Sheet "Anne & Ryan wedding" + Google Form are no longer used (safe to trash once Anne is happy). Links in section 7. |
 | Waiting on the designer | New content and some design changes are coming (the site is set up for this, see "Changing content" below). |
 | Figma vs site | In sync as of Nov 15 (14th round: site re-checked against every AC frame, text and screenshots). **The reference is now page "final pages AC" (section 0 below).** The older frames in section 2 are still the reference for the Leave a Message flow and the secret inbox (only recoloured on the site). Phone frames for AC (Nov 16): **editable** layers ("… phone editable", "nav open phone") next to the earlier screenshot frames; both made from the live site at 390 wide (section 0). Phones are built from the CSS in the ≤760px block. |
 | Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. **Nov 4 (3rd round):** one button style everywhere, guests can delete their own letter. **Nov 4 (4th round):** every footer = "Thank you" + RSVP button (nav links removed again), all carousel cards 440 wide with 400×600 photos, prenup photos link to the Our Story carousel, new green tuxedo photo. **Nov 8 (5th round):** all info matched to the printed invitation (2:30 PM, Minor Basilica of San Sebastian, reception at Champagne Room, RSVP by Dec 5), new dress code with color swatches, new Reception / Parking / Kindly Note / Gifts section. **Nov 8 (6th round):** invitation fonts undone (back to Afacad / Playfair / Carattere), Event Details background image removed. **Nov 8 (7th round):** story cards all the same height, RSVP sub-headings in Playfair, Google Form for RSVPs + Sheets connected for letters. **Nov 8 (8th round):** envelopes on the right half of the arch tilt the mirror way, guest delete removed. **Nov 8 (9th round):** on "Place your letter" the letter starts in the middle. **Nov 9 (10th round):** Anne's new AR monogram everywhere; Guests tab in the Sheet; draft Figma screens for guest login (invite code, party RSVP, email). **Nov 9 (11th round):** phone form text (RSVP + message inputs, radio answers) 32 → 24 px; "final pages" rearranged in flow order with two new screens (wrong code, RSVP sent). **Nov 12 (12th round):** Anne's doc: Cormorant Garamond + Pinyon Script, burgundy / olive / cream, new landing (When / Where, countdown, new message, RSVP footer), story text, "The Details" redesign, new FAQ page. **Nov 15 (13th round):** design AC everywhere + Anne's mashup notes, RSVP by invite code (one answer per guest). **Nov 15 (14th round):** matched the designer's Figma updates: new arch photo, hero crop, two olives, pink Wedding Day card, timeline lines. **Nov 15 (15th round):** no overscroll; FAQ hero crop + photo card matched to Figma. **Nov 16 (16th round):** new nav (monogram left, links right), Anne's new dress code + 5 swatches, RSVP → code → RSVP with no stray page, "We have reserved N seats for you." layout, editable phone frames. **Nov 16 (17th round):** nav on the code page (invite.html), solid phone menu, invite codes for Anne's new list. Details in section 9. |
 
 
-### Next steps (as of Nov 16)
+### Next steps (as of Nov 16, 18th round)
 1. ~~Rounds 12 + 13 in the repo~~ (done Nov 15).
-2. Paste `apps-script/Code.gs` into the Apps Script of **Laura's Sheet "Anne & Ryan wedding"** (the site's backend), then Deploy > Manage deployments > edit > New version. Until then the live code login / RSVP can't check codes.
-3. Run `setupGuests`, then import `tools/guests_import.csv` into the Guests tab (File > Import > Upload > Append to current sheet). The file is not in git (guest names): regenerate it with `python3 tools/anne_list_to_guests.py anne_list.csv`, where anne_list.csv = Ryan's Sheet "Guest List for Wedding Website" first tab, File > Download > CSV. It already has the **invite codes in column J** (54 invitations, 81 seats), the same codes as the "Invite codes" tab in Ryan's Sheet, so do **not** worry about `makeCodes` (it keeps filled codes; it only fills blanks).
-4. Test: open https://iamlura.github.io/anne-and-ryan-wedding/invite.html, enter a code from the "Invite codes" tab (e.g. Laura's own party), check the party name, seat line and guest names on RSVP.
-5. Add guest emails in column C (Anne's list has none; ask her). Then `sendTestInvite` (check the email), then `sendInvites`.
-6. Later: table numbers in column H.
+2. ~~Backend with codes~~ (done Nov 16: Code.gs in Ryan's Sheet, `setupAll` run, web app deployed, `config.js` points at it; login tested with AR-FBXQ65).
+3. ~~Guests tab~~ (done: filled from "Invite codes" by `setupAll`, 54 invitations / 81 rows, codes in column J). No CSV import needed any more.
+4. Share the Sheet with Anne (Editor) if she isn't on it yet, so she can use the **Wedding** menu.
+5. Sending codes (Anne / Ryan, see "Sending the codes" in section 0): **email** = guest emails in Guests column C, then Wedding > Send a test invite to me, then Wedding > Send invites by email. **Chat** = "Invite codes" tab, column H (Message) to copy, column I (Send on WhatsApp).
+6. Later: table numbers in Guests column H. Then trash the old Sheet "Anne & Ryan wedding" + its Form.
 
 **Invite codes (Nov 16):** one per invitation, `AR-` + 6 characters from `CODE_CHARS` (no 0/O, 1/I/L), made by `tools/anne_list_to_guests.py` (re-running keeps the codes of invitations already in guests_import.csv). Listed in Ryan's Sheet "Guest List for Wedding Website", tab **"Invite codes"** (Side, Group, Invitation, Guests, Seats, Invite code, Invite link), added through Chrome (the Drive connector can only view that Sheet). Anne's Nov 16 list: Catherine Ramirez's party is now "Catherine Ramirez, Lennon Ramirez, and Bel Ramirez" (3 seats); every listed seat count matches its names.
 
 ---
 
-## 0. Nov 15: design AC + invite codes (read this first)
+## 0. Nov 16: one Sheet for everything (read this first)
+
+The designer asked to merge the two Sheets. The backend now lives in **Ryan's Sheet "Guest List for Wedding Website"** (link in section 7). Tabs: `Guest List for Wedding Website` (Anne + Ryan's list, theirs), `Guests` (one row per guest: codes, emails, RSVP answers, table), `How to fill`, `Invite codes` (one row per invitation + Message + Send on WhatsApp), `Messages` (letters; the 1 letter from the old Sheet was copied), `RSVP` (log, made on the first RSVP).
+
+- **Apps Script project "Anne & Ryan wedding backend"**, bound to that Sheet, deployed as a web app (Execute as: the designer, Anyone). Emails sent from the menu go from **whoever clicks** (they approve Google's prompt once).
+- `setupAll` (safe to re-run) = Guests + How to fill tabs, Messages tab, inbox password, `fillGuests` (adds every invitation from "Invite codes" whose code isn't on Guests yet), `importOldMessages` (letters from the old Sheet, skips ids it has), `addChatMessages`.
+- **New invitations later:** add a row to "Invite codes" (with a new `AR-` code: 6 characters from `CODE_CHARS`), then Wedding > Add new invitations to Guests. Existing Guests rows are never touched.
+- **Sending the codes** ("Wedding" menu in the Sheet, made by `onOpen`):
+  - Send a test invite to me: the invite email (sample Santos Family) to the person clicking.
+  - Send invites by email: asks "Send N invitation emails from <you>?", then emails every invitation with an email in Guests column C and no "Invite sent" date. Skips ones without email. Gmail limit ~100 a day.
+  - Chat: "Invite codes" column H **Message** = ready-to-paste text ("Hi <names>! … We have reserved N seats … Open your invitation and RSVP by December 5: <link> (invite code …)"), column I **Send on WhatsApp** opens WhatsApp with it filled in (`wa.me/?text=`). Both are formulas (`addChatMessages`), so they follow edits to the row. Messenger / Viber: copy column H.
+- The old `setup` / Google Form are not used; don't run `setup` in this project.
+
+## 0b. Nov 15: design AC + invite codes
 
 Anne chose the burgundy / olive "AC" design (a mix of directions A and C) and sent a mashup with 6 notes. The designer then made her own edits and chose **invite codes** for the RSVP (not name search). Everything below is built in Figma and on the site.
 
@@ -99,7 +112,7 @@ Added: `hero-stairs.jpg` (shown at `object-position: 50% 26.6%` = Figma crop), `
 
 ### Invite codes: how it works
 - **Guests tab** of the Google Sheet is the guest list (one row per guest; same Party name = one invitation; a seat for an unnamed plus one is a row named "Plus One"). Columns A–I Anne/designer fill, J–O are automatic (code, invite sent, RSVP, dietary, replied at, plus one name).
-- **Fill it from Anne's list:** `python3 tools/anne_list_to_guests.py anne_list.csv` → `tools/guests_import.csv` (54 invitations, 80 seats on Nov 15), import into the Guests tab (File > Import > Append). Emails are not in Anne's list: they must be added before invites go out. Keep CSVs out of git.
+- **Fill it (since Nov 16):** `setupAll` / Wedding > Add new invitations to Guests reads the "Invite codes" tab (section 0). The older way, kept for reference: `python3 tools/anne_list_to_guests.py anne_list.csv` → `tools/guests_import.csv` (54 invitations, 80 seats on Nov 15), import into the Guests tab (File > Import > Append). Emails are not in Anne's list: they must be added before invites go out. Keep CSVs out of git.
 - **Apps Script** (`apps-script/Code.gs`, run from the editor): `setupGuests` (header + how-to tab, safe to re-run), `makeCodes` (one `AR-XXXXXX` code per party, 6 chars without 0/O/1/I/L), `sendTestInvite` (sends the invite email to yourself), `sendInvites` (emails every party with an email and empty "Invite sent"; Gmail quota ~100/day on a personal account). **After pasting the new Code.gs: Deploy > Manage deployments > edit > New version**, otherwise the site's login / forgot / rsvp_party calls fail.
 - **Site:** `invite.html` = code gate (wrong code, forgot → email, sent). The email link is `invite.html?code=AR-XXXXXX` and logs straight in. The party is kept in this browser (`localStorage` "ar_guest"). Logged in: landing shows "Welcome, <party>" + Continue; The Details shows "Your Table" once column H has a value (guests must log in again to see a table added later); RSVP shows one answer per guest, earlier answers filled in so they can change them. `rsvp.html` without a code redirects to the gate. Other pages stay public.
 - **Answers** are written by Apps Script into the Guests tab (RSVP / Dietary / Replied at / Plus one name) and logged in the RSVP tab. The old Google Form is no longer used by the site (`RSVP_FORM` in config.js is ignored by the new RSVP page).
@@ -307,8 +320,12 @@ jobs:
 - **How the Nov rounds were published (no git):** `git push` from the sandbox was refused (no token), so Claude uploaded through GitHub's web upload page in the browser the designer was signed in to: open `github.com/iamlura/anne-and-ryan-wedding/upload/main/anne-and-ryan-wedding/<folder>`, add the changed files, "Commit directly to main". One upload page per folder (e.g. `assets/css`, `assets/img`, then the root for the .html files). The designer signs in herself; never type her password.
 - **Check a deploy:** about a minute after the commit, compare the live files with your local copies (e.g. `curl -s https://iamlura.github.io/anne-and-ryan-wedding/assets/css/style.css | sha256sum`).
 - **Copies outside GitHub:** the designer's `Downloads\anne-and-ryan-wedding` folder (may be older). GitHub is the source of truth.
-- **Google Sheets + Form (connected Nov 8, designer's account jaeyoung.laura@gmail.com):**
-  - Sheet "Anne & Ryan wedding": https://docs.google.com/spreadsheets/d/1oapFYPqkLcdA2HVhomGbhMsxTLJFqUznyo01xG-Pj1E/edit (tabs: `Form Responses 1` = RSVPs, `Messages` = letters, empty `Sheet1`).
+- **Google Sheet (current, since Nov 16): Ryan's "Guest List for Wedding Website"**: https://docs.google.com/spreadsheets/d/1HqWuWL7zTKcbcaN-sLxrb0pIZ7qdk8442e-J3aJzkgU/edit (tabs in section 0).
+  - Apps Script project "Anne & Ryan wedding backend" (Extensions → Apps Script from that Sheet): https://script.google.com/home/projects/1mkz-2VXqmOfPcZSIz1FjVMbqnR_L6CjyVGYSPkY52CKmRzXMFZpWYAAk/edit . Web app URL (`SHEETS_URL`): https://script.google.com/macros/s/AKfycbwXpb1HsrpULn_S6y7OjTSGNjQZuhCAWOlb9-u5X_dgQWge4dJ3I-BjIrzFVD6dpYyFkw/exec (deployment "wedding site", Execute as the designer, access Anyone). Handles letters, arch, inbox, code login, forgot, RSVP per guest.
+  - **If `Code.gs` changes:** paste it in, save, then Deploy → Manage deployments → edit (pencil) → Version: New version → Deploy. The URL stays the same. (How Claude pasted it on Nov 16 without a file upload: committed Code.gs to GitHub first, then in the Apps Script tab `monaco.editor.getModels()[0].setValue(await fetch(<raw.githubusercontent URL at that commit>).then(r => r.text()))`, checked the SHA-256, Cmd+S.)
+  - Tested Nov 16: `?action=notes` returns the copied letter; `login` with AR-FBXQ65 returns Laura's party (2 guests). No RSVP was submitted.
+- **Old Google Sheet + Form (Nov 8 - 16, retired, designer's account):**
+  - Sheet "Anne & Ryan wedding": https://docs.google.com/spreadsheets/d/1oapFYPqkLcdA2HVhomGbhMsxTLJFqUznyo01xG-Pj1E/edit (tabs: `Form Responses 1` = RSVPs, `Messages` = letters, empty `Sheet1`). Its 1 letter was copied to the new Sheet. Its own web app URL (below) is no longer in `config.js`.
   - RSVP Google Form "Anne & Ryan · RSVP" (edit): https://docs.google.com/forms/d/1_ThJxf8_-yC91_bBPNux_fBBG6INbunYO0SL8dQRLIk/edit . Same 4 questions as the site. The site's RSVP page keeps the Figma design and posts into the form in the background (`RSVP_FORM` in `config.js`, `submitRSVP` in `api.js`). Google doesn't let the page read the reply, so only network errors show; check the Responses tab.
   - Apps Script project "Anne & Ryan wedding backend" (Extensions → Apps Script from the Sheet). Web app URL (`SHEETS_URL`): https://script.google.com/macros/s/AKfycbwQhSGcBC5b9NM1cZOeUO0G36JdCyobdRdrUZ8NVYFaJoL0n42SrGXRBiJHPDmX3vpBWg/exec (Execute as Me, access Anyone). Handles letters, the arch and the 261226 inbox. (Its `delete` endpoint is left over from the removed guest-delete feature; nothing calls it and new letters have no delete key, so it can't remove anything.)
   - Tested Nov 8: a letter went through save → arch → inbox, and an RSVP landed in the form + Sheet. Both test entries were deleted.
@@ -437,3 +454,7 @@ jobs:
   - Phone menu: solid `#390007` (was 97%), every link at 100% opacity (was 75%).
   - Invite codes for Anne's Nov 16 list (54 invitations, 81 seats): `tools/anne_list_to_guests.py` now reads the 6-column layout (group, invitation, "N seats" per side), checks seats against names, and writes the codes into column J of `guests_import.csv` plus `guest_codes.csv` (both git-ignored). The codes are in Ryan's Sheet, tab "Invite codes". See "Next steps".
   - Figma: nav on the 4 desktop code frames; phone code frames + nav open rebuilt; code screenshot frames refreshed.
+- **Nov 16, 2026 (18th round): one Sheet.**
+  - Backend moved into Ryan's Sheet "Guest List for Wedding Website" (designer's request: no duplicate Sheets). New Apps Script project there ("Anne & Ryan wedding backend"), new web app URL in `assets/js/config.js` → `SHEETS_URL`.
+  - `Code.gs`: `setupAll`, `fillGuests` (Guests from "Invite codes"), `importOldMessages` (1 letter copied from the old Sheet), `addChatMessages` (Message + Send on WhatsApp columns in "Invite codes"), "Wedding" menu (`onOpen`: send a test invite, send invites with a confirm, add new invitations, add chat messages), `sendInvites` returns its counts. Guests / How to fill tabs now go after the existing tabs.
+  - No site design change, so no Figma change this round.
