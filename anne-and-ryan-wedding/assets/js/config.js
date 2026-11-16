@@ -1,7 +1,7 @@
 /* Site config. Paste the Google Apps Script web-app URL below (see README → "Connect Google Sheets").
    Leave it empty to run in demo mode: everything works but data is only saved in this browser. */
 window.WEDDING_CONFIG = {
-  SHEETS_URL: "https://script.google.com/macros/s/AKfycbwQhSGcBC5b9NM1cZOeUO0G36JdCyobdRdrUZ8NVYFaJoL0n42SrGXRBiJHPDmX3vpBWg/exec",
+  SHEETS_URL: "https://script.google.com/macros/s/AKfycbwXpb1HsrpULn_S6y7OjTSGNjQZuhCAWOlb9-u5X_dgQWge4dJ3I-BjIrzFVD6dpYyFkw/exec",
 
   // RSVPs go into a Google Form (made by `setup` in apps-script/Code.gs; it logs these values).
   // Leave action empty to send RSVPs to SHEETS_URL instead (or demo mode).
