@@ -85,13 +85,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .menu {
   position: fixed; inset: 0; z-index: 50;
-  background: rgba(57,0,7,.97); color: var(--cream);
+  background: var(--nav); color: var(--cream); /* Nov 16: solid, 100% */
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
   font-family: var(--serif-sc); letter-spacing: .18em;
   font-size: 22px; opacity: 0; pointer-events: none; transition: opacity .3s;
 }
 .menu.open { opacity: 1; pointer-events: auto; }
-.menu a { opacity: .75; }
+.menu a { opacity: 1; } /* Nov 16: every menu link at 100% */
 .menu a[aria-current="page"] { opacity: 1; }
 .menu .brand img { width: 40px; height: 57px; }
 .menu-close { position: absolute; top: 18px; right: 18px; background: none; border: 0; font-size: 34px; color: var(--cream); line-height: 1; }
@@ -276,6 +276,7 @@ html { scroll-behavior: smooth; }
 /* =========================================================
    INVITE CODE (invite.html, Figma "invite code" / wrong / forgot / sent)
    ========================================================= */
+.nav + .gate { min-height: calc(100svh - max(56px, calc(110 * var(--u)))); } /* code page sits under the nav (Nov 16) */
 .gate { position: relative; overflow: hidden; min-height: 100svh; display: flex; align-items: center; justify-content: center; background: #000; color: var(--cream); padding: 60px 20px; }
 .gate__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .5; }
 .gate__inner { position: relative; display: flex; flex-direction: column; align-items: center; gap: calc(36 * var(--u)); text-align: center; width: calc(760 * var(--u)); min-width: min(100%, 420px); }
@@ -589,6 +590,7 @@ html { scroll-behavior: smooth; }
   .faq .polaroid { width: 240px; height: 357px; margin: 0; }
 
   .gate h1 { font-size: 64px; }
+  .nav + .gate { min-height: calc(100svh - 64px); }
   .gate__msg { font-size: 19px; }
   .gate__field { font-size: 20px; padding: 12px 14px; border-radius: 8px; }
   .gate__err { font-size: 15px; }
