@@ -12,6 +12,17 @@
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+  <!-- nav (Nov 16): same bar as every page, so guests on the code page can go back -->
+  <header class="nav" data-nav>
+    <a class="brand" href="index.html" aria-label="Anne &amp; Ryan, home"><img src="assets/img/monogram-nav.svg" alt=""></a>
+    <a href="story.html">Our Story</a>
+    <a href="details.html">The Details</a>
+    <a href="faq.html">FAQ</a>
+    <a href="rsvp.html" aria-current="page">RSVP</a>
+    <a href="message.html">Leave a Message</a>
+    <button class="burger" aria-label="Open menu" data-burger><span></span><span></span></button>
+  </header>
+
   <!-- invite code gate. The email link is invite.html?code=AR-XXXXXX; after a match the guest goes on to the site (or to ?next=). -->
   <main class="gate">
     <img class="gate__bg" src="assets/img/hero-stairs.jpg" alt="">
