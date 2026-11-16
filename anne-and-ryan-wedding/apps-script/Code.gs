@@ -1,15 +1,14 @@
 /**
  * Anne & Ryan wedding site backend (Google Apps Script, bound to a Google Sheet).
  *
- * Setup (5 min) is in README.md → "Connect Google Sheets". Short version:
- *   1. Create a Google Sheet → Extensions → Apps Script → paste this file.
- *   2. Run `setup` once (creates the Messages tab, stores the inbox password and makes the RSVP Google Form;
- *      the execution log prints the form links + entry IDs for assets/js/config.js → RSVP_FORM).
+ * Since Nov 16 this is bound to Ryan's Sheet "Guest List for Wedding Website" (one Sheet for guest list, codes, RSVPs, letters).
+ *   1. In that Sheet: Extensions → Apps Script → paste this file.
+ *   2. Run `setupAll` once (Guests tab filled from the "Invite codes" tab, Messages tab, inbox password, old letters copied).
  *   3. Deploy → New deployment → Web app → Execute as: Me, Who has access: Anyone → copy the URL.
  *   4. Paste the URL into assets/js/config.js (SHEETS_URL).
  *
- * RSVPs go to a Google Form (made by setup, answers land in this spreadsheet's "Form Responses 1" tab).
- * The site's own RSVP page posts straight into that form, so it keeps the Figma design.
+ * RSVPs: one answer per guest, written into the Guests tab (+ a log row in the RSVP tab). The old `setup` / Google Form
+ * (Nov 8) is no longer used by the site; don't run `setup` here (it would make a new form).
  *
  * Endpoints
  *   GET  ?action=notes                → public arch data (no message text)
@@ -100,7 +99,7 @@ const GUEST_AUTO_FROM = 10;   // column J onwards is automatic
 function setupGuests() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sh = ss.getSheetByName(GUEST_SHEET);
-  if (!sh) sh = ss.insertSheet(GUEST_SHEET, 0);
+  if (!sh) sh = ss.insertSheet(GUEST_SHEET);
   sh.getRange(1, 1, 1, GUEST_HEAD.length).setValues([GUEST_HEAD]);   // safe to re-run: rewrites the header only
   const n = GUEST_HEAD.length;
   sh.setFrozenRows(1); sh.setFrozenColumns(2);
@@ -125,7 +124,7 @@ function setupGuests() {
   notes.forEach(function (t, i) { sh.getRange(1, i + 1).setNote(t); });
   // how-to tab
   let how = ss.getSheetByName("How to fill");
-  if (!how) how = ss.insertSheet("How to fill", 1);
+  if (!how) how = ss.insertSheet("How to fill", sh.getIndex());
   how.clear();
   const rows = [
     ["How to fill the Guests tab"],
@@ -151,6 +150,66 @@ function setupGuests() {
   how.getRange(10, 1, 1, 9).setFontWeight("bold").setBackground("#511d21").setFontColor("#ffffff");
   how.setColumnWidth(1, 170); how.setColumnWidth(2, 160); how.setColumnWidth(3, 200); how.setColumnWidth(7, 190); how.setColumnWidth(9, 200);
   ss.setActiveSheet(sh);
+}
+
+/* ---------- one Sheet for everything (Nov 16) ----------
+   The backend lives in Ryan's Sheet "Guest List for Wedding Website" (tabs "Guest List for Wedding Website" + "Invite codes").
+   setupAll: Guests + How to fill tabs, Messages tab, inbox password, Guests rows from "Invite codes", letters from the old Sheet.
+             Safe to re-run: fillGuests only adds invitations whose code isn't on the Guests tab yet, importOldMessages skips ids it has. */
+const INVITE_SHEET = "Invite codes";
+const OLD_SHEET_ID = "1oapFYPqkLcdA2HVhomGbhMsxTLJFqUznyo01xG-Pj1E";   // the first backend Sheet "Anne & Ryan wedding" (Nov 8 - 16)
+
+function setupAll() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss.getSheetByName(GUEST_SHEET)) setupGuests();
+  ensureSheet_(ss, MSG_SHEET, MSG_HEAD);
+  const props = PropertiesService.getScriptProperties();
+  if (!props.getProperty("INBOX_PASSWORD")) props.setProperty("INBOX_PASSWORD", "261226");
+  fillGuests();
+  importOldMessages();
+}
+
+/* "Invite codes" tab (one row per invitation: Side, Group, Invitation, Guests, Seats, Invite code) → Guests tab (one row per guest). */
+function fillGuests() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const src = ss.getSheetByName(INVITE_SHEET);
+  if (!src || src.getLastRow() < 2) throw new Error('No "' + INVITE_SHEET + '" tab with rows.');
+  if (!ss.getSheetByName(GUEST_SHEET)) setupGuests();
+  const sh = ss.getSheetByName(GUEST_SHEET);
+  const head = src.getRange(1, 1, 1, src.getLastColumn()).getValues()[0].map(function (h) { return String(h).trim().toLowerCase(); });
+  const c = { side: head.indexOf("side"), group: head.indexOf("group"), inv: head.indexOf("invitation"),
+              seats: head.indexOf("seats"), code: head.indexOf("invite code") };
+  if (c.inv < 0 || c.code < 0) throw new Error('"' + INVITE_SHEET + '" needs the columns Invitation and Invite code.');
+  const have = {}; guestRows_().rows.forEach(function (r) { const k = normCode_(r[G.code]); if (k) have[k] = 1; });
+  const out = []; let added = 0;
+  src.getRange(2, 1, src.getLastRow() - 1, src.getLastColumn()).getValues().forEach(function (r) {
+    const cell = String(r[c.inv]).trim(), code = normCode_(r[c.code]);
+    if (!cell || !code || have[code]) return;
+    have[code] = 1; added++;
+    const names = cell.split(/,\s*(?:and\s+)?|\s+and\s+/).map(function (n) { return n.trim(); }).filter(String);
+    const isPlus = function (n) { return /^plus\s*one$/i.test(n); };
+    const seats = (c.seats >= 0 && Number(r[c.seats])) || names.length;
+    const note = [c.side >= 0 ? r[c.side] : "", c.group >= 0 ? r[c.group] : ""].filter(String).join(" · ");
+    names.forEach(function (n, k) {
+      out.push([cell, isPlus(n) ? "Plus One" : n, "", k === 0 ? seats : "", names.some(isPlus) ? "Yes" : "No", "No",
+                "Ceremony & Reception", "", note, code]);
+    });
+  });
+  if (out.length) sh.getRange(sh.getLastRow() + 1, 1, out.length, out[0].length).setValues(out);
+  Logger.log(added + " invitations (" + out.length + " guest rows) added to " + GUEST_SHEET + ".");
+}
+
+/* Copies letters from the old backend Sheet's Messages tab (skips ids already here). */
+function importOldMessages() {
+  const sh = ensureSheet_(SpreadsheetApp.getActiveSpreadsheet(), MSG_SHEET, MSG_HEAD);
+  let old;
+  try { old = SpreadsheetApp.openById(OLD_SHEET_ID).getSheetByName(MSG_SHEET); } catch (x) { Logger.log("Old Sheet not reachable: " + x); return; }
+  if (!old || old.getLastRow() < 2) { Logger.log("No old letters."); return; }
+  const have = {};
+  if (sh.getLastRow() > 1) sh.getRange(2, 1, sh.getLastRow() - 1, 1).getValues().forEach(function (r) { have[r[0]] = 1; });
+  const rows = old.getRange(2, 1, old.getLastRow() - 1, MSG_HEAD.length).getValues().filter(function (r) { return r[0] && !have[r[0]]; });
+  if (rows.length) sh.getRange(sh.getLastRow() + 1, 1, rows.length, MSG_HEAD.length).setValues(rows);
+  Logger.log(rows.length + " letters copied from the old Sheet.");
 }
 
 /* ---------- invite codes + invitation emails (Nov 15) ----------
