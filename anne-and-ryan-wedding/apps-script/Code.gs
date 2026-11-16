@@ -167,7 +167,68 @@ function setupAll() {
   if (!props.getProperty("INBOX_PASSWORD")) props.setProperty("INBOX_PASSWORD", "261226");
   fillGuests();
   importOldMessages();
+  addChatMessages();
 }
+
+/* "Wedding" menu in the Sheet, so Anne / Ryan can send invites without opening Apps Script.
+   Emails go from the Google account of whoever clicks (Google asks them to allow it the first time). */
+function onOpen() {
+  SpreadsheetApp.getUi().createMenu("Wedding")
+    .addItem("Send a test invite to me", "menuTestInvite")
+    .addItem("Send invites by email", "menuSendInvites")
+    .addSeparator()
+    .addItem("Add new invitations to Guests", "menuFillGuests")
+    .addItem("Add chat messages to Invite codes", "addChatMessages")
+    .addToUi();
+}
+function menuTestInvite() {
+  sendTestInvite();
+  SpreadsheetApp.getUi().alert("Test invite sent to " + Session.getActiveUser().getEmail() + ".");
+}
+function menuSendInvites() {
+  const ui = SpreadsheetApp.getUi(), g = guestRows_(), ps = parties_(g.rows);
+  let ready = 0, noEmail = 0;
+  Object.keys(ps).forEach(function (p) {
+    const idx = ps[p];
+    if (idx.some(function (i) { return g.rows[i][G.sent]; })) return;
+    if (idx.some(function (i) { return String(g.rows[i][G.email]).trim(); })) ready++; else noEmail++;
+  });
+  if (!ready) { ui.alert("Nothing to send: no invitation has an email in column C without a date in \"Invite sent\"." + (noEmail ? " " + noEmail + " invitations still need an email." : "")); return; }
+  if (ui.alert("Send " + ready + " invitation emails from " + Session.getActiveUser().getEmail() + "?" +
+      (noEmail ? "\n" + noEmail + " invitations have no email yet and will be skipped." : ""), ui.ButtonSet.YES_NO) !== ui.Button.YES) return;
+  const r = sendInvites();
+  ui.alert(r.sent + " invitations sent." + (r.skipped.length ? "\nSkipped: " + r.skipped.join(", ") : ""));
+}
+function menuFillGuests() {
+  fillGuests();
+  SpreadsheetApp.getUi().alert("Done. New invitations from \"" + INVITE_SHEET + "\" are on the Guests tab (existing rows were not touched).");
+}
+
+/* Two columns at the end of "Invite codes": a ready-to-paste message per invitation (for Messenger / Viber / WhatsApp)
+   and a "Send on WhatsApp" link that opens WhatsApp with the message filled in. Formulas, so they follow any edit. */
+function addChatMessages() {
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(INVITE_SHEET);
+  if (!sh) throw new Error('No "' + INVITE_SHEET + '" tab.');
+  const head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0].map(function (h) { return String(h).trim().toLowerCase(); });
+  const L = function (name) { const i = head.indexOf(name); if (i < 0) throw new Error('"' + INVITE_SHEET + '" needs a column "' + name + '".'); return colLetter_(i + 1); };
+  const inv = L("invitation"), seats = L("seats"), code = L("invite code"), link = L("invite link");
+  let msgCol = head.indexOf("message") + 1;
+  if (!msgCol) msgCol = head.filter(String).length + 1;
+  const m = colLetter_(msgCol);
+  const next = head[msgCol] || "";
+  if (next && next !== "whatsapp") throw new Error('Column ' + colLetter_(msgCol + 1) + ' of "' + INVITE_SHEET + '" is in use; move it first.');
+  if (sh.getMaxColumns() < msgCol + 1) sh.insertColumnsAfter(sh.getMaxColumns(), msgCol + 1 - sh.getMaxColumns());
+  sh.getRange(1, msgCol, sh.getMaxRows(), 2).clearContent();
+  sh.getRange(1, msgCol).setFormula('=ARRAYFORMULA(IF(ROW(' + inv + '1:' + inv + ')=1,"Message",IF(' + inv + '1:' + inv + '="","",' +
+    '"Hi "&' + inv + '1:' + inv + '&"! Anne & Ryan would love for you to celebrate their wedding with them on Saturday, December 26, 2026 at 2:30 PM in Manila. ' +
+    'We have reserved "&' + seats + '1:' + seats + '&IF(' + seats + '1:' + seats + '=1," seat"," seats")&" for you. ' +
+    'Open your invitation and RSVP by December 5: "&' + link + '1:' + link + '&" (invite code "&' + code + '1:' + code + '&")")))');
+  sh.getRange(1, msgCol + 1).setFormula('=ARRAYFORMULA(IF(ROW(' + inv + '1:' + inv + ')=1,"WhatsApp",IF(' + inv + '1:' + inv + '="","",' +
+    'HYPERLINK("https://wa.me/?text="&ENCODEURL(' + m + '1:' + m + '),"Send on WhatsApp"))))');
+  sh.setColumnWidth(msgCol, 420); sh.setColumnWidth(msgCol + 1, 150);
+  sh.getRange(1, msgCol, 1, 2).setFontWeight("bold");
+}
+function colLetter_(n) { let s = ""; while (n > 0) { const r = (n - 1) % 26; s = String.fromCharCode(65 + r) + s; n = Math.floor((n - 1) / 26); } return s; }
 
 /* "Invite codes" tab (one row per invitation: Side, Group, Invitation, Guests, Seats, Invite code) → Guests tab (one row per guest). */
 function fillGuests() {
@@ -285,6 +346,7 @@ function sendInvites() {
     sent++;
   });
   Logger.log(sent + " invitations sent. Daily email quota left: " + MailApp.getRemainingDailyQuota() + (skipped.length ? "\nSkipped: " + skipped.join(", ") : ""));
+  return { sent: sent, skipped: skipped };
 }
 function sendTestInvite() {
   sendOne_(Session.getActiveUser().getEmail(), "Santos Family", "AR-7K2QX9", 4);
