@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <script>/* no invite code yet → straight to the code page, before this page draws */try{if(!localStorage.getItem("ar_guest"))location.replace("invite.html?next=rsvp.html")}catch(e){}</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RSVP · Anne &amp; Ryan</title>
@@ -12,10 +13,10 @@
 </head>
 <body>
   <header class="nav" data-nav>
+    <a class="brand" href="index.html" aria-label="Anne &amp; Ryan, home"><img src="assets/img/monogram-nav.svg" alt=""></a>
     <a href="story.html">Our Story</a>
     <a href="details.html">The Details</a>
     <a href="faq.html">FAQ</a>
-    <a class="brand" href="index.html" aria-label="Anne &amp; Ryan, home"><img src="assets/img/monogram-nav.svg" alt=""></a>
     <a href="rsvp.html" aria-current="page">RSVP</a>
     <a href="message.html">Leave a Message</a>
     <button class="burger" aria-label="Open menu" data-burger><span></span><span></span></button>
@@ -23,14 +24,14 @@
 
   <main class="rsvp" id="rsvp">
     <img class="rsvp__bg" src="assets/img/couple-arch.jpg" alt="">
-    <div class="rsvp__card" data-fade>
+    <div class="rsvp__card" data-fade data-wait>
       <h1 id="rsvpTitle">RSVP</h1>
 
       <!-- logged in with an invite code (invite.html). No code yet → rsvp.js sends the guest to invite.html?next=rsvp.html -->
       <div class="rstep is-active" data-rstep="party">
-        <div class="rfield"><p class="lab">Your invitation</p></div>
-        <p class="party-title" id="partyTitle">Santos Family</p>
-        <p class="rsvp__sub" id="partySub">We have reserved 4 seats for you! Please let us know who will be joining us by Dec 5, 2026, with one answer for each guest.</p>
+        <!-- Anne, Nov 16: party name, then how many seats, then one answer per guest (no name heading for a party of one) -->
+        <p class="party-title" id="partyTitle"></p>
+        <p class="rsvp__sub" id="partySub"></p>
         <form class="rform" id="partyForm" novalidate>
           <div class="rform" id="guestList"></div>
           <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
