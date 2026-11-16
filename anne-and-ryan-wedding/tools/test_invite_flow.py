@@ -1,6 +1,6 @@
 """Invite-code flow test against the local mock backend.
 Run first:  python3 -m http.server 8765   and   python3 tools/mock_apps_script.py   (port 8766)
-Mock codes: AR-7K2QX9 (Santos Family, table 5), AR-PL5ONE (Racquel Ochoa and Plus One)."""
+Mock codes: AR-7K2QX9 (Santos Family, table 5), AR-PL5ONE (Racquel Ochoa and Plus One), AR-SOLO01 (Celine Zamora, one seat)."""
 import asyncio, sys
 from playwright.async_api import async_playwright
 W = int(sys.argv[1]) if len(sys.argv) > 1 else 1920

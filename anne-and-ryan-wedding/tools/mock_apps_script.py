@@ -5,6 +5,7 @@ GUESTS=[  # [party, name, email, table, code, rsvp, food, plusName]
  ['Santos Family','Jose Santos','','5','AR-7K2QX9','','',''],
  ['Racquel Ochoa and Plus One','Racquel Ochoa','racquel@example.com','','AR-PL5ONE','','',''],
  ['Racquel Ochoa and Plus One','Plus One','','','AR-PL5ONE','','',''],
+ ['Celine Zamora','Celine Zamora','celine@example.com','','AR-SOLO01','','',''],
 ]
 FORGOT=[]
 def norm(c):
