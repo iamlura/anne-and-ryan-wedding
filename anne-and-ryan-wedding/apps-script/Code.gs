@@ -15,8 +15,9 @@
  *   POST {action:"rsvp", ...}         → append RSVP row
  *   POST {action:"message", ...}      → append message row
  *   POST {action:"inbox", password}   → all visible messages with text (password checked here, never in the browser)
- *   POST {action:"login", code}       → guest list (Nov 15): the party for an invite code (names, table, earlier answers)
- *   POST {action:"forgot", email}     → emails the invite code again to that address (if it's on the Guests tab)
+ *   POST {action:"find", last}        → (Nov 17) invitations with a guest of that last name: [{code, name}]. Guests no longer
+ *                                        see or type codes; the code is only the party's id between the site and this script.
+ *   POST {action:"login", code}       → guest list (Nov 15): the party for that id (names, table, earlier answers)
  *   POST {action:"rsvp_party", code, email, guests:[{row, attending, food, name}]} → writes each guest's answer
  *                                        into the Guests tab (RSVP / Dietary / Replied at / Plus one name) + an RSVP log row
  *   POST {action:"delete", id, token} → a guest deletes their own message (token was made in their browser when they sent it;
@@ -129,11 +130,11 @@ function setupGuests() {
   const rows = [
     ["How to fill the Guests tab"],
     ["1. One row per guest. Guests who share one invitation get the same Party name (e.g. Santos Family). A seat for an unnamed plus one is a row with Guest name \"Plus One\"."],
-    ["2. Put the party's email on one of its rows. That's where the invite code goes."],
+    ["2. Put the party's email on one of its rows. That's where the invitation email goes."],
     ["3. Seats reserved: the total for the party, on its first row. If it's more than the names listed, the extra seats are plus-ones."],
     ["4. Plus-one allowed, Child and Invited to: pick from the dropdown."],
-    ["5. Table: fill in whenever the seating is ready. Guests see it on the site after they log in."],
-    ["6. Leave the grey columns alone. Run makeCodes to fill the invite codes, sendInvites to email them; the site fills in the RSVP answers."],
+    ["5. Table: fill in whenever the seating is ready. Guests see it on the site after they find their invitation on the RSVP page."],
+    ["6. Leave the grey columns alone (the code is only an id for the site; guests RSVP by searching their last name). The site fills in the RSVP answers."],
     [""],
     ["Example"],
   ];
@@ -211,7 +212,7 @@ function addChatMessages() {
   if (!sh) throw new Error('No "' + INVITE_SHEET + '" tab.');
   const head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0].map(function (h) { return String(h).trim().toLowerCase(); });
   const L = function (name) { const i = head.indexOf(name); if (i < 0) throw new Error('"' + INVITE_SHEET + '" needs a column "' + name + '".'); return colLetter_(i + 1); };
-  const inv = L("invitation"), seats = L("seats"), code = L("invite code"), link = L("invite link");
+  const inv = L("invitation"), seats = L("seats");   // Nov 17: no invite code in the message, guests search their last name
   let msgCol = head.indexOf("message") + 1;
   if (!msgCol) msgCol = head.filter(String).length + 1;
   const m = colLetter_(msgCol);
@@ -222,7 +223,7 @@ function addChatMessages() {
   sh.getRange(1, msgCol).setFormula('=ARRAYFORMULA(IF(ROW(' + inv + '1:' + inv + ')=1,"Message",IF(' + inv + '1:' + inv + '="","",' +
     '"Hi "&' + inv + '1:' + inv + '&"! Anne & Ryan would love for you to celebrate their wedding with them on Saturday, December 26, 2026 at 2:30 PM in Manila. ' +
     'We have reserved "&' + seats + '1:' + seats + '&IF(' + seats + '1:' + seats + '=1," seat"," seats")&" for you. ' +
-    'Open your invitation and RSVP by December 5: "&' + link + '1:' + link + '&" (invite code "&' + code + '1:' + code + '&")")))');
+    'Please RSVP by December 5 (search your last name): ' + SITE_URL + 'rsvp.html")))');
   sh.getRange(1, msgCol + 1).setFormula('=ARRAYFORMULA(IF(ROW(' + inv + '1:' + inv + ')=1,"WhatsApp",IF(' + inv + '1:' + inv + '="","",' +
     'HYPERLINK("https://wa.me/?text="&ENCODEURL(' + m + '1:' + m + '),"Send on WhatsApp"))))');
   sh.setColumnWidth(msgCol, 420); sh.setColumnWidth(msgCol + 1, 150);
@@ -313,17 +314,15 @@ function makeCodes() {
 }
 
 function inviteHtml_(party, code, seats) {
-  const link = SITE_URL + "invite.html?code=" + encodeURIComponent(code);
+  const link = SITE_URL + "rsvp.html";                       // Nov 17: no codes, guests search their last name
   return '<div style="background:#f3efe8;font-family:Georgia,serif;color:#3a2a26;max-width:600px;margin:0 auto">' +
     '<div style="background:#390007;color:#f1eee7;text-align:center;padding:40px 24px"><div style="font-size:40px;font-style:italic">Anne &amp; Ryan</div></div>' +
     '<div style="text-align:center;padding:40px 40px 32px;line-height:1.5">' +
     '<div style="font-size:30px;font-style:italic;color:#4e0b12">Dear ' + party + ',</div>' +
     '<p>Anne and Ryan request the honor of your presence at the celebration of their marriage.</p>' +
     '<p>Saturday, December 26, 2026 · 2:30 PM<br><span style="opacity:.8">Minor Basilica of San Sebastian, Quiapo, Manila<br>Reception to follow at Champagne Room, The Manila Hotel</span></p>' +
-    '<p style="font-size:12px;letter-spacing:3px;color:#4e0b12;margin-top:28px">YOUR INVITE CODE</p>' +
-    '<div style="display:inline-block;background:#e7e2d8;border-radius:10px;padding:12px 28px;font-size:30px;letter-spacing:3px;color:#2e2622">' + code + '</div>' +
-    '<p style="margin:28px 0"><a href="' + link + '" style="background:#202700;color:#f1eee7;text-decoration:none;border-radius:999px;padding:12px 32px;letter-spacing:3px">Open Your Invitation</a></p>' +
-    '<p style="font-size:13px;opacity:.7">Or go to ' + SITE_URL.replace(/^https:\/\//, "").replace(/\/$/, "") + ' and enter your code.</p>' +
+    '<p style="margin:28px 0"><a href="' + link + '" style="background:#202700;color:#f1eee7;text-decoration:none;border-radius:999px;padding:12px 32px;letter-spacing:3px">RSVP</a></p>' +
+    '<p style="font-size:13px;opacity:.7">On the RSVP page, search your last name to find your invitation.</p>' +
     '<p style="font-style:italic">Kindly reply by December 5, 2026.</p></div>' +
     '<div style="background:#40050c;color:#f1eee7;text-align:center;padding:24px"><div style="font-size:24px;font-style:italic">Anne &amp; Ryan</div>' +
     '<div style="font-size:11px;letter-spacing:2px;opacity:.8;margin-top:6px">THIS INVITATION IS FOR ' + party.toUpperCase() + ' · ' + seats + (seats === 1 ? ' SEAT' : ' SEATS') + '</div></div></div>';
@@ -331,7 +330,7 @@ function inviteHtml_(party, code, seats) {
 function sendOne_(to, party, code, seats) {
   MailApp.sendEmail({ to: to, subject: "Anne & Ryan · Your invitation", name: "Anne & Ryan",
     htmlBody: inviteHtml_(party, code, seats),
-    body: "Dear " + party + ",\n\nYou're invited to Anne and Ryan's wedding on Saturday, December 26, 2026.\nYour invite code: " + code + "\nOpen your invitation: " + SITE_URL + "invite.html?code=" + code + "\n\nKindly reply by December 5, 2026." });
+    body: "Dear " + party + ",\n\nYou're invited to Anne and Ryan's wedding on Saturday, December 26, 2026.\nRSVP (search your last name): " + SITE_URL + "rsvp.html\n\nKindly reply by December 5, 2026." });
 }
 function sendInvites() {
   const g = guestRows_(); const ps = parties_(g.rows); let sent = 0, skipped = [];
@@ -352,7 +351,7 @@ function sendTestInvite() {
   sendOne_(Session.getActiveUser().getEmail(), "Santos Family", "AR-7K2QX9", 4);
 }
 
-/* site: log in with a code */
+/* site: open an invitation by its id (the code from find; guests never type it since Nov 17) */
 function login_(b) {
   Utilities.sleep(300);                                   // slows down guessing
   const code = normCode_(b.code); if (!code) throw new Error("nomatch");
@@ -371,18 +370,23 @@ function login_(b) {
   } };
 }
 
-/* site: forgot code → email it again */
-function forgot_(b) {
-  const email = String(b.email || "").trim().toLowerCase();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) throw new Error("Please enter a valid email address.");
-  const g = guestRows_(); const ps = parties_(g.rows);
-  Object.keys(ps).forEach(function (p) {
-    const idx = ps[p];
-    if (!idx.some(function (i) { return String(g.rows[i][G.email]).trim().toLowerCase() === email; })) return;
-    const code = g.rows[idx[0]][G.code];
-    if (code) sendOne_(email, p, code, idx.length);
+/* site (Nov 17): find invitations by last name. Matches a guest's last word, a part of a hyphenated name
+   ("Suzuki-Cano" → "Cano" or "Suzuki-Cano") or a two-word last name ("Dela Cruz"); accents and case don't matter.
+   "Plus One" rows never match. Returns only the invitation (party) names and their ids. */
+function normName_(s) {
+  return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z]+/g, " ").trim();
+}
+function find_(b) {
+  const q = normName_(b.last); if (q.replace(/ /g, "").length < 2) return { ok: true, parties: [] };
+  const g = guestRows_(); const seen = {}; const out = [];
+  g.rows.forEach(function (r) {
+    const raw = String(r[G.name]).trim(); if (!raw || /^plus\s*one$/i.test(raw)) return;
+    const n = normName_(raw), words = n.split(" ");
+    if ((" " + n).slice(-(q.length + 1)) !== " " + q && words.slice(1).indexOf(q) < 0) return;
+    const code = String(r[G.code]).toUpperCase(); if (!code || seen[code]) return;
+    seen[code] = 1; out.push({ code: code, name: String(r[G.party]) });
   });
-  return { ok: true };                                     // same answer either way, so emails can't be probed
+  return { ok: true, parties: out };
 }
 
 /* site: save one answer per guest */
@@ -443,7 +447,7 @@ function doPost(e) {
     switch (body.action) {
       case "rsvp": lock.waitLock(10000); return json_(saveRsvp_(body));
       case "login": return json_(login_(body));
-      case "forgot": return json_(forgot_(body));
+      case "find": return json_(find_(body));
       case "rsvp_party": lock.waitLock(10000); return json_(rsvpParty_(body));
       case "message": lock.waitLock(10000); return json_(saveMessage_(body));
       case "inbox": return json_(inbox_(body));
