@@ -11,7 +11,7 @@
   const LS_RSVP = "ar_rsvps", LS_MSG = "ar_messages";
   // Demo mode only. With Sheets connected the password lives in Apps Script and is checked server-side.
   const DEMO_PASSWORD = "261226";
-  // Demo mode only: a sample invitation (code AR-7K2QX9) so the RSVP flow can be tried without the Sheet.
+  // Demo mode only: a sample invitation (last name "Santos") so the RSVP flow can be tried without the Sheet.
   const DEMO_PARTY = { name: "Santos Family", code: "AR-7K2QX9", table: "5", email: "maria@example.com", replied: false,
     guests: [{ row: 2, name: "Maria Santos" }, { row: 3, name: "Jose Santos" }, { row: 4, name: "Ana Santos" }, { row: 5, name: "", plusOne: true }] };
 
@@ -61,19 +61,22 @@
       return post({ action: "rsvp", ...r });
     },
 
-    /* ---- guest list / invite codes (Nov 15) ---- */
-    async login(code) {
+    /* ---- guest list (Nov 15). Since Nov 17 guests find their invitation by last name; the party's code is only
+       an internal id now (guests never see or type it) ---- */
+    async find(last) {
       if (DEMO) {
         await sleep(400);
-        const c = String(code || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
-        if (c !== "AR7K2QX9" && c !== "7K2QX9") throw new Error("nomatch");
+        return { ok: true, parties: /^santos$/i.test(String(last || "").trim()) ? [{ code: DEMO_PARTY.code, name: DEMO_PARTY.name }] : [] };
+      }
+      return post({ action: "find", last });
+    },
+    async login(code) {
+      if (DEMO) {
+        await sleep(300);
+        if (code !== DEMO_PARTY.code) throw new Error("nomatch");
         return { ok: true, party: DEMO_PARTY };
       }
       return post({ action: "login", code });
-    },
-    async forgot(email) {
-      if (DEMO) { await sleep(400); return { ok: true }; }
-      return post({ action: "forgot", email });
     },
     async rsvpParty(code, guests, extra) {
       if (DEMO) { await sleep(500); const all = lsGet(LS_RSVP); all.push({ code, guests, t: Date.now() }); lsSet(LS_RSVP, all); return { ok: true }; }

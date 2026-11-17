@@ -56,7 +56,7 @@
     update();
   }
 
-  // ---- guest session (invite code, Nov 15). Saved in this browser after invite.html ----
+  // ---- guest session: the invitation a guest found on the RSVP page (by last name since Nov 17), kept in this browser ----
   const KEY = "ar_guest";
   window.Guest = {
     get() { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } },
@@ -64,8 +64,6 @@
     clear() { try { localStorage.removeItem(KEY); } catch (e) {} }
   };
   const guest = window.Guest.get();
-  // RSVP → code → RSVP: without a code, every RSVP link (nav, menu, footer) opens invite.html directly
-  if (!guest) document.querySelectorAll('a[href="rsvp.html"]').forEach((a) => { a.href = "invite.html?next=rsvp.html"; });
   if (guest) {
     // landing: "Welcome, Santos Family" + Continue (Figma "welcome")
     document.querySelectorAll("[data-welcome]").forEach((el) => { el.textContent = `Welcome, ${guest.name}`; el.hidden = false; });
