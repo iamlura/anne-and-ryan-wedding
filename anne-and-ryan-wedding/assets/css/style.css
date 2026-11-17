@@ -301,7 +301,7 @@ html { scroll-behavior: smooth; }
 .rsvp__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
 .rsvp::before { content: ""; position: absolute; inset: 0; background: rgba(32,39,0,.55); z-index: 1; }
 .rsvp__card { position: relative; z-index: 2; width: calc(1060 * var(--u)); min-width: min(100%, 560px); background: var(--bg-2); border-radius: calc(28 * var(--u)); padding: calc(110 * var(--u)) calc(120 * var(--u)) calc(120 * var(--u)); display: flex; flex-direction: column; gap: calc(44 * var(--u)); color: var(--ink); }
-.rsvp__card h1 { font-size: calc(140 * var(--u)); line-height: 1; }
+.rsvp__card h1 { font-size: calc(140 * var(--u)); line-height: 1; text-align: center; } /* every RSVP step centred (designer, Nov 17) */
 .rsvp__intro { font-size: calc(30 * var(--u)); line-height: 1.5; }
 .rstep { display: none; flex-direction: column; gap: calc(44 * var(--u)); }
 .rstep.is-active { display: flex; animation: stepIn .5s ease; }
@@ -315,7 +315,7 @@ html { scroll-behavior: smooth; }
 .rinput:disabled { opacity: .45; }
 .rhint { font-size: calc(24 * var(--u)); opacity: .7; margin-top: calc(-24 * var(--u)); }
 .rhint.is-error { color: var(--rose); opacity: 1; }
-.party-title { font-family: var(--script); color: var(--burg); font-size: calc(64 * var(--u)); line-height: 1.2; margin-top: calc(-30 * var(--u)); }
+.party-title { font-family: var(--script); color: var(--burg); font-size: calc(64 * var(--u)); line-height: 1.2; margin-top: calc(-30 * var(--u)); text-align: center; }
 .rsvp__sub { font-size: calc(28 * var(--u)); opacity: .8; margin-top: calc(-20 * var(--u)); }
 .rrule { height: 1px; background: rgba(78,11,18,.2); border: 0; margin: 0; }
 .guest { display: flex; flex-direction: column; gap: calc(20 * var(--u)); }
@@ -334,7 +334,6 @@ html { scroll-behavior: smooth; }
 .rsvp-done p { font-size: calc(34 * var(--u)); }
 /* RSVP sent on desktop (designer's Figma "RSVP sent logged in" 227:411, Nov 17): taller photo with the card in the
    middle (524 above and below), title centred, 30 px text, button 40 below the text, 120 side padding */
-.rsvp__card:has(.rsvp-done.is-active) h1 { text-align: center; } /* phone too (244:564) */
 @media (min-width: 761px) {
   .rsvp:has(.rsvp-done.is-active) { padding-top: calc(524 * var(--u)); padding-bottom: calc(524 * var(--u)); }
   .rsvp:has(.rsvp-done.is-active) .rsvp__bg { object-position: 50% 13.3%; }
