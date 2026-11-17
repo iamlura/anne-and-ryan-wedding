@@ -54,7 +54,7 @@ How I like to work:
 5. Sending invitations (Anne / Ryan): **chat** = "Invite codes" tab, column H (Message: now just the RSVP link + "search your last name", no code) to copy, column I (Send on WhatsApp). **Email** = guest emails in Guests column C, then Wedding > Send a test invite to me, then Wedding > Send invites by email (the email has an RSVP button, no code).
 6. Later: table numbers in Guests column H. Then trash the old Sheet "Anne & Ryan wedding" + its Form.
 7. ~~Phone "RSVP sent"~~ (done Nov 17, round 19, designer picked all 3 fixes): card moved down so the couple shows above it, even 40 px card padding, button "Leave Anne & Ryan a message" on one line. Site: `style.css` ≤760px block (`.rsvp:has(.rsvp-done.is-active)` rules + `.rsvp-done .pill-btn`). Figma: **"RSVP sent logged in phone editable" (244:564)** fixed directly (photo 412 → 584 tall, card 244:568 now auto-layout at y 220, button 244:571 auto-layout hugging, frame 878 → 1050). Still old: the screenshot frame "RSVP sent logged in phone" (233:18), refresh it from the live site.
-8. **Our Story: more photos (designer asked Nov 17, not started on the site or in Figma yet).** See "Our Story photos" in section 0a.
+8. **Our Story: more photos.** Layout is in Figma for the designer to check (section 0a); build on the site once she approves.
 9. ~~RSVP by last name, thank-you to Figma~~ (done Nov 17, round 20, section 0). Still to do: phone frames for the search steps (find / not found / pick) don't exist in Figma yet; the "invite code" rows in Figma are now unused (noted, not deleted). FAQ "Can I bring a plus one?" says guests "search" on the RSVP page, which is true again.
 
 **Invite codes (Nov 16; since Nov 17 only an internal id, guests never see them):** one per invitation, `AR-` + 6 characters from `CODE_CHARS` (no 0/O, 1/I/L), made by `tools/anne_list_to_guests.py` (re-running keeps the codes of invitations already in guests_import.csv). Listed in Ryan's Sheet "Guest List for Wedding Website", tab **"Invite codes"** (Side, Group, Invitation, Guests, Seats, Invite code, Invite link), added through Chrome (the Drive connector can only view that Sheet). Anne's Nov 16 list: Catherine Ramirez's party is now "Catherine Ramirez, Lennon Ramirez, and Bel Ramirez" (3 seats); every listed seat count matches its names.
@@ -74,12 +74,19 @@ Designer's request: remove the guest code, make the RSVP searchable by last name
 - **Centred headers (designer, Nov 17, same round):** the script "RSVP" title and the party name are centred on every RSVP step, desktop and phone (body text stays left). CSS: `.rsvp__card h1` and `.party-title` get `text-align: center`. Figma: those texts set to Fill width + centre in 216:247, 218:2, 262:2, 218:57, 218:140, 227:322, 240:172 and phone 244:523.
 - **Tests:** `tools/test_rsvp_flow.py [width]` (not found, pick, one match, answer, thank-you, reload, old invite link); mock backend has `find` + a second Zamora. `tools/test_invite_flow.py` removed.
 
-## 0a. Nov 17: Our Story photos plan (round 19, to do)
+## 0a. Nov 17: Our Story photos (in Figma for the designer to check, not on the site yet)
 
-Now: one staggered row of 5 photos (`.moments`, story.html; Figma "Our Story AC" (216:71) row "Frame 3041" 216:86 = 5 vertical auto-layout frames whose paddingTop makes the stagger: 0 / 140 / 40 / 180 / 60, photo sizes 300×440, 260×360, 320×480, 260×340, 300×420, radius 14).
-- **Photos not on the site yet** (assets/img, 826×1100): story-1 (indoor dance), 2 (close portrait), 3 (fountain), 5 (garden path), 6 (hands, B&W), 7 (stairs from above), 8 (castle), 11 (lawn embrace), 12 (ring hands), 13 (kiss close-up), 14 (fountain, B&W), 15, 19, 20 (B&W), 10 (night). Already used, skip: story-16/17/18/21/22 ≈ moment-1..5, story-9 = polaroid.
-- **Proposed** (not confirmed by the designer): 2 more rows of 5 under the first, same sizes, different stagger. Row 2: story-1, 13, 3, 6, 8. Row 3: story-7, 14, 11, 12, 2. Phones: one horizontal scroll strip of all 15 (rows `display: contents` in the ≤760px block). Figma: clone row 216:86 twice into 216:71 (keep "Frame 30xx" style names), set the fills; phone frames "Our Story phone editable" (244:138, strip in 244:146) and "Our Story phone" (233:23, screenshot) need the same.
-- **Figma image hashes**: the old "final pages" Our Story carousel track 87:64564 has 22 cards (87:64565, 87:64568 … every 3rd id), each one 400×600 photo, so the photos are already in the file: copy `imageHash` from there (no upload, no AI credits). Card N is probably story-N but check with a screenshot first: the 5 current moments use the hashes of cards 4, 22, 16, 17, 18.
+**In Figma now (round 21):** "Our Story AC" 216:71, row "Frame 3041" 216:86: each of the 5 staggered columns (216:87 / 89 / 91 / 93 / 95, top padding 0 / 140 / 40 / 180 / 60 unchanged) got 2 more photos stacked under its first one, column gap 36 (columns' itemSpacing), same widths 300 / 260 / 320 / 260 / 300, radius 14. New layers 267:2–267:11 ("image"). Photos top to bottom (story-N = assets/img/story-N.jpg):
+- col 1: moment-1 (=story-4), **story-1** (400), **story-7** (460)
+- col 2: moment-2 (=21), **story-13** (340), **story-19** (380)
+- col 3: moment-3 (=16), **story-3** (420), **story-14** (440)
+- col 4: moment-4 (=17), **story-6** (360), **story-2** (340)
+- col 5: moment-5 (=18), **story-8** (440), **story-12** (420)
+Bottoms stay ragged like the tops. Frame grew to 3689 tall. White note 268:12 under the frame.
+- **Phone** "Our Story phone editable" 244:138: the sideways strip 244:146 continues with the same 10 (268:2–268:11, same 5 sizes / stagger repeated, order: 1, 13, 3, 6, 8, 7, 19, 14, 2, 12). The strip clips, so only the first ones show in Figma. "Our Story phone" 233:23 (screenshot) not updated yet.
+- **Left out on purpose:** story-9 (details polaroid), story-11 (RSVP background), story-22 (too close to 21), story-5 (couple tiny in the frame), story-10 (dark night shot), story-15 / 20 (spares).
+- **Image hashes:** old "final pages" carousel 87:64564 card N = story-N (checked by matching every card against assets/img). Moments use cards 4, 21, 16, 17, 18.
+- **Site, once approved:** `.moments` in story.html becomes 5 columns (flex, each a column with the same top padding + `gap` 36) with 3 photos each; phones keep the sideways strip with all 15 in the order above.
 
 ## 0b. Nov 16: one Sheet for everything
 
@@ -485,3 +492,4 @@ jobs:
   - Phone "RSVP sent": card lower so the couple shows (`padding-top: 220px`, photo `object-position: 50% 0`), even 40 px padding, one-line button (16 px, 2.5 px spacing, 14/24 padding). Only when the done step is showing (`:has()`), so the RSVP form doesn't move. Figma 244:564 fixed to match.
   - Our Story photos: planned (section 0), not built.
 - **Nov 17, 2026 (20th round): RSVP by last name.** See section 0. Site: `rsvp.html`, `rsvp.js`, `api.js` (`find`, `forgot` removed), `common.js` (no RSVP link rewrite), `invite.html` (redirect), `invite.js` deleted, `style.css` (desktop thank-you). `Code.gs`: `find` action, invitations without codes. Figma: 216:247, 218:2, 218:231 fixed; new 262:2 + notes. Tests: `test_rsvp_flow.py` rewritten, mock `find`. Then: "RSVP" and party-name headers centred on every RSVP step (site + Figma).
+- **Nov 17, 2026 (21st round, in progress): Our Story photos layout in Figma** for review (section 0a). Site not changed yet.
