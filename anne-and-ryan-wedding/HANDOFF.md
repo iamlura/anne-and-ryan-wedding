@@ -76,17 +76,11 @@ Designer's request: remove the guest code, make the RSVP searchable by last name
 
 ## 0a. Nov 17: Our Story photos (in Figma for the designer to check, not on the site yet)
 
-**In Figma now (round 21):** "Our Story AC" 216:71, row "Frame 3041" 216:86: each of the 5 staggered columns (216:87 / 89 / 91 / 93 / 95, top padding 0 / 140 / 40 / 180 / 60 unchanged) got 2 more photos stacked under its first one, column gap 36 (columns' itemSpacing), same widths 300 / 260 / 320 / 260 / 300, radius 14. New layers 267:2–267:11 ("image"). Photos top to bottom (story-N = assets/img/story-N.jpg):
-- col 1: moment-1 (=story-4), **story-1** (400), **story-7** (460)
-- col 2: moment-2 (=21), **story-13** (340), **story-19** (380)
-- col 3: moment-3 (=16), **story-3** (420), **story-14** (440)
-- col 4: moment-4 (=17), **story-6** (360), **story-2** (340)
-- col 5: moment-5 (=18), **story-8** (440), **story-12** (420)
-Bottoms stay ragged like the tops. Frame grew to 3689 tall. White note 268:12 under the frame.
+**In Figma now (round 21, designer asked for horizontal scroll):** "Our Story AC" 216:71, row "Frame 3041" 216:86 is one staggered strip of **15 photos that scrolls sideways**: the 5 original columns, then 10 new column frames ("Frame", 269:2–269:11) repeating the same pattern (top padding 0 / 140 / 40 / 180 / 60, photos 300×440, 260×360, 320×480, 260×340, 300×420, radius 14, gap 36). Row: left-aligned (padding 120), clips content, prototype overflow = horizontal scroll; the 6th photo peeks at the right edge so the scroll reads. Frame back to 2757 tall. Order after the 5 moments: **story-1, 13, 3, 6, 8, 7, 19, 14, 2, 12** (story-N = assets/img/story-N.jpg). White note 268:12 under the frame.
 - **Phone** "Our Story phone editable" 244:138: the sideways strip 244:146 continues with the same 10 (268:2–268:11, same 5 sizes / stagger repeated, order: 1, 13, 3, 6, 8, 7, 19, 14, 2, 12). The strip clips, so only the first ones show in Figma. "Our Story phone" 233:23 (screenshot) not updated yet.
 - **Left out on purpose:** story-9 (details polaroid), story-11 (RSVP background), story-22 (too close to 21), story-5 (couple tiny in the frame), story-10 (dark night shot), story-15 / 20 (spares).
 - **Image hashes:** old "final pages" carousel 87:64564 card N = story-N (checked by matching every card against assets/img). Moments use cards 4, 21, 16, 17, 18.
-- **Site, once approved:** `.moments` in story.html becomes 5 columns (flex, each a column with the same top padding + `gap` 36) with 3 photos each; phones keep the sideways strip with all 15 in the order above.
+- **Site, once approved:** `.moments` in story.html becomes a sideways-scrolling strip of 15 (`overflow-x: auto`, scroll-snap, same stagger repeating), desktop and phone.
 
 ## 0b. Nov 16: one Sheet for everything
 
