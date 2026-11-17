@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <script>/* no invite code yet → straight to the code page, before this page draws */try{if(!localStorage.getItem("ar_guest"))location.replace("invite.html?next=rsvp.html")}catch(e){}</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RSVP · Anne &amp; Ryan</title>
@@ -27,8 +26,27 @@
     <div class="rsvp__card" data-fade data-wait>
       <h1 id="rsvpTitle">RSVP</h1>
 
-      <!-- logged in with an invite code (invite.html). No code yet → rsvp.js sends the guest to invite.html?next=rsvp.html -->
-      <div class="rstep is-active" data-rstep="party">
+      <!-- Nov 17: no invite codes. Guests search their last name (Figma "RSVP AC" 216:247 / not found 218:2) -->
+      <div class="rstep" data-rstep="find">
+        <p class="rsvp__intro">We can’t wait to celebrate with you and your presence means the world to us! Please let us know if you will be able to join in the festivities by the end of <span data-c="rsvpBy">Dec 5, 2026</span>.</p>
+        <form class="rform" id="findForm" novalidate>
+          <div class="rfield">
+            <label for="last">Last Name</label>
+            <input class="rinput" id="last" name="last" autocomplete="family-name" placeholder="Doe" maxlength="60" required>
+          </div>
+          <p class="rhint" id="findHint" aria-live="polite">Type your last name as it appears on your invitation.</p>
+          <button class="pill-btn pill-btn--olive" id="findBtn" type="submit">Find my invitation</button>
+        </form>
+      </div>
+
+      <!-- more than one invitation with that last name: pick yours (Figma "RSVP AC pick", Nov 17) -->
+      <div class="rstep" data-rstep="pick">
+        <p class="rsvp__intro" id="pickText">Which invitation is yours?</p>
+        <div class="choices" id="pickList"></div>
+        <button class="link-btn" type="button" data-again>Search again</button>
+      </div>
+
+      <div class="rstep" data-rstep="party">
         <!-- Anne, Nov 16: party name, then how many seats, then one answer per guest (no name heading for a party of one) -->
         <p class="party-title" id="partyTitle"></p>
         <p class="rsvp__sub" id="partySub"></p>
@@ -38,6 +56,7 @@
           <p class="form-msg" id="rsvpMsg" role="status" aria-live="polite"></p>
           <button class="pill-btn pill-btn--olive" id="rsvpSubmit" type="submit" disabled>Submit</button>
         </form>
+        <button class="link-btn" type="button" data-again>Not you? Search again</button>
       </div>
 
       <div class="rstep rsvp-done" data-rstep="done">
