@@ -212,8 +212,13 @@ html { scroll-behavior: smooth; }
 .story-top .polaroid { width: calc(676 * var(--u)); height: calc(868 * var(--u)); --rot: 2deg; }
 
 /* five photos at uneven heights */
-.moments { background: var(--bg-2); padding: calc(40 * var(--u)) calc(120 * var(--u)) calc(180 * var(--u)); display: flex; justify-content: center; align-items: flex-start; gap: calc(36 * var(--u)); }
-.moments img { border-radius: calc(14 * var(--u)); object-fit: cover; flex: none; }
+/* Our Story photos: one revolving strip (Nov 17). moments.js repeats the set once and moves scrollLeft; the margin on
+   every photo (not flex gap) makes the two halves exactly equal, so the jump back by one set is invisible */
+.moments { background: var(--bg-2); padding: calc(40 * var(--u)) 0 calc(180 * var(--u)); overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; }
+.moments::-webkit-scrollbar { display: none; }
+.moments__track { display: flex; align-items: flex-start; width: max-content; padding-left: calc(120 * var(--u)); }
+.moments img { border-radius: calc(14 * var(--u)); object-fit: cover; flex: none; margin-right: calc(36 * var(--u)); -webkit-user-drag: none; user-select: none; }
+.moments.is-dragging { cursor: grabbing; }
 .moments .m1 { width: calc(300 * var(--u)); height: calc(440 * var(--u)); }
 .moments .m2 { width: calc(260 * var(--u)); height: calc(360 * var(--u)); margin-top: calc(140 * var(--u)); }
 .moments .m3 { width: calc(320 * var(--u)); height: calc(480 * var(--u)); margin-top: calc(40 * var(--u)); }
@@ -564,8 +569,9 @@ html { scroll-behavior: smooth; }
   .story-top h1 { font-size: 64px; }
   .story-text { gap: 18px; line-height: 1.5; }
   .story-top .polaroid { width: 280px; height: 360px; }
-  .moments { justify-content: flex-start; overflow-x: auto; padding: 24px 24px 64px; gap: 14px; scroll-snap-type: x mandatory; }
-  .moments img { scroll-snap-align: center; border-radius: 8px; }
+  .moments { padding: 24px 0 64px; }
+  .moments__track { padding-left: 24px; }
+  .moments img { border-radius: 8px; margin-right: 14px; }
 
   .d-head { padding: 72px 20px 40px; }
   .d-head h1 { font-size: 72px; }
