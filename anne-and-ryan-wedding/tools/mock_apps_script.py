@@ -6,6 +6,7 @@ GUESTS=[  # [party, name, email, table, code, rsvp, food, plusName]
  ['Racquel Ochoa and Plus One','Racquel Ochoa','racquel@example.com','','AR-PL5ONE','','',''],
  ['Racquel Ochoa and Plus One','Plus One','','','AR-PL5ONE','','',''],
  ['Celine Zamora','Celine Zamora','celine@example.com','','AR-SOLO01','','',''],
+ ['Pauline Zamora','Pauline Zamora','','','AR-SOLO02','','',''],
 ]
 FORGOT=[]
 def norm(c):
@@ -31,6 +32,14 @@ class H(http.server.BaseHTTPRequestHandler):
             g0=rows[0][1]
             return self._send({'ok':True,'party':{'name':g0[0],'code':c,'table':g0[3],'email':g0[2],'replied':any(g[5] for _,g in rows),
               'guests':[{'row':i+2,'name':(g[7] if g[1]=='Plus One' else g[1]),'plusOne':g[1]=='Plus One','attending':{'Joyfully accepts':'Yes','Respectfully declines':'No'}.get(g[5],''),'food':g[6]} for i,g in rows]}})
+        if a=='find':  # Nov 17: last name → invitations (code = internal id)
+            q=' '.join(''.join(ch if ch.isalpha() else ' ' for ch in str(body.get('last','')).lower()).split())
+            seen={}
+            for g in GUESTS:
+                n=' '.join(''.join(ch if ch.isalpha() else ' ' for ch in g[1].lower()).split())
+                if g[1]=='Plus One' or len(q)<2: continue
+                if (' '+n).endswith(' '+q) or q in n.split()[1:]: seen.setdefault(g[4], g[0])
+            return self._send({'ok':True,'parties':[{'code':c,'name':p} for c,p in seen.items()]})
         if a=='forgot': FORGOT.append(body.get('email')); print('FORGOT', body.get('email'), flush=True); return self._send({'ok':True})
         if a=='rsvp_party':
             c=norm(body.get('code'))
