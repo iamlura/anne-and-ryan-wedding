@@ -295,7 +295,7 @@ html { scroll-behavior: smooth; }
 .d-facts:has([data-table]:not([hidden])) > div:not(.rule) { width: calc(380 * var(--u)); }
 
 /* =========================================================
-   RSVP (guest list: find your invitation, answer for each guest)
+   RSVP (guest list: find your invitation by last name, answer for each guest)
    ========================================================= */
 .rsvp { position: relative; overflow: hidden; padding: calc(160 * var(--u)) 20px calc(180 * var(--u)); display: flex; justify-content: center; }
 .rsvp__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
@@ -332,6 +332,15 @@ html { scroll-behavior: smooth; }
 .form-msg { text-align: center; color: var(--rose); font-size: calc(26 * var(--u)); }
 .rsvp-done { align-items: center; text-align: center; }
 .rsvp-done p { font-size: calc(34 * var(--u)); }
+/* RSVP sent on desktop (designer's Figma "RSVP sent logged in" 227:411, Nov 17): taller photo with the card in the
+   middle (524 above and below), title centred, 30 px text, button 40 below the text, 120 side padding */
+.rsvp__card:has(.rsvp-done.is-active) h1 { text-align: center; } /* phone too (244:564) */
+@media (min-width: 761px) {
+  .rsvp:has(.rsvp-done.is-active) { padding-top: calc(524 * var(--u)); padding-bottom: calc(524 * var(--u)); }
+  .rsvp:has(.rsvp-done.is-active) .rsvp__bg { object-position: 50% 13.3%; }
+  .rsvp-done p { font-size: calc(30 * var(--u)); line-height: 1.5; }
+  .rsvp-done .pill-btn { margin: calc(40 * var(--u)) 0 calc(20 * var(--u)); padding: calc(20 * var(--u)) calc(120 * var(--u)); }
+}
 
 /* shared bits used by Leave a Message (write form, inbox arrows) */
 .field { display: flex; flex-direction: column; gap: calc(20 * var(--u)); }
