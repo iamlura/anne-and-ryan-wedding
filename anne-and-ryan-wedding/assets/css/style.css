@@ -612,6 +612,11 @@ html { scroll-behavior: smooth; }
   .choices button { font-size: 20px; padding: 12px 14px; border-radius: 8px; }
   .form-msg { font-size: 16px; }
   .rsvp-done p { font-size: 20px; }
+  /* RSVP sent on phones (designer, Nov 16): card lower so the couple shows above it, even padding, one-line button */
+  .rsvp:has(.rsvp-done.is-active) { padding-top: 220px; }
+  .rsvp:has(.rsvp-done.is-active) .rsvp__bg { object-position: 50% 0; }
+  .rsvp:has(.rsvp-done.is-active) .rsvp__card { padding-bottom: 40px; }
+  .rsvp-done .pill-btn { font-size: 16px; letter-spacing: 2.5px; padding: 14px 24px; white-space: nowrap; }
 
   .lam { min-height: 0; }
   .stage-wrap { height: auto; display: flex; flex-direction: column; padding-top: 110px; }
