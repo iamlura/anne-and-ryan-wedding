@@ -22,8 +22,8 @@
   --card: #f1eee7;
   --white: #fff;
   --muted: #7d7d7d;
-  --lav: #c7b8d4;
-  --lav-dark: #9a80b0;
+  --lav: #ddbdc0;      /* Part III: envelope is dusty rose now (was lavender #c7b8d4) */
+  --lav-dark: #b8878d; /* was #9a80b0 */
   --serif: "Cormorant Garamond", Georgia, serif;
   --serif-sc: "Cormorant SC", Georgia, serif;
   --sans: "Cormorant Garamond", Georgia, serif;
@@ -112,6 +112,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .btn[disabled], .btn.is-disabled { opacity: .5; cursor: not-allowed; transform: none; }
 .btn--gray { background: var(--olive); }
 .btn--wide { align-self: center; }
+.btn--pill-olive { background: var(--olive); border-radius: 999px; } /* Part III: "Write a Message" like the RSVP card buttons */
 /* rounded rose button (RSVP card) */
 .pill-btn {
   display: inline-flex; align-items: center; justify-content: center; align-self: center;
@@ -387,8 +388,10 @@ html { scroll-behavior: smooth; }
 /* Part II: photo #51 instead of the flower frame, olive veil so the copy and letters read on it */
 .stage > .arch--photo { object-fit: cover; }
 .stage:has(.arch--photo)::after { content: ""; position: absolute; inset: 0; background: rgba(32,39,0,.45); z-index: 1; pointer-events: none; }
-.stage-wrap:has(.arch--photo) { height: calc(1652 * var(--u)); }
-.stage-wrap:has(.arch--photo) .stage { top: 0; }
+/* Part III: the photo stage sits in the flow, so the section is exactly as tall as the photo (no cream strip under it
+   when the scrollbar or a wide screen makes 100% width differ from 1920 units) */
+.stage-wrap:has(.arch--photo) { height: auto; }
+.stage-wrap:has(.arch--photo) .stage { position: relative; top: 0; }
 .stage-wrap:has(.arch--photo) .stage-copy h1, .stage-wrap:has(.arch--photo) .stage-copy h2, .stage-wrap:has(.arch--photo) .stage-copy p { color: var(--cream); }
 .stage-copy {
   position: absolute; left: 0; right: 0; top: calc(600 * var(--u));
@@ -470,7 +473,7 @@ html { scroll-behavior: smooth; }
   opacity: 0; transition: opacity .2s; rotate: calc(var(--r, 0deg) * -1);
 }
 .bouquet .note .fl:hover .x, .bouquet .note .fl.sel .x { opacity: 1; }
-.bouquet.drop-ok { outline: 1px dashed #9a80b0; outline-offset: 6px; }
+.bouquet.drop-ok { outline: 1px dashed var(--lav-dark); outline-offset: 6px; }
 .drag-ghost { position: fixed; z-index: 100; pointer-events: none; translate: -50% -50%; opacity: .9; }
 .drag-ghost img { width: 100%; }
 .arrange-next { margin-top: calc(60 * var(--u)); }
