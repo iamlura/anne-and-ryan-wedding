@@ -35,18 +35,18 @@ How I like to work:
   (HANDOFF.md section 7). Never send me patches. Then check the live site.
 ```
 
-## Status (updated Nov 17, 2026, 22nd round)
+## Status (updated Nov 18, 2026, 23rd round)
 
 | | |
 |---|---|
-| Site | 6 pages + invite page + the full message flow. **Nov 15: restyled to design "AC" (Anne's pick); RSVP now uses invite codes.** **Nov 16 (18th round): code login / RSVP are live** (backend moved into Ryan's Sheet, see section 0b). **Nov 17 (19th round): phone "RSVP sent" fixed.** **Nov 17 (20th round): invite codes removed, guests RSVP by searching their last name; desktop thank-you matches the designer's Figma** (section 0x). **Nov 17 (21st round): Our Story photos = one never-ending strip of all 22** (section 0a). **Nov 17 (22nd round): Anne's "Wedding Website Part II" comments applied, site + Figma** (section 0). |
+| Site | 6 pages + invite page + the full message flow. **Nov 15: restyled to design "AC" (Anne's pick); RSVP now uses invite codes.** **Nov 16 (18th round): code login / RSVP are live** (backend moved into Ryan's Sheet, see section 0b). **Nov 17 (19th round): phone "RSVP sent" fixed.** **Nov 17 (20th round): invite codes removed, guests RSVP by searching their last name; desktop thank-you matches the designer's Figma** (section 0x). **Nov 17 (21st round): Our Story photos = one never-ending strip of all 22** (section 0a). **Nov 17 (22nd round): Anne's "Wedding Website Part II" comments applied, site + Figma** (section 0z). **Nov 18 (23rd round): Part III applied (story text, RSVP hint, FAQ plus one / children, olive pill "Write a Message", no strip under the message photo, PNG favicons for Safari, dusty rose envelope); domain www.ryannehara.com half set up** (section 0). |
 | Data | **One Sheet since Nov 16:** Ryan's "Guest List for Wedding Website" holds the guest list, "Invite codes", Guests (RSVP answers), Messages (letters) and RSVP log, with the Apps Script bound to it (deployed by the designer's account, jaeyoung.laura@gmail.com). The old Sheet "Anne & Ryan wedding" + Google Form are no longer used (safe to trash once Anne is happy). Links in section 7. |
 | Waiting on the designer | New content and some design changes are coming (the site is set up for this, see "Changing content" below). |
 | Figma vs site | In sync as of Nov 15 (14th round: site re-checked against every AC frame, text and screenshots). **The reference is now page "final pages AC" (section 0c below).** The older frames in section 2 are still the reference for the Leave a Message flow and the secret inbox (only recoloured on the site). Phone frames for AC (Nov 16): **editable** layers ("… phone editable", "nav open phone") next to the earlier screenshot frames; both made from the live site at 390 wide (section 0c). Phones are built from the CSS in the ≤760px block. |
 | Code changes since launch | **Nov 4:** type scale, landing updates, Event Details redesign, shared content file. **Nov 4 (2nd round):** matched the designer's own updated frames (Event Details, Our Story, RSVP, Leave a Message 7/8, landing prenup + footer); Dec 26 everywhere in Figma. **Nov 4 (3rd round):** one button style everywhere, guests can delete their own letter. **Nov 4 (4th round):** every footer = "Thank you" + RSVP button (nav links removed again), all carousel cards 440 wide with 400×600 photos, prenup photos link to the Our Story carousel, new green tuxedo photo. **Nov 8 (5th round):** all info matched to the printed invitation (2:30 PM, Minor Basilica of San Sebastian, reception at Champagne Room, RSVP by Dec 5), new dress code with color swatches, new Reception / Parking / Kindly Note / Gifts section. **Nov 8 (6th round):** invitation fonts undone (back to Afacad / Playfair / Carattere), Event Details background image removed. **Nov 8 (7th round):** story cards all the same height, RSVP sub-headings in Playfair, Google Form for RSVPs + Sheets connected for letters. **Nov 8 (8th round):** envelopes on the right half of the arch tilt the mirror way, guest delete removed. **Nov 8 (9th round):** on "Place your letter" the letter starts in the middle. **Nov 9 (10th round):** Anne's new AR monogram everywhere; Guests tab in the Sheet; draft Figma screens for guest login (invite code, party RSVP, email). **Nov 9 (11th round):** phone form text (RSVP + message inputs, radio answers) 32 → 24 px; "final pages" rearranged in flow order with two new screens (wrong code, RSVP sent). **Nov 12 (12th round):** Anne's doc: Cormorant Garamond + Pinyon Script, burgundy / olive / cream, new landing (When / Where, countdown, new message, RSVP footer), story text, "The Details" redesign, new FAQ page. **Nov 15 (13th round):** design AC everywhere + Anne's mashup notes, RSVP by invite code (one answer per guest). **Nov 15 (14th round):** matched the designer's Figma updates: new arch photo, hero crop, two olives, pink Wedding Day card, timeline lines. **Nov 15 (15th round):** no overscroll; FAQ hero crop + photo card matched to Figma. **Nov 16 (16th round):** new nav (monogram left, links right), Anne's new dress code + 5 swatches, RSVP → code → RSVP with no stray page, "We have reserved N seats for you." layout, editable phone frames. **Nov 16 (17th round):** nav on the code page (invite.html), solid phone menu, invite codes for Anne's new list. **Nov 16 (18th round):** one Sheet (Ryan's), Wedding menu, chat messages. **Nov 17 (19th round):** phone RSVP sent screen. **Nov 17 (20th round):** RSVP by last name (no codes), desktop thank-you = Figma 227:411. Details in section 9. |
 
 
-### Next steps (as of Nov 17, 22nd round)
+### Next steps (as of Nov 18, 23rd round)
 1. ~~Rounds 12 + 13 in the repo~~ (done Nov 15).
 2. ~~Backend with codes~~ (done Nov 16: Code.gs in Ryan's Sheet, `setupAll` run, web app deployed, `config.js` points at it; login tested with AR-FBXQ65).
 3. ~~Guests tab~~ (done: filled from "Invite codes" by `setupAll`, 54 invitations / 81 rows, codes in column J). No CSV import needed any more.
@@ -55,14 +55,31 @@ How I like to work:
 6. Later: table numbers in Guests column H. Then trash the old Sheet "Anne & Ryan wedding" + its Form.
 7. ~~Phone "RSVP sent"~~ (done Nov 17, round 19, designer picked all 3 fixes): card moved down so the couple shows above it, even 40 px card padding, button "Leave Anne & Ryan a message" on one line. Site: `style.css` ≤760px block (`.rsvp:has(.rsvp-done.is-active)` rules + `.rsvp-done .pill-btn`). Figma: **"RSVP sent logged in phone editable" (244:564)** fixed directly (photo 412 → 584 tall, card 244:568 now auto-layout at y 220, button 244:571 auto-layout hugging, frame 878 → 1050). Still old: the screenshot frame "RSVP sent logged in phone" (233:18), refresh it from the live site.
 8. ~~Our Story: more photos~~ (done Nov 17, round 21: all 22 in a never-ending strip, section 0a).
-10. ~~Part II comments~~ (done Nov 17, round 22, section 0). Open from it: photo **#92** wasn't in Anne's Drive folder, so the gallery uses the copy pasted in her doc (1501×1999, fine on screen); swap in the original if she adds it. Photo **#34** not used (she said only if it fits after the 4 story pictures; the 2×2 already matches the text height). The phone screenshot frames (233:xx) are not refreshed.
+10. ~~Part II comments~~ (done Nov 17, round 22, section 0z). Open from it: photo **#92** wasn't in Anne's Drive folder, so the gallery uses the copy pasted in her doc (1501×1999, fine on screen); swap in the original if she adds it. Photo **#34** not used (she said only if it fits after the 4 story pictures; the 2×2 already matches the text height). The phone screenshot frames (233:xx) are not refreshed.
+11. **Domain www.ryannehara.com (Nov 18, round 23):** Namecheap DNS has the 4 GitHub A records + CNAME www → iamlura.github.io (correct). Still to do: (a) the designer deletes Namecheap's "URL Redirect Record" (@ → http://www.ryannehara.com/), it adds a 5th apex IP 192.64.119.163; (b) the designer clicks **Save** in repo Settings > Pages > Custom domain (www.ryannehara.com is typed there; my click was blocked). Then: wait for the certificate, tick **Enforce HTTPS**, set `SITE_URL` in Code.gs to https://www.ryannehara.com/, deploy a new version (same URL), run Wedding > Add chat messages, and check the site at the new address.
+12. **Anne's test RSVP:** Anne and Ryan will submit one test RSVP. Afterwards clear it in the Sheet (Guests tab: that party's answer cells; RSVP log: the test row) through Chrome.
 9. ~~RSVP by last name, thank-you to Figma~~ (done Nov 17, round 20, section 0x). Still to do: phone frames for the search steps (find / not found / pick) don't exist in Figma yet; the "invite code" rows in Figma are now unused (noted, not deleted). FAQ "Can I bring a plus one?" says guests "search" on the RSVP page, which is true again.
 
 **Invite codes (Nov 16; since Nov 17 only an internal id, guests never see them):** one per invitation, `AR-` + 6 characters from `CODE_CHARS` (no 0/O, 1/I/L), made by `tools/anne_list_to_guests.py` (re-running keeps the codes of invitations already in guests_import.csv). Listed in Ryan's Sheet "Guest List for Wedding Website", tab **"Invite codes"** (Side, Group, Invitation, Guests, Seats, Invite code, Invite link), added through Chrome (the Drive connector can only view that Sheet). Anne's Nov 16 list: Catherine Ramirez's party is now "Catherine Ramirez, Lennon Ramirez, and Bel Ramirez" (3 seats); every listed seat count matches its names.
 
 ---
 
-## 0. Nov 17 (round 22): Anne's "Wedding Website Part II" comments
+## 0. Nov 18 (round 23): Anne's "Wedding Website Part III"
+
+| Item | Site | Figma |
+|---|---|---|
+| Our Story text (both paragraphs) | `story.html` | 216:82 / 216:83, phone 244:142 / 244:143 |
+| RSVP hint "Enter your last name only.", placeholder "Zamora" | `rsvp.html`, not-found text in `rsvp.js` | 218:285, 218:284, not found 218:53 |
+| FAQ plus one + children answers | `faq.html` | 216:220 / 216:224, phone 244:240 / 244:243 (phone items below moved down 54) |
+| "Write a Message" = olive pill like the RSVP buttons | `.btn--pill-olive` in `style.css`, `message.html` | 216:7652, phone 244:270 (fill = 218:287, radius 999, stroke removed) |
+| No cream strip under the message photo (desktop) | `.stage-wrap:has(.arch--photo)`: auto height, stage relative | already full height (275:54) |
+| Old monogram in Safari tabs | `favicon-32.png` + `apple-touch-icon.png` (from `favicon.svg`), linked with `?v=3` on all 6 pages. Safari ignores SVG favicons | n/a |
+| Dusty rose envelope (Anne's chat) | `env-body.svg` #DDBDC0, `env-flap.svg` #B8878D, `--lav` / `--lav-dark` | all 64 lavender fills on page 224:2 recoloured |
+| Domain | see Next steps 11 | n/a |
+
+---
+
+## 0z. Nov 17 (round 22): Anne's "Wedding Website Part II" comments
 
 Source: Google Doc "Wedding Website Part 2" (Ryan's, docs.google.com/document/d/1soICeiC1Vjnd2dtqkfi4BZ_GLiJ_Vh2dKnstU08Eo5s) + Anne's Drive folder "Additional Photos - Wedding Website" (1M9ApF-LimDI6Din2-IUmmEhxtpnG0A_r, shared by link, subfolder "Gallery Photos"). The files download straight into the sandbox with `curl -L "https://drive.usercontent.google.com/download?id=<id>&export=download"`; the doc's own screenshots come with `.../export?format=zip`. Web copies made with PIL (heroes 1400 wide q78, others 900 / 700 / 1100 tall).
 
@@ -406,7 +423,7 @@ jobs:
 5. **Nov 12 notes to confirm:**
    - FAQ "Can I bring a plus one?" says guests search their name on the RSVP page. That guest-login RSVP is still only a Figma draft; until it's built the answer describes something the site doesn't do yet.
    - The landing calendar strip and cathedral drawing were dropped with the old venue section (Anne's When / Where text didn't include them).
-   - The arch flowers and envelope stay lavender (artwork not recoloured). Could be recoloured to match burgundy / olive if wanted.
+   - The arch flowers stay lavender. The envelope is dusty rose since Nov 18 (Anne). Could be recoloured to match burgundy / olive if wanted.
    - The landing prenup photos are gone (Anne's request); the photos stay in the Our Story carousel, now without captions.
 6. **Sharper flowers (optional):** re-export the flowers from Figma with the background hidden instead of keying it out.
 
@@ -520,3 +537,4 @@ jobs:
 - **Nov 17, 2026 (20th round): RSVP by last name.** See section 0. Site: `rsvp.html`, `rsvp.js`, `api.js` (`find`, `forgot` removed), `common.js` (no RSVP link rewrite), `invite.html` (redirect), `invite.js` deleted, `style.css` (desktop thank-you). `Code.gs`: `find` action, invitations without codes. Figma: 216:247, 218:2, 218:231 fixed; new 262:2 + notes. Tests: `test_rsvp_flow.py` rewritten, mock `find`. Then: "RSVP" and party-name headers centred on every RSVP step (site + Figma).
 - **Nov 17, 2026 (21st round): Our Story photos = one never-ending revolving strip of all 22** (section 0a). Site: `story.html`, `moments.js` (new), `style.css`. Figma: 216:86 strip of 22, phone strip 244:146.
 - **Nov 17, 2026 (22nd round): Anne's "Wedding Website Part II" comments** (section 0): new hero #59, Canva logo frame, – 12.26.26 –, plain "With love,", #50, darker olive When / Where + aligned + smaller ceremony lines, 4 story pictures, gallery 7 swapped + 10 added, Details date removed, olive Wedding Day card, dress code #76 arch, RSVP #96 + Cormorant caps + new intro, FAQ Cormorant + centred without photo, Leave a Message on #51, favicon cache-bust. Figma: all matching desktop + phone frames.
+- **Nov 18, 2026 (round 23):** Anne's Part III doc: new story text, RSVP hint + "Zamora" placeholder, FAQ plus one / children answers, olive pill "Write a Message", message photo fills the desktop stage, PNG favicons + apple-touch-icon (Safari), dusty rose envelope. Figma matched. Domain: DNS checked, GitHub custom domain + Namecheap redirect record left for the designer.
