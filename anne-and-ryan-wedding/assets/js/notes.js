@@ -2,9 +2,9 @@
    All arch math is in Figma units of the 1920 x 1652 arch artwork. */
 (function () {
   const FLOWERS = {
-    1: { src: "assets/img/flower-1.png", aspect: 204 / 618, h: 0.56 },
-    2: { src: "assets/img/flower-2.png", aspect: 203 / 618, h: 0.56 },
-    3: { src: "assets/img/flower-3.png", aspect: 252 / 661, h: 0.6 }
+    1: { src: "assets/img/flower-1.png?v=2", aspect: 204 / 618, h: 0.56 },
+    2: { src: "assets/img/flower-2.png?v=2", aspect: 203 / 618, h: 0.56 },
+    3: { src: "assets/img/flower-3.png?v=2", aspect: 252 / 661, h: 0.6 }
   };
 
   /* data: { from, flowers:[{f,x,y,r}] }  width: any CSS length */
