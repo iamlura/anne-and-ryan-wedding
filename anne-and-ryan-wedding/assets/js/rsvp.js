@@ -27,7 +27,7 @@
     try {
       const r = await WeddingAPI.find(q);
       const ps = r.parties || [];
-      if (!ps.length) notFound("We couldn’t find that name. Please check the spelling and type your last name as it appears on your invitation.");
+      if (!ps.length) notFound("We couldn’t find that name. Please check the spelling and enter your last name only.");
       else if (ps.length === 1) await open(ps[0].code);
       else {
         $("#pickText").textContent = `We found ${ps.length} invitations for “${q}”. Which one is yours?`;
