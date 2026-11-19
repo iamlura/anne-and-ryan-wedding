@@ -48,7 +48,7 @@ How I like to work:
 
 ### Next steps (as of Nov 19, 28th round)
 14. **FAQ banner on phones (designer, Nov 19: "can't see the banner image"):** not reproduced (shows in Chrome and in WebKit / iPhone 13 emulation, and on the live page). Phones now get a lighter copy `faq-hero-phone.jpg` (900 wide, baseline JPEG, 150 KB) through `<picture>`. If she still can't see it, ask which phone / browser and for a screenshot.
-15. **QR default:** the codes start open (as drawn in Figma 287:13); "Collapse bank QR" hides them and the link turns into "Show bank QR". Ask the designer if they should start collapsed.
+15. ~~QR default~~ (designer, Nov 19, round 29): the codes **start collapsed**: the link reads "Show bank QR" (chevron pointing down); tapping it opens them and it turns into "Collapse bank QR" (Figma 287:13 shows the open state; white note under FAQ AC says so). Site: `hidden` on `#bankQr`, `aria-expanded="false"` in `faq.html`.
 1. ~~Rounds 12 + 13 in the repo~~ (done Nov 15).
 2. ~~Backend with codes~~ (done Nov 16: Code.gs in Ryan's Sheet, `setupAll` run, web app deployed, `config.js` points at it; login tested with AR-FBXQ65).
 3. ~~Guests tab~~ (done: filled from "Invite codes" by `setupAll`, 54 invitations / 81 rows, codes in column J). No CSV import needed any more.
@@ -592,3 +592,4 @@ jobs:
 - **Nov 19, 2026 (round 26):** Anne's Part 4: "(no barong, please)", cities under Ceremony / Reception on The Details, GCash + BPI QR codes under the FAQ gift answer. Site + Figma.
 - **Nov 19, 2026 (round 27):** Namecheap share accepted; redirect record already gone; waiting on GitHub's new certificate before Enforce HTTPS. Only one failed deploy so far (4dd4113, GitHub glitch); all later runs succeeded.
 - **Nov 19, 2026 (round 28):** designer's final Figma pass: nav shows on scroll up (all pages), lighter olive When / Where, pink Wedding Day card with one continuous line, "Collapse bank QR" toggle, phone FAQ banner image, Leave a Message on the full photo with letters anywhere except over the text. Site + Figma.
+- **Nov 19, 2026 (round 29):** FAQ bank QR codes start collapsed ("Show bank QR").
