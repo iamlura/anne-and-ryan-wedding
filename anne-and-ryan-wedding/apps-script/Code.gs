@@ -353,26 +353,30 @@ function sendTestInvite() {
 
 /* site: open an invitation by its id (the code from find; guests never type it since Nov 17) */
 function login_(b) {
-  Utilities.sleep(300);                                   // slows down guessing
   const code = normCode_(b.code); if (!code) throw new Error("nomatch");
-  const g = guestRows_();
-  const idx = []; g.rows.forEach(function (r, i) { if (String(r[G.code]).toUpperCase() === code && String(r[G.name]).trim()) idx.push(i); });
-  if (!idx.length) throw new Error("nomatch");
-  const first = g.rows[idx[0]];
-  const table = idx.map(function (i) { return g.rows[i][G.table]; }).filter(String)[0] || "";
-  const email = idx.map(function (i) { return String(g.rows[i][G.email]).trim(); }).filter(String)[0] || "";
-  return { ok: true, party: {
+  const party = partyOf_(guestRows_().rows, code);
+  if (!party) throw new Error("nomatch");
+  return { ok: true, party: party };
+}
+/* one invitation as the site needs it (shared by login_ and find_) */
+function partyOf_(rows, code) {
+  const idx = []; rows.forEach(function (r, i) { if (String(r[G.code]).toUpperCase() === code && String(r[G.name]).trim()) idx.push(i); });
+  if (!idx.length) return null;
+  const first = rows[idx[0]];
+  const table = idx.map(function (i) { return rows[i][G.table]; }).filter(String)[0] || "";
+  const email = idx.map(function (i) { return String(rows[i][G.email]).trim(); }).filter(String)[0] || "";
+  return {
     name: String(first[G.party]), code: code, table: String(table), email: email,
-    replied: idx.some(function (i) { return g.rows[i][G.rsvp]; }),
-    guests: idx.map(function (i) { const r = g.rows[i]; const plus = /^plus\s*one$/i.test(String(r[G.name]).trim());
+    replied: idx.some(function (i) { return rows[i][G.rsvp]; }),
+    guests: idx.map(function (i) { const r = rows[i]; const plus = /^plus\s*one$/i.test(String(r[G.name]).trim());
       return { row: i + 2, name: plus ? String(r[G.plusName] || "") : String(r[G.name]), plusOne: plus,
                attending: r[G.rsvp] === "Joyfully accepts" ? "Yes" : r[G.rsvp] === "Respectfully declines" ? "No" : "", food: String(r[G.food] || "") }; })
-  } };
+  };
 }
 
 /* site (Nov 17): find invitations by last name. Matches a guest's last word, a part of a hyphenated name
    ("Suzuki-Cano" → "Cano" or "Suzuki-Cano") or a two-word last name ("Dela Cruz"); accents and case don't matter.
-   "Plus One" rows never match. Returns only the invitation (party) names and their ids. */
+   "Plus One" rows never match. Returns the invitation (party) names and ids, plus each one's details (Nov 19, faster). */
 function normName_(s) {
   return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z]+/g, " ").trim();
 }
@@ -386,6 +390,8 @@ function find_(b) {
     const code = String(r[G.code]).toUpperCase(); if (!code || seen[code]) return;
     seen[code] = 1; out.push({ code: code, name: String(r[G.party]) });
   });
+  // Nov 19: send each invitation's details along (up to 12), so the site opens it without a second request
+  if (out.length <= 12) out.forEach(function (p) { p.party = partyOf_(g.rows, p.code); });
   return { ok: true, parties: out };
 }
 
