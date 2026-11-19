@@ -43,11 +43,21 @@ async def main():
         mine = await pg.locator('.pin.is-mine').bounding_box()
         st = await pg.locator('#stagePlace').bounding_box()
         await pg.mouse.move(mine['x']+mine['width']/2, mine['y']+mine['height']/2); await pg.mouse.down()
-        await pg.mouse.move(st['x']+st['width']*0.3, st['y']+st['height']*0.15, steps=10); await pg.mouse.up()
+        # Nov 19: drop it right on the copy block: it must snap off the text to the nearest free spot
+        blk = await pg.locator('#stagePlace ~ .stage-copy h2').bounding_box()
+        await pg.mouse.move(blk['x']+blk['width']/2, blk['y']+blk['height']/2, steps=10); await pg.mouse.up()
         await pg.wait_for_timeout(700)
+        chk = await pg.evaluate('''(()=>{const st=document.querySelector('#stagePlace'), sr=st.getBoundingClientRect();
+          const rs=[...st.parentNode.querySelectorAll('.stage-copy h2,.stage-copy p,.stage-copy .btn')].map(e=>e.getBoundingClientRect());
+          const b={l:Math.min(...rs.map(r=>r.left)),t:Math.min(...rs.map(r=>r.top)),r:Math.max(...rs.map(r=>r.right)),b:Math.max(...rs.map(r=>r.bottom))};
+          const env=[...st.querySelectorAll('.pin .env')].map(e=>e.getBoundingClientRect());
+          const over=env.filter(r=>r.left<b.r&&r.right>b.l&&r.top<b.b&&r.bottom>b.t).length;
+          return {pins:env.length, envelopesOverCopy:over, draft:JSON.parse(sessionStorage.getItem('ar_draft')).xy, send:!document.querySelector('#sendBtn').disabled}})()''')
+        print('place check', chk)
         await pg.screenshot(path=f'shots/f4-place-{W}.png', full_page=True)
         await pg.click('#sendBtn'); await pg.wait_for_timeout(1500)
         await pg.screenshot(path=f'shots/f5-home-after-{W}.png', full_page=True)
+        print('saved pos', await pg.evaluate("JSON.parse(localStorage.getItem('ar_messages')).slice(-1)[0].pos"))
         for i in range(5): await pg.click('h1[data-secret-tap]')
         await pg.fill('#pw','111111'); await pg.click('#pwForm button[type=submit]'); await pg.wait_for_timeout(500)
         print('wrong pw msg:', await pg.text_content('#pwErr'))
