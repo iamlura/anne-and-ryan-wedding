@@ -183,7 +183,7 @@ html { scroll-behavior: smooth; }
 .arch-photo { width: calc(700 * var(--u)); aspect-ratio: 700 / 960; object-fit: cover; border-radius: 999px 999px 0 0; flex: none; }
 
 /* When / Where (lighter olive) + countdown (dark olive), Figma 216:27 / 216:46 */
-.ww { background: var(--olive-2); /* Nov 19: Figma 216:27 is the lighter olive #2c330a again (countdown stays dark) */ color: var(--cream); padding: calc(170 * var(--u)) calc(200 * var(--u)) calc(110 * var(--u)); display: flex; justify-content: center; text-align: center; }
+.ww { background: var(--olive); /* Anne (Nov 20): back to the dark olive, same as the countdown (round 28's lighter olive reverted) */ color: var(--cream); padding: calc(170 * var(--u)) calc(200 * var(--u)) calc(110 * var(--u)); display: flex; justify-content: center; text-align: center; }
 .ww__row { display: flex; align-items: flex-start; gap: calc(100 * var(--u)); } /* Part II: "Where" lines up with "When" */
 .ww__col { display: flex; flex-direction: column; align-items: center; gap: calc(20 * var(--u)); }
 .ww__col--when { width: calc(447 * var(--u)); }
@@ -252,11 +252,11 @@ html { scroll-behavior: smooth; }
 .d-facts .city { font-size: calc(28 * var(--u)); opacity: .8; } /* Part 4: city under ceremony / reception, like the landing */
 
 .d-day { background: var(--bg-2); padding: calc(100 * var(--u)) calc(120 * var(--u)) 0; }
-.d-day__card { background: #ecded9; /* Nov 19: Figma 287:977, pink card + burgundy text again */ border-radius: calc(28 * var(--u)); padding: calc(130 * var(--u)) 0 calc(140 * var(--u)); display: flex; flex-direction: column; align-items: center; gap: calc(56 * var(--u)); color: var(--foot); }
-.d-day h2 { color: var(--foot); opacity: .6; font-size: var(--fs-title); line-height: 1.25; }
+.d-day__card { background: var(--olive); /* Anne (Nov 20): dark olive card + cream text again (round 28's pink reverted) */ border-radius: calc(28 * var(--u)); padding: calc(130 * var(--u)) 0 calc(140 * var(--u)); display: flex; flex-direction: column; align-items: center; gap: calc(56 * var(--u)); color: var(--cream); }
+.d-day h2 { color: var(--cream); opacity: .6; font-size: var(--fs-title); line-height: 1.25; }
 .schedule { list-style: none; margin: 0; padding: 0; width: calc(636 * var(--u)); position: relative; }
 /* Nov 19: one line through every dot, first to last (Figma Rectangle 3119, 1 x 372) */
-.schedule::before { content: ""; position: absolute; left: calc(267.5 * var(--u)); top: calc(56 * var(--u)); bottom: calc(52 * var(--u)); width: 1px; background: currentColor; }
+.schedule::before { content: ""; position: absolute; left: calc(267.5 * var(--u)); top: calc(56 * var(--u)); bottom: calc(52 * var(--u)); width: 1px; background: rgba(241,238,231,.45); } /* cream at 45%, as the line pieces were on the olive card */
 .schedule li { display: grid; grid-template-columns: calc(220 * var(--u)) calc(16 * var(--u)) 1fr; column-gap: calc(40 * var(--u)); align-items: center; height: calc(120 * var(--u)); position: relative; }
 .schedule .tt { font-size: calc(48 * var(--u)); text-align: right; }
 .schedule .dot { justify-self: center; width: calc(14 * var(--u)); height: calc(14 * var(--u)); min-width: 7px; min-height: 7px; border-radius: 50%; background: currentColor; position: relative; }
