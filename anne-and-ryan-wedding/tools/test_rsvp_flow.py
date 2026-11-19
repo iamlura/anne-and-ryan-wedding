@@ -30,7 +30,7 @@ async def main():
         await pg.fill('#last', 'Ochoa'); await pg.press('#last', 'Enter'); await pg.wait_for_selector('[data-rstep=party].is-active')
         print('one match opens directly:', await pg.text_content('#partyTitle'), '| names:', await pg.locator('.guest__name').all_text_contents())
         await pg.screenshot(path=f'shots/rsvp-party-{W}.png', full_page=True)
-        rad = pg.locator('.guest').nth(0); await rad.locator('text=Joyfully accepts').click(); await pg.fill('#food0', 'None')
+        rad = pg.locator('.guest').nth(0); await rad.locator('text=Joyfully accepts').click(); # dietary left empty on purpose: it's optional (Nov 19)
         await pg.locator('.guest').nth(1).locator('text=Respectfully declines').click()
         await pg.click('#rsvpSubmit'); await pg.wait_for_selector('.rsvp-done.is-active'); await pg.wait_for_timeout(900)
         print('done:', await pg.text_content('#rsvpTitle'), '|', await pg.text_content('#rsvpDoneText'))
