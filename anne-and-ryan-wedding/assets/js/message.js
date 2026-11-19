@@ -1,10 +1,11 @@
-/* Leave a Message flow: arch → write → arrange flowers → place on arch → send.
+/* Leave a Message flow: photo page with everyone's letters → write → arrange flowers → place it anywhere → send.
+   Since Nov 19 letters go anywhere on the photo except over the copy block (no more arch).
    Secret inbox: tap "Leave a Message" 5 times → password → browse / download every letter. */
 (function () {
   const cfg = window.WEDDING_CONFIG || {};
   const MAX_FLOWERS = cfg.MAX_FLOWERS || 4;
   const MAX_MSG = cfg.MAX_MESSAGE || 1500;
-  const { renderNote, renderFlower, FLOWERS, arch, tiltFor } = window.Notes;
+  const { renderNote, renderFlower, FLOWERS, free } = window.Notes;
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
 
@@ -12,12 +13,12 @@
   const SIZES = { s: 0.8, m: 1, l: 1.25 };
   const DRAFT_KEY = "ar_draft";
 
-  let notes = [];            // public notes on the arch
-  let draft = loadDraft();   // {from,text,font,size,flowers,s}
+  let notes = [];            // public notes on the page
+  let draft = loadDraft();   // {from,text,font,size,flowers,xy:{x,y} fractions of the stage or null}
 
   function loadDraft() {
     try { const d = JSON.parse(sessionStorage.getItem(DRAFT_KEY) || "null"); if (d) return d; } catch (e) {}
-    return { from: "", text: "", font: "serif", size: "m", flowers: [], s: null };
+    return { from: "", text: "", font: "serif", size: "m", flowers: [], xy: null };
   }
   function saveDraft() { try { sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); } catch (e) {} }
   function clearDraft() { try { sessionStorage.removeItem(DRAFT_KEY); } catch (e) {} draft = loadDraft(); }
@@ -28,36 +29,45 @@
     current = step;
     $$(".step").forEach((s) => s.classList.toggle("is-active", s.dataset.step === step));
     window.scrollTo(0, 0);
-    if (step === "home") drawStage($("#stageHome"), notes, null);
+    if (step === "home") drawStage($("#stageHome"), notes);
     if (step === "write") initWrite();
     if (step === "arrange") drawBouquet();
     if (step === "place") initPlace();
   }
   $$("[data-go]").forEach((b) => b.addEventListener("click", () => {
-    if (b.dataset.go === "place") { draft.s = null; saveDraft(); } // letter starts in the middle, not on the arch
+    if (b.dataset.go === "place") { draft.xy = null; saveDraft(); } // letter waits above the copy until the guest places it
     go(b.dataset.go);
   }));
 
-  /* ---------------- arch stage ---------------- */
-  function noteWidthPx(stage) { return Math.max(72, stage.clientWidth * 0.133); }
+  /* ---------------- photo stage ---------------- */
+  // Figma: letter box 250 wide on the 1920 page (13%), 129 on the 390 phone (33%)
+  const isPhone = () => window.matchMedia("(max-width: 760px)").matches;
+  function noteWidthPx(stage) { return stage.clientWidth * (isPhone() ? 0.33 : 0.1302); }
 
-  function placePin(pin, s) {
-    const p = arch.pointAt(s);
-    pin.style.left = (p.x / arch.W) * 100 + "%";
-    pin.style.top = (p.y / arch.H) * 100 + "%";
+  /* the copy block (heading + text + button) in stage px: letters never go over it */
+  function blockRect(stage) {
+    const copy = stage.parentNode.querySelector(".stage-copy");
+    if (!copy) return null;
+    const sr = stage.getBoundingClientRect();
+    const rs = Array.from(copy.querySelectorAll("h1, h2, p, .btn")).map((el) => el.getBoundingClientRect()).filter((r) => r.width && r.height);
+    if (!rs.length) return null;
+    return { l: Math.min(...rs.map((r) => r.left)) - sr.left, t: Math.min(...rs.map((r) => r.top)) - sr.top,
+             r: Math.max(...rs.map((r) => r.right)) - sr.left, b: Math.max(...rs.map((r) => r.bottom)) - sr.top };
+  }
+  function stageOpt(stage) { return { W: stage.clientWidth, H: stage.clientHeight, w: noteWidthPx(stage), block: blockRect(stage) }; }
+
+  function placePinPx(pin, p, opt, id) {
+    pin.style.left = (p.x / opt.W) * 100 + "%";
+    pin.style.top = (p.y / opt.H) * 100 + "%";
     const note = pin.querySelector(".note");
-    if (note) note.style.rotate = tiltFor(pin.dataset.pin || "mine", s) + "deg"; // mirrored on the right half
+    if (note) note.style.rotate = free.tiltSide(id || pin.dataset.pin || "mine", p.x / opt.W) + "deg"; // mirrored on the right half
   }
 
-  /* notes: [{id,from,flowers,pos(0..1),t}], mine: {s} or null */
-  function drawStage(stage, list, mine, opts) {
+  /* notes: [{id,from,flowers,pos,t}] → pins at their spots (packed so none sit on the copy or on each other). Returns the packed px spots. */
+  function drawStage(stage, list, opts) {
     opts = opts || {};
-    const w = noteWidthPx(stage);
-    const gap = (w / stage.clientWidth) * arch.W * 0.72;
-    const items = list.map((n) => ({ s: (Number(n.pos) || 0) * arch.L, k: n.t || 0 }));
-    if (mine) items.push({ s: mine.s, k: Number.MAX_SAFE_INTEGER });
-    const pos = arch.layout(items, gap);
-
+    const opt = stageOpt(stage);
+    const spots = free.pack(list.map((n) => free.decodePos(n.pos)), opt);
     const keep = new Set();
     list.forEach((n, i) => {
       const id = "p-" + n.id;
@@ -71,11 +81,11 @@
         pin.title = n.from ? "From " + n.from : "";
         stage.appendChild(pin);
       }
-      pin.querySelector(".note").style.setProperty("--w", w + "px");
-      placePin(pin, pos[i]);
+      pin.querySelector(".note").style.setProperty("--w", opt.w + "px");
+      placePinPx(pin, spots[i], opt);
     });
     $$(".pin:not(.is-mine)", stage).forEach((p) => { if (!keep.has(p.dataset.pin)) p.remove(); });
-    return mine ? pos[pos.length - 1] : null;
+    return { spots, opt };
   }
 
   async function loadNotes(newId) {
@@ -85,15 +95,16 @@
     } catch (e) {
       toast("Couldn't load the letters right now.");
     }
-    if (current === "home") drawStage($("#stageHome"), notes, null, { newId });
+    if (current === "home") drawStage($("#stageHome"), notes, { newId });
+    if (current === "place") relayoutPlace();
   }
 
   let resizeT;
   window.addEventListener("resize", () => {
     clearTimeout(resizeT);
     resizeT = setTimeout(() => {
-      if (current === "home") drawStage($("#stageHome"), notes, null);
-      if (current === "place") relayoutPlace(false);
+      if (current === "home") drawStage($("#stageHome"), notes);
+      if (current === "place") relayoutPlace();
       if (current === "arrange" && noteEl) noteEl.style.setProperty("--w", bouquet.clientWidth + "px");
     }, 120);
   });
@@ -263,97 +274,117 @@
     });
   });
 
-  /* ---------------- place on the arch ---------------- */
+  /* ---------------- place it anywhere ---------------- */
   const stageP = $("#stagePlace"), sendBtn = $("#sendBtn");
-  let myPin = null;
+  let myPin = null, others = [];
 
   function initPlace() {
     $$(".pin", stageP).forEach((p) => p.remove());
     myPin = document.createElement("div");
     myPin.className = "pin is-mine";
     myPin.tabIndex = 0;
-    myPin.setAttribute("role", "slider");
-    myPin.setAttribute("aria-label", "Your letter. Drag it onto the arch, or use arrow keys to move it along the arch.");
-    const n = renderNote({ from: draft.from, flowers: draft.flowers });
-    myPin.appendChild(n);
+    myPin.setAttribute("role", "button");
+    myPin.setAttribute("aria-label", "Your letter. Drag it anywhere on the photo (not over the text), or use the arrow keys to move it.");
+    myPin.appendChild(renderNote({ from: draft.from, flowers: draft.flowers }));
     stageP.appendChild(myPin);
-    relayoutPlace(false);
+    relayoutPlace();
     myPin.addEventListener("pointerdown", pinDown);
     myPin.addEventListener("keydown", (e) => {
-      const d = { ArrowLeft: -60, ArrowDown: -60, ArrowRight: 60, ArrowUp: 60 }[e.key];
+      const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
       if (!d) return;
       e.preventDefault();
-      const from = draft.s == null ? arch.L / 2 - d : draft.s;   // first key press puts it at the top of the arch
-      draft.s = Math.max(0, Math.min(arch.L, from + d)); relayoutPlace(false); saveDraft();
+      const opt = stageOpt(stageP), cur = currentPx(opt), k = opt.w * 0.25;
+      moveTo(cur.x + d[0] * k, cur.y + d[1] * k, opt, d);
     });
   }
 
-  function relayoutPlace(dragging, liveS) {
-    const s = liveS != null ? liveS : draft.s;
-    myPin.querySelector(".note").style.setProperty("--w", noteWidthPx(stageP) + "px");
-    sendBtn.disabled = s == null && !dragging;          // 50% until the letter is on the arch
-    if (s == null) { drawStage(stageP, notes, null); placeHome(); return null; }
-    const resolved = drawStage(stageP, notes, { s });
-    if (!dragging) { draft.s = resolved; placePin(myPin, resolved); }
-    return resolved;
+  /* others first (fixed), then mine on top */
+  function relayoutPlace() {
+    if (!myPin) return;
+    const r = drawStage(stageP, notes);
+    others = r.spots;
+    const opt = r.opt;
+    myPin.querySelector(".note").style.setProperty("--w", opt.w + "px");
+    sendBtn.disabled = !draft.xy;                       // 50% until the guest has placed it
+    const p = draft.xy ? free.nearestSpot(draft.xy.x * opt.W, draft.xy.y * opt.H, others, opt) : homeSpot(opt);
+    placePinPx(myPin, p, opt, "mine");
+    if (!draft.xy) myPin.querySelector(".note").style.rotate = "-41deg"; // same tilt as the Figma envelope
+    myPin.classList.remove("is-bad");
+  }
+  /* before it's placed, the letter waits just above the copy, in the middle */
+  function homeSpot(opt) {
+    const y = opt.block ? opt.block.t - opt.w * 0.32 : opt.H * 0.25;
+    return free.nearestSpot(opt.W / 2, y, others, opt);
+  }
+  function currentPx(opt) {
+    return { x: (parseFloat(myPin.style.left) / 100) * opt.W, y: (parseFloat(myPin.style.top) / 100) * opt.H };
+  }
+  /* snap to the nearest free spot (never over the copy); dir = keyboard direction, so a key press always moves it */
+  function moveTo(x, y, opt, dir) {
+    let p = free.nearestSpot(x, y, others, opt);
+    if (dir && Math.abs(p.x - x) + Math.abs(p.y - y) > opt.w * 0.2) { // blocked: jump past the obstacle in that direction
+      for (let k = 2; k < 40; k++) {
+        const q = free.nearestSpot(x + dir[0] * opt.w * 0.25 * k, y + dir[1] * opt.w * 0.25 * k, others, opt);
+        if (Math.sign(q.x - x) === dir[0] || Math.sign(q.y - y) === dir[1]) { p = q; break; }
+      }
+    }
+    draft.xy = { x: +(p.x / opt.W).toFixed(4), y: +(p.y / opt.H).toFixed(4) };
+    saveDraft();
+    placePinPx(myPin, p, opt, "mine");
+    sendBtn.disabled = false;
   }
 
-  /* Before it's placed, the letter waits in the middle: just above "Place your letter" on desktop,
-     in the centre of the arch on phones (where the heading sits above the arch). */
-  function placeHome() {
-    const r = stageP.getBoundingClientRect(), h = $(".stage-copy h2", stageP.parentNode).getBoundingClientRect();
-    const note = myPin.querySelector(".note");
-    note.style.rotate = "-41deg";                               // same tilt as the Figma envelope
-    const nh = note.offsetHeight || r.width * 0.1;            // unrotated height
-    let y = h.top - r.top - nh * 0.3;                         // envelope sits just above the heading
-    if (h.bottom <= r.top) y = r.height * 0.6;                 // phones: heading sits above the arch, so use the arch centre
-    myPin.style.left = "50%";
-    myPin.style.top = (y / r.height) * 100 + "%";
-  }
-
-  function stagePoint(e) {
+  function stagePx(e) {
     const r = stageP.getBoundingClientRect();
-    return { x: ((e.clientX - r.left) / r.width) * arch.W, y: ((e.clientY - r.top) / r.height) * arch.H, r };
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
   }
   function pinDown(e) {
     e.preventDefault();
     myPin.setPointerCapture(e.pointerId);
     myPin.classList.add("dragging");
+    const opt = stageOpt(stageP), cur = currentPx(opt), p0 = stagePx(e);
+    const off = { x: cur.x - p0.x, y: cur.y - p0.y };      // keep the grab point under the finger
     const move = (ev) => {
-      const p = stagePoint(ev);
-      myPin.style.left = (p.x / arch.W) * 100 + "%";
-      myPin.style.top = (p.y / arch.H) * 100 + "%";
-      relayoutPlace(true, arch.nearestS(p.x, p.y)); // others make room live
+      const p = stagePx(ev), x = p.x + off.x, y = p.y + off.y;
+      myPin.style.left = (x / opt.W) * 100 + "%";
+      myPin.style.top = (y / opt.H) * 100 + "%";
+      myPin.querySelector(".note").style.rotate = free.tiltSide("mine", x / opt.W) + "deg";
+      myPin.classList.toggle("is-bad", !free.validSpot(x, y, others, opt, true)); // over the text: shown faded
     };
     const up = (ev) => {
       myPin.removeEventListener("pointermove", move);
-      myPin.classList.remove("dragging");
-      const p = stagePoint(ev);
-      draft.s = arch.nearestS(p.x, p.y);   // snap to the nearest line
-      relayoutPlace(false); saveDraft();
+      myPin.classList.remove("dragging", "is-bad");
+      const p = stagePx(ev);
+      moveTo(p.x + off.x, p.y + off.y, opt);               // snaps to the nearest free spot
     };
     myPin.addEventListener("pointermove", move);
     myPin.addEventListener("pointerup", up, { once: true });
     myPin.addEventListener("pointercancel", up, { once: true });
   }
+  /* tap anywhere on the photo: the letter goes there */
+  stageP.addEventListener("click", (e) => {
+    if (!myPin || e.target.closest(".pin.is-mine")) return;
+    const opt = stageOpt(stageP), p = stagePx(e);
+    moveTo(p.x, p.y + opt.w * 0.07, opt);
+  });
 
   sendBtn.addEventListener("click", async () => {
     if (!draft.from || !draft.text) { go("write"); return; }
-    if (draft.s == null) return;
+    if (!draft.xy) return;
     sendBtn.disabled = true; sendBtn.textContent = "Sending…";
     try {
       const res = await WeddingAPI.sendMessage({
         from: draft.from, text: draft.text, font: draft.font, size: draft.size,
-        flowers: draft.flowers, pos: +(draft.s / arch.L).toFixed(4)
+        flowers: draft.flowers, pos: free.encodeXY(draft.xy.x, draft.xy.y)
       });
       clearDraft();
       go("home");
       await loadNotes(res.id);
-      toast("Your letter is on the arch. Thank you!", 4500);
+      toast("Your letter is up for Anne and Ryan. Thank you!", 4500);
     } catch (err) {
       toast(err && /allowed/i.test(err.message) ? err.message : "Couldn't send your letter. Please try again.");
     } finally {
-      sendBtn.disabled = draft.s == null; sendBtn.textContent = "Send Message";
+      sendBtn.disabled = !draft.xy; sendBtn.textContent = "Send Message";
     }
   });
 

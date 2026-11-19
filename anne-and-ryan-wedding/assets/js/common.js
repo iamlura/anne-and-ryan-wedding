@@ -20,6 +20,34 @@
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") toggle(false); });
   }
 
+  // ---- nav: hides while scrolling down, comes back as soon as the guest scrolls up (designer, Nov 19) ----
+  if (nav) {
+    let lastY = window.scrollY, ticking = false;
+    const onScroll = () => {
+      const y = Math.max(0, window.scrollY), h = nav.offsetHeight;
+      if (document.body.style.overflow === "hidden") { ticking = false; return; } // menu / inbox open
+      if (y <= h) nav.classList.remove("nav--hidden");                   // near the top: always shown
+      else if (y > lastY + 4) nav.classList.add("nav--hidden");          // scrolling down
+      else if (y < lastY - 4) nav.classList.remove("nav--hidden");       // scrolling up
+      if (Math.abs(y - lastY) > 4) lastY = y;
+      ticking = false;
+    };
+    window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+    nav.addEventListener("focusin", () => nav.classList.remove("nav--hidden")); // keyboard users always see it
+  }
+
+  // ---- FAQ: bank QR codes can be collapsed (Figma 287:13) ----
+  document.querySelectorAll("[data-qr-toggle]").forEach((btn) => {
+    const box = document.getElementById(btn.getAttribute("aria-controls"));
+    const label = btn.querySelector("span");
+    btn.addEventListener("click", () => {
+      const open = btn.getAttribute("aria-expanded") !== "true";
+      btn.setAttribute("aria-expanded", String(open));
+      box.hidden = !open;
+      label.textContent = open ? "Collapse bank QR" : "Show bank QR";
+    });
+  });
+
   // ---- fade in on scroll ----
   const els = document.querySelectorAll("[data-fade]");
   if ("IntersectionObserver" in window) {

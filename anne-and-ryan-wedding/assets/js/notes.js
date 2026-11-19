@@ -100,5 +100,62 @@
     return s < L / 2 ? -mag : mag;                     // CSS: negative = counter-clockwise
   }
 
-  window.Notes = { renderNote, renderFlower, FLOWERS, arch: { ...A, L, pointAt, nearestS, layout }, tiltFor };
+  /* ---------- free placement (Nov 19, designer) ----------
+     Letters can go anywhere on the photo stage except over the copy block ("Frame 3231").
+     A spot is x, y = fractions of the stage, packed into the one `pos` number the backend already stores (0..1):
+       pos = (ix * 10000 + iy * 10 + 7) / 1e7, ix / iy = round(x / y * 999); the last digit 7 marks the new format.
+     Letters from before Nov 19 have a 4-decimal arch position (last digit 0): they go where that arch point was. */
+  const clamp01 = (v) => Math.max(0, Math.min(1, Number(v) || 0));
+  function encodeXY(x, y) { return (Math.round(clamp01(x) * 999) * 10000 + Math.round(clamp01(y) * 999) * 10 + 7) / 1e7; }
+  function decodePos(pos) {
+    const k = Math.round(clamp01(pos) * 1e7);
+    if (k % 10 === 7) return { x: Math.floor(k / 10000) / 999, y: (Math.floor(k / 10) % 1000) / 999 };
+    const p = pointAt(clamp01(pos) * L);                       // old arch letter
+    return { x: p.x / A.W, y: p.y / A.H };
+  }
+
+  /* Visible part of a letter around its centre, as multiples of the note width w (the 1000 x 900 box is mostly empty):
+     envelope + flowers, with room for the ±30-41° tilt. */
+  const EXT = { hx: 0.3, top: 0.36, bot: 0.22 };
+  function boxAt(cx, cy, w) { return { l: cx - EXT.hx * w, r: cx + EXT.hx * w, t: cy - EXT.top * w, b: cy + EXT.bot * w }; }
+  const hit = (a, b) => a.l < b.r && a.r > b.l && a.t < b.b && a.b > b.t;
+
+  /* opt: { W, H (stage px), w (note px), block: {l,t,r,b} px or null } */
+  function validSpot(cx, cy, placed, opt, allowTouch) {
+    const w = opt.w, bx = boxAt(cx, cy, w);
+    if (bx.l < 0 || bx.t < 0 || bx.r > opt.W || bx.b > opt.H) return false;
+    if (opt.block) { const pad = 0.03 * w, k = opt.block; if (hit(bx, { l: k.l - pad, t: k.t - pad, r: k.r + pad, b: k.b + pad })) return false; }
+    if (!allowTouch) for (const p of placed) { const dx = (cx - p.x) / (0.56 * w), dy = (cy - p.y) / (0.5 * w); if (dx * dx + dy * dy < 1) return false; }
+    return true;
+  }
+  /* nearest valid spot to (x, y) px: grow square rings on a grid; once one is found, look a bit further for a closer one */
+  function nearestSpot(x, y, placed, opt) {
+    const step = Math.max(4, opt.w / 6), maxK = Math.ceil(Math.max(opt.W, opt.H) / step) + 1;
+    for (const allowTouch of [false, true]) {               // stage full: letters may overlap, never the copy
+      if (validSpot(x, y, placed, opt, allowTouch)) return { x, y };
+      let best = null, stopAt = maxK;
+      for (let k = 1; k <= stopAt; k++) {
+        for (let i = -k; i <= k; i++) for (const [dx, dy] of [[i, -k], [i, k], [-k, i], [k, i]]) {
+          if (Math.abs(dy) !== k && Math.abs(dx) !== k) continue;
+          const cx = x + dx * step, cy = y + dy * step;
+          if (!validSpot(cx, cy, placed, opt, allowTouch)) continue;
+          const d = Math.hypot(cx - x, cy - y);
+          if (!best || d < best.d) best = { x: cx, y: cy, d };
+        }
+        if (best && stopAt === maxK) stopAt = Math.min(maxK, Math.ceil(k * 1.42) + 1);
+      }
+      if (best) return { x: best.x, y: best.y };
+    }
+    return { x: Math.min(Math.max(x, 0), opt.W), y: Math.min(Math.max(y, 0), opt.H) };
+  }
+  /* Everyone's letters in time order, each moved as little as needed: deterministic, so guests with the same screen size see the same page. */
+  function pack(fracs, opt) {
+    const placed = [];
+    fracs.forEach((f) => placed.push(nearestSpot(f.x * opt.W, f.y * opt.H, placed, opt)));
+    return placed;
+  }
+  const tiltSide = (id, x) => tiltFor(id, x < 0.5 ? 0 : L);  // left half leans one way, right half the mirror
+
+  window.Notes = { renderNote, renderFlower, FLOWERS, arch: { ...A, L, pointAt, nearestS, layout }, tiltFor,
+    free: { encodeXY, decodePos, nearestSpot, pack, validSpot, tiltSide } };
 })();
