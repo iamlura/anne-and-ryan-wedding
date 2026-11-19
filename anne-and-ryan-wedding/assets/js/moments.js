@@ -34,8 +34,10 @@
   let hold = false, resumeAt = 0;
   const pause = () => { hold = true; };
   const resume = (ms) => { hold = false; resumeAt = performance.now() + (ms || 0); };
-  box.addEventListener("mouseenter", pause);
-  box.addEventListener("mouseleave", () => resume(0));
+  // Nov 19 fix: real mouse hover only. iPhones fire a fake "mouseenter" on tap and no "mouseleave" until you tap
+  // somewhere else, which used to stop the strip for good after one touch.
+  box.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") pause(); });
+  box.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") resume(0); });
   box.addEventListener("touchstart", pause, { passive: true });
   box.addEventListener("touchend", () => resume(1500), { passive: true });
   box.addEventListener("touchcancel", () => resume(1500), { passive: true }); // iOS cancels touches when the page scrolls
