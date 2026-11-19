@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Afacad&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Cormorant+SC:wght@500&family=Pinyon+Script&display=swap">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=28">
 </head>
 <body>
   <header class="nav" data-nav>
@@ -25,7 +25,7 @@
 
   <main>
     <section class="photo-head photo-head--faq">
-      <img src="assets/img/faq-hero.jpg" alt="">
+      <picture><source media="(max-width: 760px)" srcset="assets/img/faq-hero-phone.jpg"><img src="assets/img/faq-hero.jpg" alt="" fetchpriority="high"></picture>
       <h1 data-fade>Frequently Asked Questions</h1>
     </section>
 
@@ -64,10 +64,11 @@
         <div class="faq__item">
           <h2>Do you have a gift registry?</h2>
           <p>Your presence is all we need. Should you wish to give a gift, a monetary contribution toward our future together would be warmly appreciated.</p>
-          <div class="faq__qr">
+          <div class="faq__qr" id="bankQr">
             <a href="assets/img/qr-gcash.jpg" target="_blank" rel="noopener"><img src="assets/img/qr-gcash.jpg" alt="GCash QR code for RyAnne" loading="lazy"></a>
             <a href="assets/img/qr-bpi.jpg" target="_blank" rel="noopener"><img src="assets/img/qr-bpi.jpg" alt="BPI QR code for RyAnne" loading="lazy"></a>
           </div>
+          <button class="qr-toggle" type="button" data-qr-toggle aria-expanded="true" aria-controls="bankQr"><svg viewBox="0 0 15 8" aria-hidden="true"><path d="M.5 7.5 7.5.7l7 6.8" fill="none" stroke="currentColor"/></svg><span>Collapse bank QR</span></button>
         </div>
       </div>
     </section>
@@ -83,6 +84,6 @@
   </footer>
 
   <script src="assets/js/content.js"></script>
-  <script src="assets/js/common.js"></script>
+  <script src="assets/js/common.js?v=28"></script>
 </body>
 </html>
