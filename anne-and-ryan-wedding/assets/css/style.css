@@ -199,9 +199,9 @@ html { scroll-behavior: smooth; }
 .ww .name { font-size: calc(38 * var(--u)); line-height: 1.15; }
 .ww .city { font-size: calc(30 * var(--u)); opacity: .85; } /* Figma 216:41 / 216:45 */
 
-.countdown { background: var(--olive); color: var(--cream); padding: calc(40 * var(--u)) calc(120 * var(--u)) calc(150 * var(--u)); display: flex; flex-direction: column; align-items: center; }
+.countdown { background: var(--olive); color: var(--cream); padding: calc(120 * var(--u)); display: flex; flex-direction: column; align-items: center; } /* Nov 19: numbers centred, 120 above / below (Figma 227:205) */
 .countdown__rule { display: none; } /* Figma: no line between When / Where and the countdown */
-.countdown__nums { display: flex; justify-content: center; gap: calc(110 * var(--u)); padding-top: calc(60 * var(--u)); text-align: center; }
+.countdown__nums { display: flex; justify-content: center; gap: calc(110 * var(--u)); text-align: center; }
 .countdown__nums > div { display: flex; flex-direction: column; align-items: center; gap: calc(6 * var(--u)); }
 .countdown .n { font-size: calc(88 * var(--u)); line-height: 1; font-variant-numeric: lining-nums; }
 .countdown .l { font-family: var(--serif-sc); font-size: calc(18 * var(--u)); letter-spacing: .25em; text-transform: uppercase; opacity: .85; }
@@ -290,12 +290,18 @@ html { scroll-behavior: smooth; }
 .faq__qr { display: flex; justify-content: center; gap: calc(30 * var(--u)); margin-top: calc(20 * var(--u)); }
 .faq__qr a { display: block; line-height: 0; }
 .faq__qr img { height: calc(260 * var(--u)); width: auto; border-radius: calc(12 * var(--u)); }
-.faq__qr[hidden] { display: none; }
-/* Nov 19 (Figma 287:13): chevron + "Collapse bank QR" under the codes, 28 / 50%, underlined; toggles the codes */
+/* Figma 287:13: chevron + link under the gift answer, 28 / 50%, underlined. Since Nov 19 it opens the codes in a popup */
 .qr-toggle { align-self: center; display: flex; flex-direction: column; align-items: center; gap: calc(10 * var(--u)); margin-top: calc(18 * var(--u)); background: none; border: 0; padding: 0; color: var(--black); opacity: .5; font-size: calc(28 * var(--u)); line-height: 1.5; text-decoration: underline; text-underline-offset: .15em; transition: opacity .2s; }
 .qr-toggle:hover { opacity: .8; }
-.qr-toggle svg { width: calc(15 * var(--u)); min-width: 10px; height: auto; transition: transform .25s; }
-.qr-toggle[aria-expanded="false"] svg { transform: rotate(180deg); }
+.qr-toggle svg { width: calc(15 * var(--u)); min-width: 10px; height: auto; transform: rotate(180deg); }
+/* bank QR popup: black overlay, the two codes, X top right; tap the overlay, X or Esc to close */
+.qr-pop { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.82); display: flex; align-items: center; justify-content: center; padding: 80px 40px; overflow-y: auto; opacity: 0; transition: opacity .25s; }
+.qr-pop.open { opacity: 1; }
+.qr-pop[hidden] { display: none; }
+.qr-pop__codes { display: flex; align-items: center; justify-content: center; gap: calc(48 * var(--u)); margin: auto; }
+.qr-pop__codes img { height: min(70vh, calc(640 * var(--u))); min-height: 300px; width: auto; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,.35); }
+.qr-pop__x { position: fixed; top: 20px; right: 24px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: none; border: 0; color: var(--cream); font-size: 44px; line-height: 1; padding: 0; z-index: 1; }
+.qr-pop__x:hover { opacity: .75; }
 .faq .rule { height: 1px; border: 0; margin: 0; background: rgba(78,11,18,.2); }
 .faq .polaroid { width: calc(456 * var(--u)); height: calc(678 * var(--u)); margin: calc(48 * var(--u)) 0 0 calc(12 * var(--u)); --pb: 80; --rot: -2deg; } /* Figma 216:233: position + -2deg tilt matched to the frame */
 
@@ -601,13 +607,17 @@ html { scroll-behavior: smooth; }
   .ww .city { font-size: 18px; }
   .ww__lines p:not(.big) { font-size: 18px; }
 
-  .countdown { padding: 0 20px 72px; }
-  .countdown__nums { gap: 24px; padding-top: 36px; }
+  .countdown { padding: 52px 20px; } /* Nov 19 (Figma welcome phone 244:440): 164 tall, numbers centred */
+  .countdown__nums { gap: 21px; padding-top: 0; }
+  .countdown__nums > div { gap: 7px; }
   .countdown .n { font-size: 40px; }
   .countdown .l { font-size: 11px; }
 
-  .story-top { flex-direction: column; gap: 48px; padding: 64px 24px 56px; }
-  .story-top__text { width: auto; gap: 20px; }
+  .story-top { flex-direction: column; align-items: stretch; gap: 0; padding: 64px 24px 56px; }
+  .story-top__text { display: contents; } /* Nov 19 (Figma 244:140): title, then the 4 photos, then the text */
+  .story-top h1 { order: 0; margin-bottom: 23px; }
+  .story-pics { order: 1; margin-bottom: 40px; }
+  .story-text { order: 2; }
   .story-top h1 { font-size: 64px; }
   .story-text { gap: 18px; line-height: 1.5; }
   .story-top .polaroid { width: 280px; height: 360px; }
@@ -648,6 +658,10 @@ html { scroll-behavior: smooth; }
   .faq__qr { gap: 14px; margin-top: 12px; }
   .faq__qr img { height: 170px; border-radius: 8px; }
   .qr-toggle { font-size: 18px; gap: 6px; margin-top: 10px; }
+  .qr-pop { align-items: flex-start; padding: 72px 16px 40px; }
+  .qr-pop__codes { flex-direction: column; gap: 24px; }
+  .qr-pop__codes img { width: min(80vw, 320px); height: auto; min-height: 0; }
+  .qr-pop__x { top: 12px; right: 12px; }
   .d-facts .city { font-size: 16px; }
   .faq .polaroid { width: 240px; height: 357px; margin: 0; }
 
@@ -657,7 +671,7 @@ html { scroll-behavior: smooth; }
   .gate__field { font-size: 20px; padding: 12px 14px; border-radius: 8px; }
   .gate__err { font-size: 15px; }
   .gate .monogram { width: 58px; height: 89px; }
-  .rsvp { padding: 48px 12px 64px; }
+  .rsvp { padding: 48px 12px 64px; align-items: flex-start; min-height: calc(100vh - 64px); } /* Nov 19: at least one screen tall, footer below the fold */
   .rsvp__card { width: 100%; min-width: 0; border-radius: 16px; padding: 40px 22px 44px; gap: 24px; }
   .rsvp__card h1 { font-size: 72px; }
   .rsvp__card:not(:has(.rsvp-done.is-active)) h1 { font-size: 52px; }
@@ -684,7 +698,7 @@ html { scroll-behavior: smooth; }
   /* Nov 19 (Figma 244:266): the photo fills the whole section (390 x 730), copy on top of it in cream, 308 from the top */
   .stage-wrap { height: auto; display: block; padding-top: 0; }
   .stage { position: relative; top: 0; margin-top: 0; overflow: hidden; }
-  .stage-wrap:has(.arch--photo) .stage { aspect-ratio: 390 / 730; }
+  .stage-wrap:has(.arch--photo) .stage { aspect-ratio: 390 / 730; min-height: calc(100vh - 64px); } /* Nov 19: fills the screen */
   .stage-wrap:has(.arch--photo) .stage > .arch--photo { width: 217.4%; left: 50%; translate: -50% 0; max-width: none; } /* Figma: image 848 wide, centred */
   .stage-wrap:has(.arch--photo) .stage-copy { position: absolute; top: calc(308 / 390 * 100vw); padding: 0 6px; gap: 23px; }
   .stage-wrap:has(.arch--photo) .stage-copy .hd { gap: 23px; }
