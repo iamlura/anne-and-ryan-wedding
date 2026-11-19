@@ -38,6 +38,7 @@
   box.addEventListener("mouseleave", () => resume(0));
   box.addEventListener("touchstart", pause, { passive: true });
   box.addEventListener("touchend", () => resume(1500), { passive: true });
+  box.addEventListener("touchcancel", () => resume(1500), { passive: true }); // iOS cancels touches when the page scrolls
   box.addEventListener("wheel", () => { resumeAt = performance.now() + 1500; }, { passive: true });
 
   // drag with the mouse on desktop
@@ -55,7 +56,7 @@
   box.addEventListener("click", (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
 
   const still = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const speed = () => (window.innerWidth <= 760 ? 22 : 34);   // px per second
+  const speed = () => (window.innerWidth <= 760 ? 30 : 34);   // px per second (phones 22 → 30, Nov 19: easier to see it moving)
   let last = performance.now();
   function tick(now) {
     const dt = Math.min(64, now - last); last = now;

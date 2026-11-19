@@ -70,6 +70,8 @@
       }
       return post({ action: "find", last });
     },
+    /* wakes the Apps Script up (first request after a pause is the slowest) */
+    ping() { if (!DEMO) fetch(URL_, { redirect: "follow" }).catch(() => {}); },
     async login(code) {
       if (DEMO) {
         await sleep(300);

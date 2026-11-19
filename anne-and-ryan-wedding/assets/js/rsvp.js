@@ -18,15 +18,34 @@
   const last = $("#last"), hint = $("#findHint"), findBtn = $("#findBtn");
   const HINT = hint.textContent;
   const notFound = (msg) => { hint.textContent = msg; hint.classList.add("is-error"); last.classList.add("is-error"); };
-  last.addEventListener("input", () => { hint.textContent = HINT; hint.classList.remove("is-error"); last.classList.remove("is-error"); });
+  last.addEventListener("input", () => { hint.textContent = HINT; hint.classList.remove("is-error"); last.classList.remove("is-error"); prefetchSoon(); });
+
+  /* Nov 19, faster: start searching while the guest types (after a short pause), reuse it on submit, and wake the
+     script up as soon as the page opens. find returns each invitation's details, so no second request is needed. */
+  const cache = new Map(); let typeT;
+  const keyOf = (q) => q.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z]+/g, " ").trim();
+  function search(q) {
+    const k = keyOf(q);
+    if (!cache.has(k)) cache.set(k, WeddingAPI.find(q).catch((err) => { cache.delete(k); throw err; }));
+    return cache.get(k);
+  }
+  function prefetchSoon() {
+    clearTimeout(typeT);
+    const q = last.value.trim();
+    if (q.replace(/[^\p{L}]/gu, "").length < 3) return;
+    typeT = setTimeout(() => search(q).catch(() => {}), 450);
+  }
+  if (!WeddingAPI.demo && WeddingAPI.ping) WeddingAPI.ping();
+  const parties = new Map();                                // code → details from find
   $("#findForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const q = last.value.trim();
     if (q.replace(/[^\p{L}]/gu, "").length < 2) { last.focus(); return; }
     findBtn.disabled = true; findBtn.textContent = "Searching…";
     try {
-      const r = await WeddingAPI.find(q);
+      const r = await search(q);
       const ps = r.parties || [];
+      ps.forEach((p) => { if (p.party) parties.set(p.code, p.party); });
       if (!ps.length) notFound("We couldn’t find that name. Please check the spelling and enter your last name only.");
       else if (ps.length === 1) await open(ps[0].code);
       else {
@@ -49,8 +68,8 @@
   }));
 
   async function open(id) {
-    const r = await WeddingAPI.login(id);
-    guest = r.party; Guest.set(guest);
+    guest = parties.get(id) || (await WeddingAPI.login(id)).party; // older backend: one more request
+    Guest.set(guest);
     drawParty();
   }
 
@@ -111,6 +130,7 @@
     submit.disabled = true; submit.textContent = "Sending…"; msg.textContent = "";
     try {
       await WeddingAPI.rsvpParty(guest.code, a.map(({ row, attending, food, name }) => ({ row, attending, food, name })), { email: guest.email || "", website: form.elements.website.value });
+      cache.clear(); parties.clear();                    // answers changed: search fresh next time
       guest.guests = guest.guests.map((g, i) => ({ ...g, attending: a[i].attending, food: a[i].food, name: g.plusOne ? a[i].name : g.name }));
       guest.replied = true; Guest.set(guest);
       const coming = a.some((g) => g.attending === "Yes");

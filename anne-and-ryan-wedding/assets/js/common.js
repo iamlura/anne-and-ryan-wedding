@@ -36,17 +36,22 @@
     nav.addEventListener("focusin", () => nav.classList.remove("nav--hidden")); // keyboard users always see it
   }
 
-  // ---- FAQ: bank QR codes can be collapsed (Figma 287:13) ----
-  document.querySelectorAll("[data-qr-toggle]").forEach((btn) => {
-    const box = document.getElementById(btn.getAttribute("aria-controls"));
-    const label = btn.querySelector("span");
-    btn.addEventListener("click", () => {
-      const open = btn.getAttribute("aria-expanded") !== "true";
-      btn.setAttribute("aria-expanded", String(open));
-      box.hidden = !open;
-      label.textContent = open ? "Collapse bank QR" : "Show bank QR";
-    });
-  });
+  // ---- FAQ: "Show bank QR" opens the codes in a popup; X, the dark overlay or Esc closes it (designer, Nov 19) ----
+  const qrPop = document.getElementById("qrPop"), qrOpen = document.querySelector("[data-qr-open]");
+  if (qrPop && qrOpen) {
+    const openQr = () => {
+      qrPop.hidden = false; document.body.style.overflow = "hidden";
+      requestAnimationFrame(() => qrPop.classList.add("open"));
+      qrPop.querySelector("[data-qr-close]").focus();
+    };
+    const closeQr = () => {
+      qrPop.classList.remove("open"); document.body.style.overflow = "";
+      setTimeout(() => { qrPop.hidden = true; }, 250); qrOpen.focus();
+    };
+    qrOpen.addEventListener("click", openQr);
+    qrPop.addEventListener("click", (e) => { if (e.target.tagName !== "IMG") closeQr(); }); // overlay or X
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !qrPop.hidden) closeQr(); });
+  }
 
   // ---- fade in on scroll ----
   const els = document.querySelectorAll("[data-fade]");
