@@ -13,12 +13,21 @@ def norm(c):
     c=''.join(ch for ch in str(c).upper() if ch.isalnum())
     if c.startswith('AR') and len(c)==8: c=c[2:]
     return 'AR-'+c if len(c)==6 else ''
+LOG=[]
+def party(c):
+    rows=[(i,g) for i,g in enumerate(GUESTS) if g[4]==c]
+    if not rows: return None
+    g0=rows[0][1]
+    return {'name':g0[0],'code':c,'table':g0[3],'email':g0[2],'replied':any(g[5] for _,g in rows),
+      'guests':[{'row':i+2,'name':(g[7] if g[1]=='Plus One' else g[1]),'plusOne':g[1]=='Plus One','attending':{'Joyfully accepts':'Yes','Respectfully declines':'No'}.get(g[5],''),'food':g[6]} for i,g in rows]}
+
 class H(http.server.BaseHTTPRequestHandler):
     def _send(self, obj):
         b=json.dumps(obj).encode(); self.send_response(200)
         self.send_header('Content-Type','application/json'); self.send_header('Access-Control-Allow-Origin','*'); self.end_headers(); self.wfile.write(b)
     def log_message(self,*a): pass
     def do_GET(self):
+        if 'action=log' in self.path: return self._send({'ok':True,'log':LOG})
         if 'action=notes' in self.path:
             self._send({'ok':True,'notes':[{k:m[k] for k in ('id','t','from','flowers','pos')} for m in DB['msg']]})
         else: self._send({'ok':True})
@@ -27,19 +36,21 @@ class H(http.server.BaseHTTPRequestHandler):
         a=body.get('action')
         if a=='rsvp': DB['rsvp'].append(body); print('RSVP', body, flush=True); return self._send({'ok':True})
         if a=='login':
-            c=norm(body.get('code')); rows=[(i,g) for i,g in enumerate(GUESTS) if g[4]==c]
-            if not rows: return self._send({'ok':False,'error':'nomatch'})
-            g0=rows[0][1]
-            return self._send({'ok':True,'party':{'name':g0[0],'code':c,'table':g0[3],'email':g0[2],'replied':any(g[5] for _,g in rows),
-              'guests':[{'row':i+2,'name':(g[7] if g[1]=='Plus One' else g[1]),'plusOne':g[1]=='Plus One','attending':{'Joyfully accepts':'Yes','Respectfully declines':'No'}.get(g[5],''),'food':g[6]} for i,g in rows]}})
-        if a=='find':  # Nov 17: last name → invitations (code = internal id)
+            LOG.append('login')
+            p=party(norm(body.get('code')))
+            return self._send({'ok':True,'party':p} if p else {'ok':False,'error':'nomatch'})
+        if a=='find':
+            LOG.append('find')  # Nov 17: last name → invitations (code = internal id)
             q=' '.join(''.join(ch if ch.isalpha() else ' ' for ch in str(body.get('last','')).lower()).split())
             seen={}
             for g in GUESTS:
                 n=' '.join(''.join(ch if ch.isalpha() else ' ' for ch in g[1].lower()).split())
                 if g[1]=='Plus One' or len(q)<2: continue
                 if (' '+n).endswith(' '+q) or q in n.split()[1:]: seen.setdefault(g[4], g[0])
-            return self._send({'ok':True,'parties':[{'code':c,'name':p} for c,p in seen.items()]})
+            ps=[{'code':c,'name':p} for c,p in seen.items()]
+            if len(ps)<=12:
+                for x in ps: x['party']=party(x['code'])   # Nov 19: details come with the search (one request)
+            return self._send({'ok':True,'parties':ps})
         if a=='forgot': FORGOT.append(body.get('email')); print('FORGOT', body.get('email'), flush=True); return self._send({'ok':True})
         if a=='rsvp_party':
             c=norm(body.get('code'))
