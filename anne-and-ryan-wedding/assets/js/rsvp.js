@@ -76,7 +76,7 @@
         </div>
         <div class="rfield" data-food hidden>
           <label for="food${i}">Special dietary requirements</label>
-          <input class="rinput" id="food${i}" data-k="food" placeholder="Allergies, or “none”" maxlength="200" value="${esc(g.food || "")}">
+          <input class="rinput" id="food${i}" data-k="food" placeholder="Optional, e.g. allergies" maxlength="200" value="${esc(g.food || "")}">
         </div>
       </fieldset>`;
     }).join("");
@@ -95,8 +95,8 @@
       };
     });
   }
-  // every guest answers; accepting guests fill dietary; an accepting plus one needs a name
-  const complete = (a) => a.length && a.every((g) => g.attending && (g.attending === "No" || (g.food && (!g.plusOne || g.name))));
+  // every guest answers; dietary is optional (Anne, Nov 19); an accepting plus one needs a name
+  const complete = (a) => a.length && a.every((g) => g.attending && (g.attending === "No" || !g.plusOne || g.name));
   function refresh() {
     list.querySelectorAll(".guest").forEach((fs) => { fs.querySelector("[data-food]").hidden = (fs.querySelector("input[type=radio]:checked") || {}).value !== "Yes"; });
     submit.disabled = !guest || !complete(answers());
