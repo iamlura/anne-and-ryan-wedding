@@ -68,7 +68,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* ---------- nav: dark burgundy bar, links either side of the AR monogram ---------- */
 .nav {
-  position: relative; z-index: 20;
+  position: sticky; top: 0; z-index: 20; /* Nov 19 (designer): hides while scrolling down, comes back on scroll up (common.js) */
+  transition: transform .35s ease;
   height: calc(110 * var(--u)); min-height: 56px;
   padding: 0 calc(60 * var(--u)); /* Figma 216:3: monogram left, links right (Nov 16) */
   display: flex; align-items: center; justify-content: flex-start;
@@ -77,6 +78,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   border-bottom: 1px solid rgba(78,11,18,.2);
   font-family: var(--serif-sc); font-size: var(--fs-nav); letter-spacing: .18em;
 }
+.nav.nav--hidden { transform: translateY(-100%); }
 .nav a { white-space: nowrap; transition: opacity .2s; }
 .nav a:hover { opacity: .7; }
 .nav .brand { display: flex; align-items: center; margin-right: auto; }
@@ -181,7 +183,7 @@ html { scroll-behavior: smooth; }
 .arch-photo { width: calc(700 * var(--u)); aspect-ratio: 700 / 960; object-fit: cover; border-radius: 999px 999px 0 0; flex: none; }
 
 /* When / Where (lighter olive) + countdown (dark olive), Figma 216:27 / 216:46 */
-.ww { background: var(--olive); /* Part II: the darker olive, same as the countdown */ color: var(--cream); padding: calc(170 * var(--u)) calc(200 * var(--u)) calc(110 * var(--u)); display: flex; justify-content: center; text-align: center; }
+.ww { background: var(--olive-2); /* Nov 19: Figma 216:27 is the lighter olive #2c330a again (countdown stays dark) */ color: var(--cream); padding: calc(170 * var(--u)) calc(200 * var(--u)) calc(110 * var(--u)); display: flex; justify-content: center; text-align: center; }
 .ww__row { display: flex; align-items: flex-start; gap: calc(100 * var(--u)); } /* Part II: "Where" lines up with "When" */
 .ww__col { display: flex; flex-direction: column; align-items: center; gap: calc(20 * var(--u)); }
 .ww__col--when { width: calc(447 * var(--u)); }
@@ -194,8 +196,8 @@ html { scroll-behavior: smooth; }
 .ww__places { display: flex; gap: calc(80 * var(--u)); }
 .ww__place { width: calc(380 * var(--u)); display: flex; flex-direction: column; align-items: center; gap: calc(6 * var(--u)); }
 .ww .lab { font-family: var(--serif-sc); font-size: var(--fs-label); letter-spacing: .25em; text-transform: uppercase; opacity: .8; }
-.ww .name { font-size: calc(36 * var(--u)); line-height: 1.18; }
-.ww .city { font-size: calc(28 * var(--u)); opacity: .8; }
+.ww .name { font-size: calc(38 * var(--u)); line-height: 1.15; }
+.ww .city { font-size: calc(30 * var(--u)); opacity: .85; } /* Figma 216:41 / 216:45 */
 
 .countdown { background: var(--olive); color: var(--cream); padding: calc(40 * var(--u)) calc(120 * var(--u)) calc(150 * var(--u)); display: flex; flex-direction: column; align-items: center; }
 .countdown__rule { display: none; } /* Figma: no line between When / Where and the countdown */
@@ -250,17 +252,15 @@ html { scroll-behavior: smooth; }
 .d-facts .city { font-size: calc(28 * var(--u)); opacity: .8; } /* Part 4: city under ceremony / reception, like the landing */
 
 .d-day { background: var(--bg-2); padding: calc(100 * var(--u)) calc(120 * var(--u)) 0; }
-.d-day__card { background: var(--olive); /* Part II: dark olive instead of pink */ border-radius: calc(28 * var(--u)); padding: calc(130 * var(--u)) 0 calc(140 * var(--u)); display: flex; flex-direction: column; align-items: center; gap: calc(56 * var(--u)); color: var(--cream); }
-.d-day h2 { color: var(--cream); opacity: .6; font-size: var(--fs-title); line-height: 1.25; }
-.schedule { list-style: none; margin: 0; padding: 0; width: calc(636 * var(--u)); }
+.d-day__card { background: #ecded9; /* Nov 19: Figma 287:977, pink card + burgundy text again */ border-radius: calc(28 * var(--u)); padding: calc(130 * var(--u)) 0 calc(140 * var(--u)); display: flex; flex-direction: column; align-items: center; gap: calc(56 * var(--u)); color: var(--foot); }
+.d-day h2 { color: var(--foot); opacity: .6; font-size: var(--fs-title); line-height: 1.25; }
+.schedule { list-style: none; margin: 0; padding: 0; width: calc(636 * var(--u)); position: relative; }
+/* Nov 19: one line through every dot, first to last (Figma Rectangle 3119, 1 x 372) */
+.schedule::before { content: ""; position: absolute; left: calc(267.5 * var(--u)); top: calc(56 * var(--u)); bottom: calc(52 * var(--u)); width: 1px; background: currentColor; }
 .schedule li { display: grid; grid-template-columns: calc(220 * var(--u)) calc(16 * var(--u)) 1fr; column-gap: calc(40 * var(--u)); align-items: center; height: calc(120 * var(--u)); position: relative; }
 .schedule .tt { font-size: calc(48 * var(--u)); text-align: right; }
-.schedule .dot { justify-self: center; width: calc(14 * var(--u)); height: calc(14 * var(--u)); min-width: 7px; min-height: 7px; border-radius: 50%; background: var(--cream); position: relative; }
+.schedule .dot { justify-self: center; width: calc(14 * var(--u)); height: calc(14 * var(--u)); min-width: 7px; min-height: 7px; border-radius: 50%; background: currentColor; position: relative; }
 /* Figma 216:137: a 40px line above and below each dot (45% opacity), touching the dot, with a gap between rows */
-.schedule .dot::before, .schedule .dot::after { content: ""; position: absolute; left: 50%; width: 1px; margin-left: -.5px; height: calc(40 * var(--u)); background: rgba(241,238,231,.45); }
-.schedule .dot::before { bottom: 100%; }
-.schedule .dot::after { top: 100%; }
-.schedule li:first-child .dot::before, .schedule li:last-child .dot::after { display: none; }
 .schedule .tl { font-family: var(--serif-sc); font-size: calc(24 * var(--u)); letter-spacing: .22em; text-transform: uppercase; white-space: nowrap; }
 
 .d-dress { display: flex; align-items: center; gap: calc(160 * var(--u)); padding: calc(170 * var(--u)) calc(200 * var(--u)) calc(190 * var(--u)); }
@@ -290,6 +290,12 @@ html { scroll-behavior: smooth; }
 .faq__qr { display: flex; justify-content: center; gap: calc(30 * var(--u)); margin-top: calc(20 * var(--u)); }
 .faq__qr a { display: block; line-height: 0; }
 .faq__qr img { height: calc(260 * var(--u)); width: auto; border-radius: calc(12 * var(--u)); }
+.faq__qr[hidden] { display: none; }
+/* Nov 19 (Figma 287:13): chevron + "Collapse bank QR" under the codes, 28 / 50%, underlined; toggles the codes */
+.qr-toggle { align-self: center; display: flex; flex-direction: column; align-items: center; gap: calc(10 * var(--u)); margin-top: calc(18 * var(--u)); background: none; border: 0; padding: 0; color: var(--black); opacity: .5; font-size: calc(28 * var(--u)); line-height: 1.5; text-decoration: underline; text-underline-offset: .15em; transition: opacity .2s; }
+.qr-toggle:hover { opacity: .8; }
+.qr-toggle svg { width: calc(15 * var(--u)); min-width: 10px; height: auto; transition: transform .25s; }
+.qr-toggle[aria-expanded="false"] svg { transform: rotate(180deg); }
 .faq .rule { height: 1px; border: 0; margin: 0; background: rgba(78,11,18,.2); }
 .faq .polaroid { width: calc(456 * var(--u)); height: calc(678 * var(--u)); margin: calc(48 * var(--u)) 0 0 calc(12 * var(--u)); --pb: 80; --rot: -2deg; } /* Figma 216:233: position + -2deg tilt matched to the frame */
 
@@ -401,10 +407,21 @@ html { scroll-behavior: smooth; }
 .stage-copy {
   position: absolute; left: 0; right: 0; top: calc(600 * var(--u));
   display: flex; flex-direction: column; align-items: center; text-align: center; gap: calc(100 * var(--u)); z-index: 3;
+  pointer-events: none; /* taps go through to the photo (place a letter there); the button stays clickable */
 }
+.stage-copy .btn { pointer-events: auto; }
 .stage-copy .hd { display: flex; flex-direction: column; gap: calc(12 * var(--u)); align-items: center; }
-.stage-copy h1, .stage-copy h2 { font-size: var(--fs-title); user-select: none; }
+.stage-copy h1, .stage-copy h2 { font-size: var(--fs-title); user-select: none; pointer-events: auto; }
 .stage-copy p { font-family: var(--serif); font-size: var(--fs-body); width: calc(603 * var(--u)); }
+/* Nov 19 (Figma 216:302 / 287:16): photo stage 1920 x 1800, copy block 640 from its top, 36 between heading, text and button;
+   letters go anywhere on the photo except over that block (message.js) */
+.stage-wrap:has(.arch--photo) .stage { aspect-ratio: 1920 / 1800; }
+.stage-wrap:has(.arch--photo) .stage-copy { top: calc(640 * var(--u)); gap: calc(36 * var(--u)); }
+.stage-wrap:has(.arch--photo) .stage-copy .hd { gap: calc(36 * var(--u)); }
+.stage-wrap:has(.arch--photo) .stage-copy p { width: calc(620 * var(--u)); line-height: 1.45; }
+.stage-wrap:has(.arch--photo) .stage > .arch--photo { object-position: 50% 50%; } /* Figma crop: centred */
+#stagePlace { cursor: copy; }
+.pin.is-bad { opacity: .45; }
 
 /* note (envelope + bouquet). Box is 1000 x 900 design units; everything inside is % based */
 .note { position: absolute; width: var(--w, 300px); aspect-ratio: 1000 / 900; pointer-events: none; }
@@ -612,7 +629,7 @@ html { scroll-behavior: smooth; }
   .d-day h2 { font-size: 52px; text-align: center; }
   .schedule { width: 100%; max-width: 330px; }
   .schedule li { grid-template-columns: 92px 12px 1fr; column-gap: 14px; height: 60px; }
-  .schedule .dot::before, .schedule .dot::after { height: 20px; }
+  .schedule::before { left: 112px; top: 26px; bottom: 26px; }
   .schedule .tt { font-size: 24px; }
   .schedule .tl { font-size: 12px; letter-spacing: .14em; }
   .d-dress { flex-direction: column; gap: 48px; padding: 72px 24px 80px; }
@@ -630,6 +647,7 @@ html { scroll-behavior: smooth; }
   .faq__item p { font-size: 18px; }
   .faq__qr { gap: 14px; margin-top: 12px; }
   .faq__qr img { height: 170px; border-radius: 8px; }
+  .qr-toggle { font-size: 18px; gap: 6px; margin-top: 10px; }
   .d-facts .city { font-size: 16px; }
   .faq .polaroid { width: 240px; height: 357px; margin: 0; }
 
@@ -663,13 +681,15 @@ html { scroll-behavior: smooth; }
   .rsvp-done .pill-btn { font-size: 16px; letter-spacing: 2.5px; padding: 14px 24px; white-space: nowrap; }
 
   .lam { min-height: 0; }
-  .stage-wrap { height: auto; display: flex; flex-direction: column; padding-top: 110px; }
-  .stage-copy { position: relative; top: 0; padding: 0 8px; gap: 40px; order: 0; }
-  .stage-copy p { width: auto; }
-  .stage { position: relative; top: 0; margin-top: 44px; order: 1; }
-  .stage-wrap:has(.arch--photo) { height: auto; }
-  .stage-wrap:has(.arch--photo) .stage-copy h1, .stage-wrap:has(.arch--photo) .stage-copy h2 { color: var(--burg); }
-  .stage-wrap:has(.arch--photo) .stage-copy p { color: var(--ink); }
+  /* Nov 19 (Figma 244:266): the photo fills the whole section (390 x 730), copy on top of it in cream, 308 from the top */
+  .stage-wrap { height: auto; display: block; padding-top: 0; }
+  .stage { position: relative; top: 0; margin-top: 0; overflow: hidden; }
+  .stage-wrap:has(.arch--photo) .stage { aspect-ratio: 390 / 730; }
+  .stage-wrap:has(.arch--photo) .stage > .arch--photo { width: 217.4%; left: 50%; translate: -50% 0; max-width: none; } /* Figma: image 848 wide, centred */
+  .stage-wrap:has(.arch--photo) .stage-copy { position: absolute; top: calc(308 / 390 * 100vw); padding: 0 6px; gap: 23px; }
+  .stage-wrap:has(.arch--photo) .stage-copy .hd { gap: 23px; }
+  .stage-wrap:has(.arch--photo) .stage-copy p { width: auto; max-width: 361px; line-height: 1.2; }
+  .stage-wrap:has(.arch--photo) .stage-copy .btn { font-size: 18px; padding: 15px 30px; }
 
   .page-pad { padding: 110px 8px 60px; }
   .page-pad .d-head { gap: 12px; padding: 0; }
