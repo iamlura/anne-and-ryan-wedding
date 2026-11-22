@@ -53,13 +53,16 @@ class H(http.server.BaseHTTPRequestHandler):
             return self._send({'ok':True,'parties':ps})
         if a=='forgot': FORGOT.append(body.get('email')); print('FORGOT', body.get('email'), flush=True); return self._send({'ok':True})
         if a=='rsvp_party':
-            c=norm(body.get('code'))
+            c=norm(body.get('code')); saved=locked=0
             for x in body.get('guests',[]):
                 g=GUESTS[int(x['row'])-2]
                 if g[4]!=c: continue
+                if g[5]: locked+=1; continue   # Nov 22: sent answers are locked
+                saved+=1
                 g[5]={'Yes':'Joyfully accepts','No':'Respectfully declines'}[x['attending']]; g[6]=x.get('food','') if x['attending']=='Yes' else ''
                 if g[1]=='Plus One': g[7]=x.get('name','')
                 print('RSVP', g, flush=True)
+            if not saved and locked: return self._send({'ok':False,'error':'This RSVP was already sent.'})
             return self._send({'ok':True})
         if a=='message':
             m=dict(body); m['id']='m%d'%len(DB['msg']); m['t']=int(time.time()*1000); m['key']=hashlib.sha256(m.pop('token','').encode()).hexdigest(); DB['msg'].append(m); print('MSG', m['from'], m['pos'], flush=True); return self._send({'ok':True,'id':m['id'],'t':m['t']})

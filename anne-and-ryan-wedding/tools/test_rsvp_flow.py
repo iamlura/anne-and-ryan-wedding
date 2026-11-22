@@ -37,7 +37,22 @@ async def main():
         await pg.evaluate('window.scrollTo(0,0)'); await pg.wait_for_timeout(300)
         await pg.screenshot(path=f'shots/rsvp-done-{W}.png', full_page=True)
         await pg.reload(); await pg.wait_for_load_state('networkidle')
-        print('reload reopens invitation:', await pg.is_visible('[data-rstep=party]'), '| answers kept:', await pg.is_checked('input[name=att0][value=Yes]'))
+        print('reload reopens invitation:', await pg.is_visible('[data-rstep=party]'), '| locked guests:', await pg.locator('.guest--locked').count(),
+              '| radios left:', await pg.locator('input[type=radio]').count(), '| submit hidden:', await pg.is_hidden('#rsvpSubmit'), '|', await pg.text_content('#partySub'), '|', await pg.text_content('#rsvpMsg'))
+        await pg.screenshot(path=f'shots/rsvp-locked-{W}.png', full_page=True)
+        # Nov 22: the backend refuses a change too
+        r = await pg.evaluate("WeddingAPI.rsvpParty('AR-PL5ONE',[{row:4,attending:'No',food:''}],{}).then(()=>'saved',e=>e.message)")
+        print('change via API:', r)
+        # another browser still showing the old form: Submit -> told it was already sent, answers shown locked
+        pg2 = await ctx.new_page()
+        await pg2.goto('http://127.0.0.1:8765/rsvp.html'); await pg2.evaluate("localStorage.setItem('ar_guest', JSON.stringify({name:'Racquel Ochoa and Plus One',code:'AR-PL5ONE',guests:[{row:4,name:'Racquel Ochoa',plusOne:false,attending:'',food:''},{row:5,name:'',plusOne:true,attending:'',food:''}]}))")
+        await ctx.route('**/exec', lambda r: r.abort() if 'login' in (r.request.post_data or '') and not getattr(pg2,'_ok',False) else r.continue_())
+        await pg2.reload(); await pg2.wait_for_selector('[data-rstep=party].is-active')
+        g = pg2.locator('fieldset.guest'); await g.nth(0).locator('text=Respectfully declines').click(); await g.nth(1).locator('text=Respectfully declines').click()
+        pg2._ok = True
+        await pg2.click('#rsvpSubmit'); await pg2.wait_for_selector('.guest--locked'); await pg2.wait_for_timeout(500)
+        print('stale form ->', await pg2.text_content('#rsvpMsg'), '| locked:', await pg2.locator('.guest--locked').count(), '| answers shown:', await pg2.locator('.pill.is-on').all_text_contents())
+        await pg2.close()
         await pg.goto('http://127.0.0.1:8765/invite.html?code=AR-7K2QX9'); await pg.wait_for_url('**/rsvp.html')
         print('old invite link ->', pg.url.split('/')[-1])
         print('errors:', errs)
