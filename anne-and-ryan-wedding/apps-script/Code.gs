@@ -402,9 +402,11 @@ function rsvpParty_(b) {
   const g = guestRows_(); const now = new Date();
   const log = ensureSheet_(SpreadsheetApp.getActiveSpreadsheet(), RSVP_SHEET, RSVP_HEAD);
   const email = clean_(b.email, 120);
+  let saved = 0, locked = 0;
   (Array.isArray(b.guests) ? b.guests : []).forEach(function (a) {
     const row = Number(a.row); const r = g.rows[row - 2];
     if (!r || String(r[G.code]).toUpperCase() !== code) return;      // only rows of this party
+    if (String(r[G.rsvp]).trim()) { locked++; return; }             // Nov 22: a sent answer can't be changed (edit the Sheet instead)
     const att = a.attending === "Yes" ? "Joyfully accepts" : a.attending === "No" ? "Respectfully declines" : "";
     if (!att) return;
     const food = att === "Joyfully accepts" ? clean_(a.food, 200) : "";
@@ -415,7 +417,9 @@ function rsvpParty_(b) {
     if (plus) g.sh.getRange(row, G.plusName + 1).setValue(pname);
     if (email && !String(r[G.email]).trim() && row === Number(b.guests[0].row)) g.sh.getRange(row, G.email + 1).setValue(email);
     log.appendRow([now, plus ? "Plus one of " + r[G.party] + ": " + pname : r[G.name], email, att === "Joyfully accepts" ? "Yes" : "No", food]);
+    saved++;
   });
+  if (!saved && locked) throw new Error("This RSVP was already sent.");
   return { ok: true };
 }
 
