@@ -1,8 +1,9 @@
 /* RSVP by last name (Nov 17; invite codes removed).
    find: the guest types their last name → Apps Script returns the invitations with a guest of that last name
    (action find). One match opens it, several show a list to pick from (pick). party: one answer per guest
-   (accept / decline + dietary), a name field for a "Plus One" seat. Earlier answers are filled in, so a guest can
-   come back and change them. The picked invitation is kept in this browser (Guest, common.js), so the landing
+   (accept / decline + dietary), a name field for a "Plus One" seat. Nov 22 (designer): an answer can't be changed
+   once it's sent. Guests who already answered show their answer read-only; only the others can still reply
+   (Apps Script refuses changes too). The picked invitation is kept in this browser (Guest, common.js), so the landing
    welcome and "Your Table" on The Details still work. Saved by Apps Script into the Guests tab (action rsvp_party). */
 (function () {
   const $ = (s) => document.querySelector(s);
@@ -75,36 +76,46 @@
 
   /* ---- answer for each guest ---- */
   const list = $("#guestList"), form = $("#partyForm"), submit = $("#rsvpSubmit"), msg = $("#rsvpMsg");
-  function drawParty() {
-    const seats = guest.guests.length, solo = seats === 1;
+  const ATT = { Yes: "Joyfully accepts", No: "Respectfully declines" };
+  const done = (g) => g.attending === "Yes" || g.attending === "No";   // answered already: locked (Nov 22)
+  function drawParty(note) {
+    const seats = guest.guests.length, solo = seats === 1, all = guest.guests.every(done);
     $("#partyTitle").textContent = guest.name;
-    $("#partySub").textContent = `We have reserved ${seats} ${solo ? "seat" : "seats"} for you.`;
-    msg.textContent = "";
+    $("#partySub").textContent = all ? "We have received your RSVP. Thank you!" : `We have reserved ${seats} ${solo ? "seat" : "seats"} for you.`;
+    msg.textContent = note || (all ? "If anything changes, please reach out to Anne and Ryan directly." : "");
+    msg.classList.toggle("is-note", !note && all);
     list.innerHTML = guest.guests.map((g, i) => {
-      const plus = !!g.plusOne;
-      const ck = (v) => (g.attending === v ? " checked" : "");
+      const plus = !!g.plusOne, lock = done(g);
+      const who = plus ? (lock && g.name ? esc(g.name) + " (plus one)" : "Your plus one") : esc(g.name);
+      if (lock) return `<hr class="rrule">
+      <div class="guest guest--locked" data-i="${i}">
+        <p class="guest__name${solo ? " sr-only" : ""}">${who}</p>
+        <div class="pills"><span class="pill is-on">${ATT[g.attending]}</span></div>
+        ${g.attending === "Yes" && g.food ? `<p class="guest__note">Dietary: ${esc(g.food)}</p>` : ""}
+      </div>`;
       return `<hr class="rrule">
       <fieldset class="guest" data-i="${i}" style="border:0;padding:0;margin:0">
-        <legend class="guest__name${solo ? " sr-only" : ""}">${plus ? "Your plus one" : esc(g.name)}</legend>
+        <legend class="guest__name${solo ? " sr-only" : ""}">${who}</legend>
         ${plus ? `<div class="rfield"><label for="pn${i}">Their first and last name</label>
           <input class="rinput" id="pn${i}" data-k="pname" autocomplete="off" placeholder="Jane Doe" maxlength="80" value="${esc(g.name || "")}"></div>
           <p class="lab-sc">Will they be attending?</p>` : ""}
         <div class="pills" role="radiogroup" aria-label="${plus ? "Will your plus one attend?" : esc(g.name) + ": will you attend?"}">
-          <label class="pill"><input type="radio" name="att${i}" value="Yes"${ck("Yes")}>Joyfully accepts</label>
-          <label class="pill"><input type="radio" name="att${i}" value="No"${ck("No")}>Respectfully declines</label>
+          <label class="pill"><input type="radio" name="att${i}" value="Yes">Joyfully accepts</label>
+          <label class="pill"><input type="radio" name="att${i}" value="No">Respectfully declines</label>
         </div>
         <div class="rfield" data-food hidden>
           <label for="food${i}">Special dietary requirements</label>
-          <input class="rinput" id="food${i}" data-k="food" placeholder="Optional, e.g. allergies" maxlength="200" value="${esc(g.food || "")}">
+          <input class="rinput" id="food${i}" data-k="food" placeholder="Optional, e.g. allergies" maxlength="200">
         </div>
       </fieldset>`;
     }).join("");
+    submit.hidden = all;
     refresh();
     show("party");
   }
 
   function answers() {
-    return Array.from(list.querySelectorAll(".guest")).map((fs) => {
+    return Array.from(list.querySelectorAll("fieldset.guest")).map((fs) => {
       const g = guest.guests[+fs.dataset.i];
       return {
         row: g.row, plusOne: !!g.plusOne,
@@ -117,7 +128,7 @@
   // every guest answers; dietary is optional (Anne, Nov 19); an accepting plus one needs a name
   const complete = (a) => a.length && a.every((g) => g.attending && (g.attending === "No" || !g.plusOne || g.name));
   function refresh() {
-    list.querySelectorAll(".guest").forEach((fs) => { fs.querySelector("[data-food]").hidden = (fs.querySelector("input[type=radio]:checked") || {}).value !== "Yes"; });
+    list.querySelectorAll("fieldset.guest").forEach((fs) => { fs.querySelector("[data-food]").hidden = (fs.querySelector("input[type=radio]:checked") || {}).value !== "Yes"; });
     submit.disabled = !guest || !complete(answers());
   }
   form.addEventListener("input", refresh); form.addEventListener("change", refresh);
@@ -127,23 +138,32 @@
     const a = answers();
     if (!complete(a)) return;
     if (window.ContentFilter && ContentFilter.hasBadWords(a.map((g) => g.name + " " + g.food).join(" "))) { msg.textContent = "Please keep it friendly — check the names and dietary requirements."; return; }
-    submit.disabled = true; submit.textContent = "Sending…"; msg.textContent = "";
+    submit.disabled = true; submit.textContent = "Sending…"; msg.textContent = ""; msg.classList.remove("is-note");
     try {
       await WeddingAPI.rsvpParty(guest.code, a.map(({ row, attending, food, name }) => ({ row, attending, food, name })), { email: guest.email || "", website: form.elements.website.value });
       cache.clear(); parties.clear();                    // answers changed: search fresh next time
-      guest.guests = guest.guests.map((g, i) => ({ ...g, attending: a[i].attending, food: a[i].food, name: g.plusOne ? a[i].name : g.name }));
+      const byRow = new Map(a.map((x) => [x.row, x]));
+      guest.guests = guest.guests.map((g) => { const x = byRow.get(g.row); return x ? { ...g, attending: x.attending, food: x.attending === "Yes" ? x.food : "", name: g.plusOne ? x.name : g.name } : g; });
       guest.replied = true; Guest.set(guest);
       const coming = a.some((g) => g.attending === "Yes");
       $("#rsvpDoneText").textContent = coming ? `We can’t wait to see you, ${guest.name}!` : "We’ll miss you. Thank you for letting us know.";
       show("done");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
-      msg.textContent = "Couldn’t send your RSVP. Please try again in a moment.";
+      if (/already/i.test(err.message || "")) {             // answered on another phone / tab: show what was saved
+        try { guest = (await WeddingAPI.login(guest.code)).party; Guest.set(guest); cache.clear(); parties.clear(); } catch (e2) {}
+        drawParty("This RSVP was already sent, so it can’t be changed.");
+      } else msg.textContent = "Couldn’t send your RSVP. Please try again in a moment.";
     } finally { submit.textContent = "Submit"; refresh(); }
   });
 
   // came back on this browser after picking an invitation: open it again, otherwise start with the search
   const saved = window.Guest && Guest.get();
-  if (saved && saved.code && saved.guests) { guest = saved; drawParty(); } else show("find");
+  if (saved && saved.code && saved.guests) {
+    guest = saved; drawParty();
+    if (!WeddingAPI.demo && !guest.guests.every(done)) WeddingAPI.login(saved.code).then((r) => {   // answered elsewhere since?
+      if (r.party && r.party.code === (guest && guest.code) && JSON.stringify(r.party.guests) !== JSON.stringify(guest.guests)) { guest = r.party; Guest.set(guest); drawParty(); }
+    }).catch(() => {});
+  } else show("find");
   card.removeAttribute("data-wait");
 })();
