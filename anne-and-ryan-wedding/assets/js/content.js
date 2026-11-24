@@ -27,7 +27,7 @@ window.WEDDING = {
     { time: "2:30 PM", what: "Wedding Ceremony" },
     { time: "4:30 PM", what: "Cocktail Hour" },
     { time: "5:30 PM", what: "Dinner" },
-    { time: "8:30 PM", what: "Farewell" },
+    { time: "9:30 PM", what: "Farewell" },
   ],
 };
 
